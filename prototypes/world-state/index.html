@@ -368,6 +368,9 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
 
 /* theme toggle */
 .tog{display:inline-flex;border:1px solid var(--line);margin-left:14px;vertical-align:middle}
+.viewtog{margin:0 0 0 22px}
+.socials{margin-left:22px}
+.viewtog button{font-weight:600}
 .tog button{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .tog button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .tog button:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
@@ -870,12 +873,14 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 :root[data-theme="neon"] .mrow .track .now,:root[data-theme="neon"] .horizon .hz i{box-shadow:0 0 0 2px var(--surface),0 0 10px var(--tc)}
 :root[data-theme="neon"] .tiles b{text-shadow:0 0 10px rgba(var(--n),.5)}
 
+@media (max-width:1400px){.socials{gap:7px;margin-left:14px;font-size:11px}.socials .agent{margin-left:12px}.viewtog{margin-left:14px}.mast{gap:12px}.mast .right>span:first-child{display:none}}
 </style>
 
 <div class="wrap">
   <header class="mast">
     <svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10.5" fill="none" stroke="var(--ring)" stroke-width="4"/></svg>
     <h1>UBIK <span class="slash">/</span> WORLD STATE</h1>
+    <span class="tog viewtog" role="group" aria-label="View"><button type="button" data-v="edition" aria-pressed="true">Edition</button><button type="button" data-v="dash" aria-pressed="false">Dashboard</button></span>
     <nav class="socials" aria-label="UBIK elsewhere">
       <a href="https://www.youtube.com/@ubik" target="_blank" rel="noopener">youtube</a><span class="dot">·</span>
       <a href="https://www.instagram.com/ubik" target="_blank" rel="noopener">instagram</a><span class="dot">·</span>
@@ -1663,6 +1668,9 @@ function wireMap(places){
 }
 function showDash(){ selected="dash"; document.querySelector(".main").classList.add("wide"); document.getElementById("edition").classList.add("hidden"); document.getElementById("dossier").classList.add("hidden"); const d=document.getElementById("dash"); d.classList.remove("hidden"); renderDash(); document.getElementById("navDash").classList.add("on"); document.getElementById("navEdition").classList.remove("on"); renderSide(); try{localStorage.setItem("ubik-view","dash")}catch(e){} }
 function showEdition(){ selected=null; document.querySelector(".main").classList.remove("wide"); document.getElementById("dash").classList.add("hidden"); document.getElementById("dossier").classList.add("hidden"); document.getElementById("edition").classList.remove("hidden"); document.getElementById("navDash").classList.remove("on"); document.getElementById("navEdition").classList.add("on"); renderSide(); try{localStorage.setItem("ubik-view","edition")}catch(e){} }
+document.querySelectorAll(".viewtog button").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.v==="dash"){ showDash(); window.scrollTo({top:document.getElementById("dash").offsetTop-80,behavior:"smooth"}); } else { showEdition(); window.scrollTo({top:document.getElementById("edition").offsetTop-80,behavior:"smooth"}); } }));
+const syncViewTog=()=>{ const dash=document.getElementById("navDash").classList.contains("on"); document.querySelectorAll(".viewtog button").forEach(b=>b.setAttribute("aria-pressed", (b.dataset.v==="dash")===dash)); };
+new MutationObserver(syncViewTog).observe(document.getElementById("navDash"),{attributes:true,attributeFilter:["class"]});
 document.getElementById("navDash").addEventListener("click",e=>{ e.preventDefault(); showDash(); window.scrollTo({top:document.getElementById("dash").offsetTop-80,behavior:"smooth"}); });
 document.getElementById("navEdition").addEventListener("click",e=>{ e.preventDefault(); showEdition(); });
 try{ if(localStorage.getItem("ubik-view")==="dash") showDash(); }catch(e){}
