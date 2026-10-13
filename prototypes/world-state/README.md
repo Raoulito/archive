@@ -4,7 +4,7 @@ A single static page built on a snapshot of the pre cog preview API (12–13 Oct
 
 Open `index.html` in a browser; there is no build step and no dependency beyond Google Fonts.
 
-What it shows: the day's synthesis; each current as a digest (lead lines with provenance tags, "why you should care", forecasts) that opens into the full section; a dossier per forecast with the probability history, resolution rule and editorial history; UBIK's number next to the market price where a contract exists; the record and ledger; editions history; a signals ticker; world clocks; light, dark and neon modes; a share card per forecast.
+What it shows: the day's synthesis; each current as a digest (lead lines with provenance tags, "why you should care", forecasts) that opens into the full section; a dossier per forecast with the probability history, resolution rule and editorial history; UBIK's number next to the market price where a contract exists; the record and ledger; editions history; a signals ticker; world clocks; light, dark and neon modes; a share card per forecast; a Dashboard view (score tiles, a zoomable world map of where the questions are, a resolution horizon, every open question as a probability row with the market and issue marks, largest moves, UBIK vs market gaps, a calibration plot, questions by theme).
 
 Snapshot caveats: Polymarket prices were read on 13 October 2026 and are hard-coded. The crypto section (05, bylined AIXBT) and its three forecasts are sample content written for the prototype, not engine output. The publication window (holders 06:00 UTC, public 18:00 UTC) is proposed, not announced.
 

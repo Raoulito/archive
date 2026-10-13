@@ -11,14 +11,14 @@
 <style>
 /* Layout: editorial main column (66ch) + 320px sidebar on desktop; sidebar stacks under the edition on phones. Magazine register: serif headlines and text, grotesk small caps, black rules, one red. */
 :root{
-  --bg:#efece6; --surface:#f6f4ef; --ink:#15140f; --muted:#6f6a60; --line:#d6d1c7; --rule:#15140f;
-  --teal:#15140f; --teal-soft:#e7e3da; --ring:#d8352b; --gold:#b48a2e;
+  --bg:#efece6; --surface:#f6f4ef; --ink:#15140f; --muted:#625d54; --line:#d6d1c7; --rule:#15140f;
+  --teal:#15140f; --teal-soft:#e7e3da; --ring:#d8352b; --ring-text:#b8261d; --gold:#7f611a;
   --good:#1f6f5c; --warn:#b48a2e;
   --display:"Newsreader",Georgia,"Times New Roman",serif; --body:"Source Serif 4",Georgia,serif; --ui:"Hanken Grotesk",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,Menlo,monospace;
   /* theme tints: label colour and a faint wash, light values */
   --t-gulf:#9a5a12; --w-gulf:#f6e8d3;
   --t-ukraine:#1f4e8c; --w-ukraine:#e3eaf4;
-  --t-india:#b3511e; --w-india:#f7e4d8;
+  --t-india:#9a4416; --w-india:#f7e4d8;
   --t-ai:#3f4fb0; --w-ai:#e6e8f7;
   --t-climate:#2f6b3a; --w-climate:#e2efe1;
   --t-americas:#1f6f5c; --w-americas:#dfeeea;
@@ -30,7 +30,7 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#151411; --surface:#1b1a16; --ink:#ebe7dc; --muted:#9d988c; --line:#2f2d27; --rule:#ebe7dc;
-  --teal:#ebe7dc; --teal-soft:#23211c; --ring:#e8574c; --gold:#d1a74c; --good:#6fb8a3; --warn:#d1a74c; color-scheme:dark;
+  --teal:#ebe7dc; --teal-soft:#23211c; --ring:#e8574c; --ring-text:#e8574c; --gold:#d1a74c; --good:#6fb8a3; --warn:#d1a74c; color-scheme:dark;
   --t-gulf:#e2a45a; --w-gulf:#2a2118;
   --t-ukraine:#7fa6e0; --w-ukraine:#1a2130;
   --t-india:#e9865a; --w-india:#2c1f18;
@@ -44,7 +44,7 @@
   --still-a:#0e0e0c; --still-b:#3a3730}}
 :root[data-theme="dark"]{
   --bg:#151411; --surface:#1b1a16; --ink:#ebe7dc; --muted:#9d988c; --line:#2f2d27; --rule:#ebe7dc;
-  --teal:#ebe7dc; --teal-soft:#23211c; --ring:#e8574c; --gold:#d1a74c; --good:#6fb8a3; --warn:#d1a74c; color-scheme:dark;
+  --teal:#ebe7dc; --teal-soft:#23211c; --ring:#e8574c; --ring-text:#e8574c; --gold:#d1a74c; --good:#6fb8a3; --warn:#d1a74c; color-scheme:dark;
   --t-gulf:#e2a45a; --w-gulf:#2a2118;
   --t-ukraine:#7fa6e0; --w-ukraine:#1a2130;
   --t-india:#e9865a; --w-india:#2c1f18;
@@ -59,7 +59,7 @@
 
 :root[data-theme="neon"]{
   --bg:#09050f; --surface:#120b1f; --ink:#efe9ff; --muted:#9b8fb8; --line:#261a3d; --rule:#efe9ff;
-  --teal:#efe9ff; --teal-soft:#170f29; --ring:#c45cff; --gold:#ffd166; --good:#5ef2c3; --warn:#ffd166; color-scheme:dark;
+  --teal:#efe9ff; --teal-soft:#170f29; --ring:#c45cff; --ring-text:#c45cff; --gold:#ffd166; --good:#5ef2c3; --warn:#ffd166; color-scheme:dark;
   --t-gulf:#ffb347; --w-gulf:#1d1410;
   --t-ukraine:#5ab4ff; --w-ukraine:#0d1830;
   --t-india:#ff7a59; --w-india:#23120f;
@@ -105,7 +105,7 @@ section>h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:up
 section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-transform:none;color:var(--ink)}
 
 /* provenance tags */
-.tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:2px 6px;border:1px solid var(--line);border-radius:2px;color:var(--muted);vertical-align:middle;margin-right:6px;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:2px 6px;border:1px solid var(--line);border-radius:2px;color:var(--muted);vertical-align:middle;margin-right:6px;white-space:nowrap}
 .tag.v{border-color:var(--teal);color:var(--teal)}
 .tag.r{}
 .tag.i{border-style:dashed}
@@ -134,7 +134,7 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 @media(min-width:640px){.card{grid-template-columns:1fr 240px}}
 .card .head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .card .id{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.card .status{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:2px 6px;border-radius:2px;border:1px solid var(--teal);color:var(--teal)}
+.card .status{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border-radius:2px;border:1px solid var(--teal);color:var(--teal)}
 .card .status.yes{border-color:var(--good);background:var(--teal-soft)}
 .card h3{font-size:19px;font-weight:600;line-height:1.3;margin-top:6px}
 .card .nums{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
@@ -142,11 +142,11 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 .card .nums .delta.up b{color:var(--ring)}
 .card .nums .delta.down b{color:var(--teal)}
 .card .why{font-size:14.5px;margin-top:10px;color:var(--ink)}
-.card .why .lab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:3px}
+.card .why .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:3px}
 .card .rule{font-size:13px;color:var(--muted);margin-top:8px}
 .chart{min-width:0}
 .chart svg{width:100%;height:auto;display:block}
-.chart .cap{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.04em}
+.chart .cap{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:4px;letter-spacing:.04em}
 
 /* record */
 .rec{background:var(--surface);border:1px solid var(--line);padding:18px;margin-top:16px}
@@ -160,7 +160,7 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 .ledger{margin-top:16px;overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
 table{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;position:sticky;top:0;background:var(--surface)}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;position:sticky;top:0;background:var(--surface)}
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 td .id{font-family:var(--mono);font-size:11px;color:var(--muted);display:block}
 td .spark svg{display:block;width:80px;height:22px}
@@ -190,18 +190,18 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
 .main{min-width:0;max-width:72ch}
 .side{min-width:0;position:relative}
 @media(min-width:960px){.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto;padding-right:4px}}
-.side h2{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:22px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
-.side h2 a{font-family:var(--mono);font-size:10px;color:var(--teal);text-decoration:none;letter-spacing:.04em}
+.side h2{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:22px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
+.side h2 a{font-family:var(--mono);font-size:10.5px;color:var(--teal);text-decoration:none;letter-spacing:.04em}
 .search{display:flex;gap:0;border:1px solid var(--line);background:var(--surface)}
 .search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;padding:10px 12px;outline:none}
 .search input:focus-visible{box-shadow:inset 0 0 0 2px var(--teal)}
-.search .k{font-family:var(--mono);font-size:10px;color:var(--muted);align-self:center;padding-right:10px;letter-spacing:.06em}
+.search .k{font-family:var(--mono);font-size:10.5px;color:var(--muted);align-self:center;padding-right:10px;letter-spacing:.06em}
 .scards{display:grid;gap:6px}
 .sc{display:grid;grid-template-columns:1fr 64px;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);padding:9px 10px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%;min-width:0}
 .sc:hover,.sc:focus-visible{border-color:var(--teal);outline:none}
 .sc[aria-pressed="true"]{border-color:var(--ring);box-shadow:inset 3px 0 0 var(--ring)}
 .sc .q{font-size:13px;line-height:1.3;min-width:0}
-.sc .m{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+.sc .m{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
 .sc .m b{color:var(--ring);font-weight:500;font-size:12px}
 .sc .m .due{color:var(--ink)}
 .sc .m .soon{color:var(--ring)}
@@ -221,7 +221,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
 .chat input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:13px;padding:8px 10px}
 .chat input:focus-visible{outline:2px solid var(--teal);outline-offset:-1px}
 .chat button{font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:8px 10px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
-.chat .note{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.03em}
+.chat .note{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:8px;letter-spacing:.03em}
 
 /* editorial sections */
 .ed-sec{padding-block:36px 8px;border-top:1px solid var(--line)}
@@ -235,13 +235,13 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-fa
 .ed-sec .prose p.fcline .p{font-family:var(--mono);color:var(--ring);font-weight:500}
 .ed-sec .prose p.fcline a{text-decoration:none;border-bottom:1px solid var(--ring)}
 .block{border:1px solid var(--line);padding:12px 14px;margin:16px 0;font-size:15px}
-.block .lab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:4px}
+.block .lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:4px}
 .block.chain{border-style:dashed}
 .ed-sec .fcs{display:grid;gap:8px;margin-top:14px}
 .ed-sec .fcs button{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer;min-width:0}
 .ed-sec .fcs button:hover,.ed-sec .fcs button:focus-visible{border-color:var(--ring);outline:none}
 .ed-sec .fcs .p{font-family:var(--mono);color:var(--ring);font-weight:500;font-size:15px}
-.ed-sec .fcs .d{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
+.ed-sec .fcs .d{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
 .ed-sec.hide{display:none}
 
 /* dossier (main column when a card is selected) */
@@ -291,26 +291,26 @@ body{font-size:17px;line-height:1.5}
 .ed-sec .fcs button:last-child{border-bottom:1px solid var(--line)}
 .ed-sec .fcs button:hover,.ed-sec .fcs button:focus-visible{background:var(--teal-soft)}
 .ed-sec .fcs .d{letter-spacing:.06em;text-transform:uppercase;font-family:var(--ui)}
-.tag{border-radius:0;font-size:9.5px;letter-spacing:.12em;padding:2px 5px}
+.tag{border-radius:0;font-size:10.5px;letter-spacing:.12em;padding:2px 5px}
 .tag.v{border-color:var(--ink);color:var(--ink)}
 .tag.f{background:var(--ring);border-color:var(--ring)}
 .side{border-left:0}
 @media(min-width:960px){.side{border-left:1px solid var(--line);padding-left:22px}}
-.side h2{font-size:10px;letter-spacing:.16em;border-bottom:2px solid var(--rule);padding-bottom:6px;color:var(--ink)}
-.side h2 a,.side h2 .mono{color:var(--muted);font-family:var(--ui);letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+.side h2{font-size:11px;letter-spacing:.16em;border-bottom:2px solid var(--rule);padding-bottom:6px;color:var(--ink)}
+.side h2 a,.side h2 .mono{color:var(--muted);font-family:var(--ui);letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
 .search{border:0;border-bottom:1px solid var(--rule);background:transparent}
 .search input{padding:8px 0;font-family:var(--body);font-size:15px}
 .search input::placeholder{color:var(--muted);font-style:italic}
 .scards{gap:0}
 .sc{border:0;border-bottom:1px solid var(--line);background:transparent;padding:10px 0;grid-template-columns:1fr 60px}
 .sc .q{font-family:var(--display);font-size:15px;line-height:1.25;font-weight:500}
-.sc .m{font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.sc .m{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
 .sc .m b{font-size:13px}
 .sc[aria-pressed="true"]{box-shadow:inset 3px 0 0 var(--ring);padding-left:10px}
 .sc:hover,.sc:focus-visible{background:var(--teal-soft)}
 .seds{border-top:0}
 .se{font-family:var(--body);font-size:14px;padding:9px 0}
-.se .d{font-family:var(--ui);letter-spacing:.06em;text-transform:uppercase;font-size:10px}
+.se .d{font-family:var(--ui);letter-spacing:.06em;text-transform:uppercase;font-size:10.5px}
 .se .d b{font-family:var(--display);font-size:14px;text-transform:none;letter-spacing:0}
 .chat{border:0;border-top:1px solid var(--line);padding:12px 0 0}
 .chat .log{font-family:var(--body);font-size:14px}
@@ -327,7 +327,7 @@ table{font-family:var(--body);font-size:14.5px}
 th{letter-spacing:.12em;background:var(--bg);border-bottom:1px solid var(--rule)}
 .dossier h2.t{font-family:var(--display);font-weight:500;font-size:clamp(28px,4vw,40px);line-height:1.08}
 .timeline li,.dossier .ctx p{font-family:var(--body)}
-.dossier .ctx h3,.dossier h3{font-family:var(--ui);font-size:10px;letter-spacing:.16em;text-transform:uppercase;border-top:2px solid var(--rule);padding-top:8px;font-weight:600}
+.dossier .ctx h3,.dossier h3{font-family:var(--ui);font-size:11px;letter-spacing:.16em;text-transform:uppercase;border-top:2px solid var(--rule);padding-top:8px;font-weight:600}
 .chart .cap{font-family:var(--ui);letter-spacing:.1em}
 footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06em}
 
@@ -356,19 +356,19 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
   linear-gradient(160deg, var(--still-a), var(--still-b));color:#fff;text-align:left}
 .still .grain{position:absolute;inset:0;opacity:.18;background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px)}
 .still .ringbig{position:absolute;right:-6%;top:-18%;width:48%;aspect-ratio:1;border:1.6vw solid var(--ring);border-radius:50%;opacity:.9;max-width:260px;border-width:clamp(10px,1.6vw,22px)}
-.still .meta{position:absolute;left:14px;bottom:12px;font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+.still .meta{position:absolute;left:14px;bottom:12px;font-family:var(--ui);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
 .still .meta b{display:block;font-family:var(--display);font-size:clamp(18px,2.4vw,26px);letter-spacing:0;text-transform:none;font-weight:500;margin-bottom:4px;line-height:1.1;max-width:28ch;text-wrap:balance}
 .still .play{position:absolute;right:14px;bottom:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.6);display:grid;place-items:center}
 .still .play::after{content:"";margin-left:3px;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff}
 .still:hover .play,.still:focus-visible .play{background:var(--ring);border-color:var(--ring)}
 .still:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
-.still .pending{position:absolute;left:14px;top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;opacity:.75}
+.still .pending{position:absolute;left:14px;top:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;opacity:.75}
 .still .toast{position:absolute;inset:auto 14px 60px 14px;font-family:var(--ui);font-size:12px;background:rgba(0,0,0,.7);padding:8px 10px;display:none}
 .still.show .toast{display:block}
 
 /* theme toggle */
 .tog{display:inline-flex;border:1px solid var(--line);margin-left:14px;vertical-align:middle}
-.tog button{font-family:var(--ui);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.tog button{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .tog button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .tog button:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
 .mast .right{display:flex;align-items:center;gap:0;text-align:right}
@@ -385,7 +385,7 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
 .state{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
 @media (min-width:960px){.state{grid-template-columns:minmax(0,1fr) 320px;column-gap:48px;align-items:start}}
 .about{padding-top:10px}
-.about .lab{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--rule);margin-bottom:12px}
+.about .lab{display:block;font-family:var(--ui);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--rule);margin-bottom:12px}
 .about p{font-family:var(--body);font-size:15px;line-height:1.5;color:var(--ink);margin:0}
 .about p a{text-decoration:none;border-bottom:1px solid var(--rule)}
 .about p a:hover{color:var(--ring);border-bottom-color:var(--ring)}
@@ -394,11 +394,11 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
 
 /* why you should care */
 .matters{margin:22px 0 26px;padding:16px 18px 14px 20px;border-left:3px solid var(--ring);background:var(--teal-soft)}
-.matters .lab{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ring);font-weight:600;margin-bottom:8px}
+.matters .lab{display:block;font-family:var(--ui);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ring);font-weight:600;margin-bottom:8px}
 .matters p{font-family:var(--body);font-size:16.5px;line-height:1.5;margin:0}
 .matters p+p{margin-top:8px}
 .matters .watch{font-size:14px;color:var(--muted)}
-.matters .watch b{font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-right:6px}
+.matters .watch b{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-right:6px}
 
 /* signals ticker */
 .ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);font-family:var(--ui);font-size:11px;letter-spacing:.06em;text-transform:uppercase;height:32px}
@@ -432,7 +432,7 @@ body{padding-inline:clamp(16px,4vw,56px)}
 .socials .agent{margin-left:22px;border-bottom-width:1px}
 .mast .right{font-size:11px;color:var(--muted)}
 .tog{border-color:var(--line);margin-left:18px}
-.tog button{font-size:10px;padding:5px 9px}
+.tog button{font-size:10.5px;padding:5px 9px}
 
 /* clocks */
 .clocks{display:flex;flex-wrap:wrap;gap:0 34px;padding:12px 0 10px;border-bottom:1px solid var(--line);font-size:11px;color:var(--muted)}
@@ -478,6 +478,7 @@ body{padding-inline:clamp(16px,4vw,56px)}
 /* shell */
 .shell{gap:72px}
 .main{max-width:70ch}
+.main.wide{max-width:none}
 @media(min-width:960px){.side{padding-left:30px;border-left:1px solid var(--line);top:calc(env(safe-area-inset-top,0px) + 24px)}}
 
 /* sections */
@@ -487,7 +488,7 @@ body{padding-inline:clamp(16px,4vw,56px)}
 .ed-sec h2.t{font-weight:400;font-size:clamp(30px,3.6vw,42px);line-height:1.1;margin:14px 0 26px;letter-spacing:-.008em}
 .still{margin:0 0 26px}
 .ed-sec .lead-lines{border-top:1px solid var(--line);border-bottom:0;padding:18px 0 6px;gap:12px;font-size:15.5px;margin-bottom:22px}
-.tag{border:1px solid var(--line);padding:2px 6px;margin-right:10px;font-size:9.5px;color:var(--muted);letter-spacing:.12em;background:var(--surface)}
+.tag{border:1px solid var(--line);padding:2px 6px;margin-right:10px;font-size:10.5px;color:var(--muted);letter-spacing:.12em;background:var(--surface)}
 .tag.v{color:var(--ink);border-color:var(--ink)}
 .tag.i{border-style:dashed}
 .tag.f{background:var(--ring);border-color:var(--ring);color:#fff}
@@ -497,7 +498,7 @@ body{padding-inline:clamp(16px,4vw,56px)}
 .matters .lab{font-size:11px;color:var(--ring);margin-bottom:10px}
 .matters p{font-size:17px;line-height:1.55}
 .matters .watch{margin-top:12px;font-size:14.5px}
-.matters .watch b{font-size:10.5px;color:var(--ink)}
+.matters .watch b{font-size:11px;color:var(--ink)}
 .block{border-top:1px solid var(--rule);border-bottom:0;padding:16px 0 4px;margin:28px 0;font-size:16.5px}
 .block .lab{font-size:11px;color:var(--ink);margin-bottom:8px}
 .block.chain{border-top:1px solid var(--line)}
@@ -506,13 +507,13 @@ body{padding-inline:clamp(16px,4vw,56px)}
 .ed-sec .fcs button:hover,.ed-sec .fcs button:focus-visible{background:var(--tw);box-shadow:inset 3px 0 0 var(--tc);padding-left:12px}
 .ed-sec .fcs button{transition:padding .12s}
 .ed-sec .fcs .p{font-size:15px}
-.ed-sec .fcs .d{font-size:10.5px;color:var(--muted)}
+.ed-sec .fcs .d{font-size:11px;color:var(--muted)}
 section{padding-block:56px 16px}
 section>h2{border-top:1px solid var(--rule);padding-top:14px;font-size:11px;color:var(--muted);gap:14px}
 section>h2 .big{font-weight:400;font-size:30px;text-transform:none;letter-spacing:-.005em}
 .rec .row b,.card .nums b{font-weight:400;font-size:34px}
-.rec .row{font-size:10.5px}
-th{font-size:10px;border-bottom:1px solid var(--rule);background:var(--bg)}
+.rec .row{font-size:11px}
+th{font-size:10.5px;border-bottom:1px solid var(--rule);background:var(--bg)}
 td{padding:12px 12px 12px 0}
 table{font-size:14.5px}
 .ed{padding:18px 0}
@@ -522,14 +523,14 @@ table{font-size:14.5px}
 .clocks .n{color:var(--ink)}
 
 /* sidebar: no washes; theme shows as a coloured kicker */
-.side h2{border-bottom:1px solid var(--rule);font-size:10.5px;color:var(--ink);margin:30px 0 10px;padding-bottom:8px}
-.side h2 a,.side h2 .mono{font-size:10px;color:var(--muted)}
+.side h2{border-bottom:1px solid var(--rule);font-size:11px;color:var(--ink);margin:30px 0 10px;padding-bottom:8px}
+.side h2 a,.side h2 .mono{font-size:10.5px;color:var(--muted)}
 .search input{font-size:16px;padding:10px 0}
 .scards{gap:8px}
 .sc[data-t]{background:var(--tw);border-left:3px solid var(--tc);padding:14px 14px 14px 14px;margin-bottom:0;border-bottom:0;grid-template-columns:1fr 64px;gap:12px}
-.sc .k{display:block;font-size:10px;color:var(--tc);margin-bottom:6px;letter-spacing:.14em}
+.sc .k{display:block;font-size:11px;color:var(--tc);margin-bottom:6px;letter-spacing:.14em}
 .sc .q{font-weight:400;font-size:16px;line-height:1.3}
-.sc .m{font-size:10px;margin-top:8px;gap:10px;color:var(--muted)}
+.sc .m{font-size:10.5px;margin-top:8px;gap:10px;color:var(--muted)}
 .sc .m b{font-size:14px;letter-spacing:0;font-family:var(--mono);font-weight:500;color:var(--ring)}
 .sc .m .due{color:var(--tc)}
 .sc .m .soon{color:var(--ring)}
@@ -537,31 +538,34 @@ table{font-size:14.5px}
 .sc[data-t][aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--tc), inset 3px 0 0 var(--ring);padding-left:14px}
 .sc[aria-pressed="true"] .q{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;text-decoration-color:var(--ring)}
 .se{padding:12px 0;font-size:14.5px}
-.se .d{font-size:10px}
+.se .d{font-size:10.5px}
 .se .d b{font-size:15px;font-family:var(--display);text-transform:none;letter-spacing:0;font-weight:400}
 .chat{padding-top:16px}
-.chat button{font-size:10px;letter-spacing:.14em}
+.chat button{font-size:10.5px;letter-spacing:.14em}
 footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:18px;font-size:10.5px;gap:10px 28px;color:var(--muted)}
 .dossier h2.t{font-weight:400}
-.dossier .ctx h3,.dossier h3{border-top:1px solid var(--rule);font-size:10.5px;font-weight:400}
+.dossier .ctx h3,.dossier h3{border-top:1px solid var(--rule);font-size:11px;font-weight:400}
 .timeline{border-left:1px solid var(--line)}
 .timeline li::before{left:-6px;border-color:var(--bg)}
 .timeline li .p{font-weight:400}
-.still .meta{letter-spacing:.14em;font-size:10px;opacity:.85}
+.still .meta{letter-spacing:.14em;font-size:10.5px;opacity:.85}
 .still .meta b{font-weight:400}
 .still .grain{opacity:.12}
 .still .ringbig{opacity:.85}
 @media (max-width:959px){.clocks{gap:0 22px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.state{padding-block:36px 28px}.ed-sec{padding-top:44px}.shell{gap:48px}}
 
+/* text-safe red: numbers and words in the accent read against the ground in every mode */
+.sc .m b,.vs .nums span:first-child b,.vsrow span:first-child b,.ed-sec .fcs .p,.timeline li .p,.ticker .run button .t.new,.card .nums .delta.up b,.vs .gap.up b,.vsrow .gap.up b,.counts .lnk b,.score b,.matters .lab,.ed.current .d b,.sc .m .soon,.ed ul li .p,.dev .fc .p,.ed-sec .prose p.fcline .p{color:var(--ring-text)}
+
 /* ---- the market layer ---- */
-.lab2{font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-right:10px;white-space:nowrap}
-.prop{font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed var(--gold);padding:1px 6px;margin-left:6px;vertical-align:middle}
+.lab2{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-right:10px;white-space:nowrap}
+.prop{font-family:var(--ui);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed var(--gold);padding:1px 6px;margin-left:6px;vertical-align:middle}
 .lnk{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left;border-bottom:1px solid var(--line)}
 .lnk:hover{color:var(--ring);border-bottom-color:var(--ring)}
 
 /* scoreboard under the state */
 .score{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--body);font-size:14px;color:var(--muted)}
-.score span>i{display:block;font-style:normal;font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:4px;font-weight:500}
+.score span>i{display:block;font-style:normal;font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:4px;font-weight:500}
 .score b{font-family:var(--mono);font-weight:500;color:var(--ink);font-size:15px}
 .score .lnk{font-family:var(--body)}
 
@@ -574,7 +578,7 @@ footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:18px;font-si
 .assets .dir.up{color:var(--ring)}
 .assets .dir.dn{color:var(--good)}
 .assets.pm a{border-style:dashed}
-.assets .v{font-family:var(--ui);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);padding-right:6px}
+.assets .v{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);padding-right:6px}
 
 /* sidebar: UBIK vs the market */
 .vsm{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
@@ -586,10 +590,10 @@ footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:18px;font-si
 .vs:hover,.vs:focus-visible{box-shadow:inset 0 0 0 1px var(--tc);outline:none}
 .vs[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--tc), inset 3px 0 0 var(--ring)}
 .vs .q{font-family:var(--display);font-size:15px;line-height:1.3}
-.vs .adj{font-family:var(--ui);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed var(--gold);padding:0 5px;margin-left:4px;vertical-align:middle}
+.vs .adj{font-family:var(--ui);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed var(--gold);padding:0 5px;margin-left:4px;vertical-align:middle}
 .vs .nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .vs .nums span{display:block}
-.vs .nums i,.vsrow i{display:block;font-style:normal;font-family:var(--ui);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.vs .nums i,.vsrow i{display:block;font-style:normal;font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
 .vs .nums b,.vsrow b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1;color:var(--ink)}
 .vs .nums span:first-child b{color:var(--ring)}
 .vs .gap b,.vsrow .gap b{font-family:var(--mono);font-size:18px;font-weight:500}
@@ -610,7 +614,7 @@ footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:18px;font-si
 .vsrow b{font-size:34px}
 .vsrow span:first-child b{color:var(--ring)}
 .vsrow a{font-family:var(--body);font-size:14px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);display:inline}
-.vsrow small{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.vsrow small{display:block;font-family:var(--ui);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
 .adjnote{font-family:var(--body);font-size:14px;color:var(--muted);margin:8px 0 0;line-height:1.45}
 .adjnote a{color:var(--ink)}
 @media (max-width:640px){.vsrow{grid-template-columns:1fr 1fr}.vsrow b{font-size:28px}}
@@ -644,7 +648,7 @@ section>h2 .ic{width:22px;height:22px;align-self:center}
 .interlude{margin:0;padding:48px 0 8px;border-top:1px solid var(--line)}
 .interlude img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
 .interlude figcaption,.colophon figcaption{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:10px;font-family:var(--display);font-style:italic;font-size:15px;color:var(--muted)}
-.interlude .src,.colophon .src{font-family:var(--ui);font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.interlude .src,.colophon .src{font-family:var(--ui);font-style:normal;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
 .interlude.hide{display:none}
 .colophon{margin:72px 0 0}
 .colophon img{display:block;width:100%;height:auto;max-height:260px;object-fit:cover;object-position:center 40%}
@@ -719,7 +723,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 .ed-sec .prose p.lede{font-size:19px}
 .opener{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:end;gap:18px;aspect-ratio:16/7;padding:22px 24px;margin:0 0 26px;background:linear-gradient(135deg,var(--tw),var(--surface) 85%);border-left:3px solid var(--tc);overflow:hidden}
 .opener .big{font-family:var(--display);font-size:clamp(72px,10vw,128px);line-height:.8;color:var(--tc);letter-spacing:-.03em;font-weight:400}
-.opener .meta{font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-bottom:10px}
+.opener .meta{font-family:var(--ui);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-bottom:10px}
 .opener .meta b{display:block;font-family:var(--display);font-size:clamp(18px,2.4vw,26px);letter-spacing:0;text-transform:none;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.1;max-width:18ch;text-wrap:balance}
 .opener .ringsm{position:absolute;right:-6%;top:-34%;width:36%;aspect-ratio:1;border-radius:50%;border:clamp(8px,1.2vw,16px) solid var(--ring);opacity:.9}
 .side .folded{display:none}
@@ -764,6 +768,108 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 .opener.aixbt .meta b{color:#fff}
 .ed-sec .num .by{color:var(--tc);border:1px solid var(--tc);padding:1px 6px;margin-left:2px}
 :root[data-theme="neon"] .opener.aixbt .fig img{filter:saturate(1.25) hue-rotate(-8deg)}
+/* ---------------- Dashboard ---------------- */
+.qnav .links a.view{font-weight:600}
+.qnav .links a.view.on{border-bottom:2px solid var(--ring);padding-bottom:3px}
+.qnav .vsep{width:1px;height:14px;background:var(--line);display:inline-block;align-self:center;margin:0 4px}
+.dash{padding-top:28px}
+.dash .mod{padding:22px 0 8px;border-top:1px solid var(--rule)}
+.dash .mod h3{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 14px;font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink)}
+.dash .mod h3 .mono{font-family:var(--ui);letter-spacing:.06em;text-transform:none;color:var(--muted);font-weight:400;font-size:11px}
+.dash .mod h3 .ic{width:16px;height:16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--line)}
+.tiles>div{padding:16px 14px 14px 0;border-right:1px solid var(--line)}
+.tiles>div:last-child{border-right:0}
+.tiles i{display:block;font-style:normal;font-family:var(--ui);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.tiles b{font-family:var(--mono);font-weight:500;font-size:30px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.tiles b small{font-family:var(--ui);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+.grid2{display:grid;grid-template-columns:1fr;gap:0 40px}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+/* map */
+.mapwrap{position:relative;border:1px solid var(--line);background:var(--surface);overflow:hidden}
+#wmap{display:block;width:100%;height:auto;aspect-ratio:2/1;cursor:grab;touch-action:none;--k:1}
+#wmap.grab{cursor:grabbing}
+#wmap .sea{fill:var(--surface)}
+#wmap .land{fill:var(--teal-soft);stroke:var(--line);stroke-width:calc(0.6px*var(--k))}
+#wmap .pin .halo{fill:var(--tc);opacity:.18;transform:scale(var(--k))}
+#wmap .pin .dot{fill:var(--tc);stroke:var(--surface);stroke-width:calc(1.2px*var(--k));transform:scale(var(--k))}
+#wmap .pin .lbl{font-family:var(--ui);font-size:calc(9.5px*var(--k));letter-spacing:.04em;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:calc(3px*var(--k));stroke-linejoin:round;transform:scale(var(--k));transform-origin:0 0}
+#wmap .pin .lbl .n{fill:var(--muted)}
+#wmap .pin{cursor:pointer}
+#wmap .pin:hover .halo,#wmap .pin.on .halo{opacity:.4}
+#wmap .pin.on .dot{stroke:var(--ring);stroke-width:calc(2px*var(--k))}
+.mapctl{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.mapctl button{width:28px;height:28px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:500 15px var(--ui);cursor:pointer}
+.mapctl button:hover{border-color:var(--ring);color:var(--ring)}
+.maplist{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;padding:10px 12px;border-top:1px solid var(--line);font-family:var(--body);font-size:13.5px;min-height:20px}
+.maplist:empty{display:none}
+.maplist .lnk b{font-family:var(--mono);color:var(--ring-text);font-weight:500;margin-right:4px}
+.maplist .lnk .mono{color:var(--muted);font-size:11px;margin-left:4px}
+/* horizon */
+.horizon{position:relative;height:84px;margin:8px 0 6px;border-bottom:1px solid var(--line)}
+.horizon .axis span{position:absolute;top:0;transform:translateX(-50%);font-family:var(--ui);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.horizon .axis span::after{content:"";position:absolute;left:50%;top:16px;height:68px;border-left:1px dashed var(--line)}
+.horizon .hz{position:absolute;bottom:14px;transform:translateX(-50%);background:none;border:0;padding:0;cursor:pointer;display:grid;justify-items:center;gap:4px;font:inherit;color:inherit}
+.horizon .hz i{display:grid;place-items:center;width:calc(12px + min(var(--n),6)*4px);height:calc(12px + min(var(--n),6)*4px);font-family:var(--mono);font-size:10px;color:#fff;border-radius:50%;background:var(--tc);box-shadow:0 0 0 2px var(--bg)}
+.horizon .hz span{font-family:var(--ui);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;opacity:0;transition:opacity .12s}
+.horizon .hz:hover span,.horizon .hz:focus-visible span{opacity:1}
+.horizon .hz:hover{z-index:2}
+.horizon .hz:hover i{box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--ring)}
+/* matrix */
+.matrix{display:grid;gap:0}
+.matrix .scale{display:grid;grid-template-columns:140px 1fr 90px 60px;gap:0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.matrix .scale .ticks{display:flex;justify-content:space-between;font-family:var(--ui);font-size:10.5px;color:var(--muted);letter-spacing:.06em}
+.mrow{display:grid;grid-template-columns:140px 1fr 90px 60px;gap:0 14px;align-items:center;width:100%;text-align:left;padding:9px 0;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:inherit;cursor:pointer;min-width:0}
+.mrow .k{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tc)}
+.mrow .q{grid-column:1/-1;grid-row:1;font-family:var(--display);font-size:15px;line-height:1.25;padding-left:0}
+.mrow .k{grid-row:2;grid-column:1}
+.mrow .track{grid-row:2;grid-column:2;position:relative;height:14px;background:linear-gradient(90deg,var(--line) 0 1px,transparent 1px) 0 0/25% 100% repeat-x,var(--teal-soft);border-right:1px solid var(--line)}
+.mrow .track i{position:absolute;top:50%;transform:translate(-50%,-50%);border-radius:50%}
+.mrow .track .ghost{width:8px;height:8px;border:1px dashed var(--muted);opacity:.7}
+.mrow .track .drift{height:3px;border-radius:0;transform:translateY(-50%);background:var(--tc);opacity:.35}
+.mrow .track .mkt{width:9px;height:9px;border:2px solid var(--ink);background:var(--surface)}
+.mrow .track .now{width:11px;height:11px;background:var(--tc);box-shadow:0 0 0 2px var(--surface)}
+.mrow .val{grid-row:2;grid-column:3;font-family:var(--mono);font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:baseline}
+.mrow .val b{font-weight:500;color:var(--ring-text);font-size:15px}
+.mrow .val small{color:var(--muted);font-size:10.5px}
+.mrow .due{grid-row:2;grid-column:4;font-family:var(--ui);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+.mrow:hover .q{color:var(--ring-text)}
+@media(max-width:640px){.mrow,.matrix .scale{grid-template-columns:90px 1fr 70px 52px}}
+/* movers, gaps, load */
+.movers,.gapbars,.load{display:grid;gap:0}
+.mover,.gb,.ld{display:grid;align-items:center;gap:0 12px;width:100%;text-align:left;padding:9px 0;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:inherit;cursor:pointer;min-width:0}
+.mover{grid-template-columns:72px 1fr auto}
+.mover .sp svg{display:block}
+.mover .q{font-family:var(--display);font-size:14px;line-height:1.25}
+.mover .d{font-family:var(--mono);font-size:15px;font-weight:500;grid-column:3;grid-row:1}
+.mover .d.up{color:var(--ring-text)}.mover .d.dn{color:var(--good)}
+.mover .p{grid-column:2;grid-row:2;font-family:var(--ui);font-size:10.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.gb{grid-template-columns:1fr 150px 44px}
+.gb .q{font-family:var(--display);font-size:14px;line-height:1.25}
+.gb .q em{font-style:normal;font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px dashed var(--gold);padding:0 4px;margin-left:4px}
+.gb .bar{position:relative;height:12px;background:var(--teal-soft)}
+.gb .bar::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;border-left:1px solid var(--ink)}
+.gb .bar i{position:absolute;top:0;bottom:0}
+.gb .bar i.up{background:var(--ring)}.gb .bar i.dn{background:var(--good)}
+.gb .n{font-family:var(--mono);font-size:14px;font-weight:500;text-align:right}
+.gb .pp{grid-column:1;grid-row:2;font-family:var(--ui);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gapbars .note{font-family:var(--body);font-size:13px;color:var(--muted);margin:10px 0 0}
+.ld{grid-template-columns:120px 1fr 56px}
+.ld .k{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tc)}
+.ld .bar{display:flex;gap:2px;height:12px}
+.ld .bar i{display:block;background:var(--tc);height:100%}
+.ld .bar i.set{background:var(--ink)}
+.ld .n{font-family:var(--mono);font-size:13px;text-align:right}
+.calib{display:block;width:100%;max-width:300px;height:auto}
+.calib .grid line{stroke:var(--line);stroke-width:1}
+.calib .diag{stroke:var(--muted);stroke-dasharray:3 3}
+.calib .pt{fill:var(--ring);stroke:var(--bg);stroke-width:2}
+.calib .ax,.calib .tk{font-family:var(--ui);font-size:9px;letter-spacing:.1em;text-transform:uppercase;fill:var(--muted);text-anchor:middle}
+.calib .tk{text-anchor:end}
+:root[data-theme="neon"] #wmap .pin .dot{filter:drop-shadow(0 0 4px var(--tc))}
+:root[data-theme="neon"] .mrow .track .now,:root[data-theme="neon"] .horizon .hz i{box-shadow:0 0 0 2px var(--surface),0 0 10px var(--tc)}
+:root[data-theme="neon"] .tiles b{text-shadow:0 0 10px rgba(var(--n),.5)}
+
 </style>
 
 <div class="wrap">
@@ -807,7 +913,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
   </div>
 
   <nav class="qnav" aria-label="Sections and themes">
-    <span class="links"><a href="#edition">Edition</a><a href="#forecasts">Forecasts</a><a href="#record">Record</a><a href="#ledger">Ledger</a><a href="#history">History</a></span>
+    <span class="links"><a href="#edition" id="navEdition" class="view on">Edition</a><a href="#dash" id="navDash" class="view">Dashboard</a><span class="vsep"></span><a href="#forecasts">Forecasts</a><a href="#record">Record</a><a href="#ledger">Ledger</a><a href="#history">History</a></span>
     <div class="filters" id="filters" role="group" aria-label="Filter by theme"></div>
   </nav>
 
@@ -818,6 +924,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
       </div>
 
       <div id="dossier" class="hidden"></div>
+      <div id="dash" class="hidden"></div>
 
       <section id="record">
         <h2><span class="withav" id="recicon"><span class="big">Record</span></span> what has resolved</h2>
@@ -957,6 +1064,25 @@ const ICONS = {
 };
 const ICON = (n, cls="") => `<svg class="ic ${cls}" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||""}</svg>`;
 
+
+// World outline (Natural Earth 110m, plate carrée, 1000×500) and a place for every question.
+const WORLD = "M1000 295l0 1l-2 1l-2 0l1 -1l3 -1zM995 299l1 0l0 1l-2 1l-1 -1l-1 -1l3 0zM594 253l11 6l0 1l4 3l-1 3l0 2l2 1l-1 2l0 3l1 1l1 3l-1 2l-3 1l-2 0l-3 1l-4 0l-2 0l-1 -4l-1 -1l-3 -1l-2 -1l-1 -1l-3 -1l-1 -3l-2 -2l0 -2l0 -1l-1 -3l3 -1l1 -1l0 -2l0 -1l1 -2l-2 -2l5 0l5 0zM476 173l0 5l-9 0l0 7l-3 0l0 2l0 4l-11 0l6 -1l1 -2l1 -4l4 -3l2 -3l1 -3l3 0l2 0l3 0l0 -2zM159 114l-6 -3l-2 -1l-5 -1l-2 -3l1 -1l-4 -2l0 -2l-4 -2l0 -1l2 -2l0 -1l-5 -2l-3 -3l-1 -2l-3 -2l-2 -1l-1 -1l-3 1l-3 1l-2 -1l-2 -2l-3 0l-3 -1l0 -15l0 -11l6 1l4 1l3 1l2 -2l4 0l4 0l4 -1l4 -1l2 1l2 0l1 -2l2 1l5 2l3 -2l1 2l3 0l5 -1l4 1l6 1l4 1l3 0l4 1l-4 1l5 1l7 0l3 -1l3 2l3 -2l-3 -1l2 -1l3 0l2 0l2 1l3 1l3 0l5 1l4 0l5 0l-1 -2l3 0l4 0l0 3l2 -2l2 0l1 -3l-3 -2l-3 -1l0 -3l4 -2l3 1l3 1l4 3l-3 1l5 1l0 3l4 -2l4 1l-1 2l2 2l3 -2l2 -2l0 -3l4 0l4 1l4 1l0 1l-2 2l2 1l0 2l-6 2l-3 0l-3 -1l-1 2l-3 2l-1 1l-3 2l-4 0l-2 1l0 2l-3 0l-4 3l-3 3l-1 2l0 3l4 1l1 2l2 2l4 0l5 1l2 1l2 1l4 1l3 1l4 1l3 0l0 2l1 3l2 3l4 3l2 -1l2 -3l-2 -4l-2 -2l5 -1l3 -2l1 -2l0 -2l-2 -2l-3 -2l3 -3l-1 -3l-1 -4l2 -1l5 1l3 0l2 0l2 0l4 2l6 1l0 3l1 3l2 1l2 1l4 -1l3 -3l2 -2l2 3l3 3l3 4l-1 2l4 1l3 2l4 0l2 1l1 3l2 0l1 4l-2 1l-2 1l-4 1l-4 2l-4 1l-6 -1l-5 0l-2 0l-3 2l-3 2l-4 3l-4 3l3 -1l4 -3l6 -2l4 -1l3 2l-3 1l1 3l1 3l4 1l4 0l3 -4l0 2l2 1l-4 2l-6 2l-2 1l-4 2l-2 0l0 -3l5 -2l-4 0l-3 1l-2 -2l0 -4l-2 -1l-1 1l-3 1l-1 2l-1 2l-2 0l-6 1l-4 0l-1 1l-3 2l-1 1l-3 0l-3 0l-1 0l1 2l-4 1l-3 1l-3 1l-2 0l1 -2l1 -1l1 -2l-1 -2l0 -3l-3 -1l-2 -2l-1 0l-1 -1l-2 -1l-2 -1l-3 -1l-2 -1l-3 1l-4 -1l-3 0l-2 -1l-3 0l-2 0l-1 -2l-7 1l-10 0l-9 0l-8 0l-9 0l-8 0l-8 0l-3 0l-8 0l-8 0zM267 77l2 -2l4 0l-4 2l-2 0zM278 48l-3 -2l2 -1l6 0l5 2l-3 1l-3 0l-3 0zM277 78l2 -1l0 2l-1 0zM240 42l-2 1l-4 0l-3 -1l2 -1l4 -1l2 1zM239 35l-1 0l-5 0l5 -1l2 0zM231 31l4 1l-5 2l-3 -1l-1 -2l4 0l1 0zM255 43l-4 0l-8 -1l-1 -1l0 -2l-3 -1l-6 0l-3 -1l7 -1l3 1l6 0l2 1l2 1l2 1l4 0l4 0l4 0l6 -1l5 1l3 1l-1 2l-5 0l-3 0l-8 0l-6 0zM191 33l4 0l-6 2l-4 -1l2 -1l4 0zM192 31l3 1l-3 0l-5 0l3 -1l2 0zM346 107l-2 2l-2 3l2 -1l2 0l1 2l2 -1l2 1l0 2l2 0l0 1l1 2l-1 2l-2 1l-1 -1l0 -2l-4 2l-2 0l2 -2l-2 0l-3 0l-6 0l2 -2l-2 -1l3 -1l3 -5l1 -1l3 -1l1 0zM267 69l3 1l3 1l0 1l3 0l1 1l-2 1l-4 -1l-2 -1l-3 1l-4 2l-1 -2l-3 0l2 -1l0 -2l1 -3l2 1l1 1l1 -1l2 1zM281 49l3 -1l6 1l4 2l0 1l5 -1l3 2l7 1l2 1l3 3l-5 1l6 2l5 1l4 2l4 0l-1 2l-5 3l-3 -1l-4 -2l-4 0l0 2l3 1l3 1l3 4l-1 2l-3 -1l-7 -2l4 2l3 2l-7 0l-6 -2l-4 -1l-3 -2l-4 -2l-8 2l-2 -1l2 -2l5 0l6 -1l0 -2l3 -3l-1 -1l-5 -2l-6 -1l2 -1l-3 -2l-2 0l-2 -1l-2 1l-5 0l-10 0l-6 -1l-4 -1l-3 -1l3 -1l-4 0l-1 -3l3 -2l2 -1l8 -1l-2 2l2 2l2 -3l7 -1l5 3l0 2l5 -1zM237 44l6 0l6 1l-5 2l-3 1l-3 2l-3 0l-2 -3l0 -1l2 -1l2 -1zM159 39l4 -3l6 -1l4 0l4 -1l0 2l-2 1l-3 1l-5 1l-4 0l-4 0zM131 100l3 0l-1 3l3 2l-3 -1l-1 -2l-2 0l0 -2l1 0zM207 30l5 0l8 1l2 1l-3 1l-5 -1l-6 0l3 -1l-4 0zM157 115l-1 1l-5 -2l-3 -2l-4 -1l-1 -1l3 0l2 0l3 0l2 3l3 1l1 1zM162 43l4 1l7 0l3 1l3 1l-3 1l-7 2l-4 1l0 2l-7 1l-1 -1l-7 -2l3 -3l3 -2l-3 -1l9 -1zM201 39l2 0l3 0l0 1l-1 2l-10 0l-7 1l-4 0l5 -2l-12 1l-4 -1l4 -3l2 0l8 0l5 2l5 0l-4 -2l3 -1l2 0l1 1zM204 47l3 1l2 3l1 2l4 1l5 1l0 2l-4 0l1 1l-6 1l-4 -1l-4 0l-5 1l-7 0l-5 1l-1 -2l-4 0l-3 0l-3 -2l2 -1l4 0l4 0l4 0l-6 -1l-6 0l-4 0l-1 -1l6 -1l-4 0l-5 -1l3 -2l2 -1l7 -2l3 1l-2 1l7 -1l4 2l3 -2l2 1l2 3l2 -1l-2 -3l2 0l3 0zM221 48l-3 -2l3 -1l4 0l5 0l-2 2l4 1l-1 3l-4 1l-3 0l-2 -1l-7 -2l6 -1zM204 46l4 -1l2 1l-3 2l-4 -2zM226 37l3 1l0 2l-2 2l-4 0l-3 0l0 -2l-5 0l0 -2l3 0l4 -1l4 0zM233 26l2 -1l3 0l-1 -1l6 0l4 2l5 0l4 1l2 2l4 1l-4 0l-5 3l-5 0l-6 -1l-3 -1l2 -2l-5 1l-3 -1l-2 -2l2 -1zM246 23l4 -1l3 0l5 -1l4 -1l4 1l3 0l2 -1l4 -1l5 0l8 0l2 0l8 0l6 0l6 0l7 0l6 1l5 0l-7 2l-6 1l-3 1l6 0l-6 1l-5 1l-5 2l-5 1l-2 0l-9 1l4 0l-2 1l3 1l-3 1l-4 1l-2 1l-4 1l6 0l-8 2l-7 0l-8 0l-4 0l-6 0l0 -2l5 0l-1 -2l2 -1l7 2l-4 -2l-4 -1l2 -1l5 0l-3 -2l-1 -2l7 0l2 0l5 -1l-7 0l-9 0l-5 -1l-3 -1l-3 -1zM291 63l-2 0l-3 1l-1 -2l2 -1l2 -1l2 1l0 2zM233 57l1 1l-1 1l-4 -1l-2 0l-4 -1l2 -1l2 -1l3 1l2 0zM321 111l4 1l3 1l-1 1l-4 -1l-2 -2zM322 119l1 2l2 0l3 0l-2 1l-4 -1l0 -2zM159 114l8 0l8 0l3 0l8 0l8 0l9 0l8 0l9 0l10 0l6 0l1 0l3 1l3 0l2 1l3 0l3 1l4 -1l2 1l3 1l2 1l2 1l1 1l1 0l2 1l3 2l0 3l1 2l-1 2l-1 1l-1 1l1 1l4 -1l3 -1l4 -1l-1 -2l1 0l3 0l3 0l1 -1l3 -2l1 -1l4 0l5 0l3 -1l1 -2l1 -2l2 -2l2 0l2 1l0 4l2 2l-3 2l-3 1l-3 1l-1 1l-1 2l1 2l2 0l-2 1l-2 0l-2 0l-1 0l-1 0l-3 1l4 0l-3 1l-2 0l0 3l-2 2l-2 -2l1 2l1 1l-3 4l1 -2l-2 -1l0 -3l-1 1l1 2l-2 0l2 1l0 2l2 4l-2 2l-3 1l-2 2l-1 0l-2 1l-3 3l-2 1l-1 2l0 2l0 2l1 2l1 2l0 1l2 3l0 2l-1 3l-2 0l-1 -1l-2 -3l-2 -2l0 -3l0 -2l-3 -2l-3 1l-2 -2l-2 0l-3 0l-3 0l-2 0l0 2l-2 1l-2 0l-3 -1l-2 0l-2 -1l-2 0l-2 1l-3 2l-2 1l-2 2l0 1l0 2l0 1l-3 1l-2 -1l-1 -2l0 -2l-2 -1l-1 -2l-1 -2l-2 -1l-3 0l-1 3l-3 -1l-1 -1l-1 -2l-1 -1l-1 -1l-2 -1l-6 -1l-2 1l-5 0l-7 -2l-4 -1l-3 -1l-3 1l-1 -2l-2 -1l-1 -1l-2 -1l-3 -1l-1 -2l-3 -2l-2 -4l-2 -2l-2 -2l0 -2l-2 -2l1 -2l0 -3l-1 -2l1 -2l0 -3l1 -2l-1 -4l-1 -3l0 -1l4 1l1 2l1 -3l-1 -2zM68 194l2 2l-2 1l-2 -2l1 -1l1 0zM38 82l2 1l-2 1l-1 -1l-2 0l3 -1zM74 89l2 0l-1 2l-3 1l-1 0l-1 -2l3 -1l1 0zM108 56l0 11l0 15l3 1l3 0l2 2l2 1l3 -1l3 -1l1 1l2 1l3 2l1 2l3 3l5 2l0 1l-2 2l-1 -1l-3 -1l0 -3l-4 -2l-1 -2l-3 -1l-5 0l-3 0l-6 -3l-2 -1l-5 -1l-4 0l-5 -1l-4 -1l-3 0l1 2l-2 1l-3 0l-2 1l-3 1l-1 -2l1 -3l3 -1l-4 1l-2 2l-4 2l2 1l-2 2l-3 2l-3 0l-1 2l-4 1l-1 1l-3 2l-2 -1l-3 1l-3 1l-2 1l-5 1l3 -2l3 -1l3 -1l3 -1l1 -1l4 -1l3 -2l0 -2l2 -2l-3 1l-3 1l-2 -2l-1 0l-3 1l-2 0l0 -2l-1 -2l-4 1l-2 -1l-2 -1l0 -2l-2 -1l1 -1l2 -2l1 -1l2 -1l2 1l2 -2l2 1l2 -1l0 -1l-2 -1l2 -1l-1 0l-3 1l-3 0l-4 0l-4 -1l-5 -2l4 -2l6 -1l2 0l0 1l6 0l-2 -1l-4 -1l-2 -2l-2 -1l-4 -1l1 -1l5 0l4 -2l0 -1l3 -1l3 -1l5 -1l3 0l4 -1l4 0l2 2l1 -1l5 0l4 1l3 0l6 1l5 0l2 1l4 -1l4 1l3 0zM23 73l2 0l1 0l3 1l2 0l-2 1l-2 -1l-4 0l0 -1zM743 113l-2 2l-3 0l0 3l-1 1l-6 0l-2 5l-1 0l-6 1l3 5l-2 1l0 1l-2 0l-1 -1l-4 0l-5 0l-5 -1l-1 0l-1 2l-4 -1l-2 0l-1 2l-1 0l-4 2l-1 2l-2 -1l-4 0l0 -3l-2 0l1 -2l-4 -2l-4 0l-4 0l-2 -2l-3 -1l-4 -2l-8 1l0 10l-1 0l-2 -2l-2 -1l-3 1l-1 1l0 -2l-3 -2l-2 -2l-1 -1l2 -1l1 -2l2 0l2 0l1 -2l-1 -2l-2 0l-3 -1l-3 2l-3 0l-1 0l0 -2l-2 -2l-2 0l-2 -1l2 -3l1 -3l3 1l0 -2l6 -3l4 0l6 2l4 1l3 -1l4 0l4 2l4 -1l1 -1l-4 -2l2 -2l2 -1l-2 -2l2 -1l10 -1l1 -1l7 -1l3 -1l5 1l1 3l3 -1l3 1l0 1l3 0l7 -2l2 3l6 7l2 -2l4 2l4 -1l1 1l1 1l2 1l5 1l2 1zM655 135l0 -10l8 -2l4 3l3 1l2 2l4 0l4 0l4 2l-1 2l2 0l0 3l4 0l1 1l2 -2l4 -2l1 0l-1 2l2 1l2 -1l3 1l-4 2l-2 0l-1 0l0 -2l-3 1l-1 2l-2 1l-2 0l-1 1l2 1l1 2l-2 3l-2 -1l-1 0l0 -1l-4 -2l-3 -1l-2 -1l-3 -2l-1 -3l-4 -1l-1 -2l-4 -2l-2 2l-3 1l1 1l-4 0zM892 257l4 2l6 2l2 1l1 2l1 1l4 2l1 1l-3 1l1 2l2 1l2 3l2 0l0 1l2 1l2 2l-2 1l-3 -1l-3 -1l-2 -2l-2 -1l-1 -3l-4 -1l-2 1l-2 1l0 2l-2 1l-1 -1l-3 0l0 -9l0 -9zM924 260l1 2l-1 0l-2 -2l-1 -2l-2 0l2 0l2 1zM920 266l-1 1l-2 1l-1 0l-2 -1l-2 -1l3 0l1 -1l1 -1l0 1l2 0l2 -2l0 -1l2 0l0 2l-1 1l-1 0zM930 265l2 2l1 1l-2 0l-1 -2l-1 -2zM892 257l0 9l0 9l-3 -2l-3 -1l-4 1l1 -2l2 -1l-1 -3l-1 -2l-5 -2l-3 -1l-4 -2l-1 1l-1 -1l0 -1l-2 -1l3 -1l2 0l-5 -1l-1 -2l-2 0l-1 -1l3 -1l2 -1l4 1l1 6l3 1l3 -3l3 -1l2 0l3 1l2 1l3 0zM847 275l0 1l-1 2l-3 1l0 -1l1 -2l3 -1zM873 269l0 -2l1 -2l0 2l-1 2zM827 239l-1 2l2 3l-1 1l4 2l-4 1l-1 2l0 2l-2 2l0 3l-1 4l-4 0l-1 -1l-2 0l-1 -1l-4 1l-1 -2l-2 0l-2 0l0 -4l-2 0l-1 -3l0 -2l0 -3l2 -2l0 2l2 2l2 -1l2 0l1 -1l1 0l3 1l2 -1l2 -4l2 -4l3 0l2 1zM859 258l3 1l1 2l-2 -1l-2 -1l-2 1l-2 -1l1 -1l3 0zM852 261l-1 -1l2 -1l-1 2zM855 244l1 1l1 1l0 3l-1 0l-1 2l2 1l-2 -1l-1 -4l0 -2zM841 248l4 -1l2 -2l-1 4l-2 0l-3 0l-5 0l-2 0l-1 2l3 3l1 -1l6 -1l-1 1l-1 0l-1 1l-2 1l2 4l2 4l0 2l-1 1l0 -4l-3 1l0 -1l-2 -2l0 -3l-2 1l0 3l1 4l-2 1l-1 -4l0 -2l-2 -2l1 -2l0 -2l2 -4l3 -4l2 1l3 1zM834 278l-4 -1l3 -1l2 1l0 1zM837 274l2 0l2 -2l0 2l-4 1l-4 -1l2 -1l2 1zM829 273l1 0l-2 2l-2 0l-2 0l1 -2l2 0l2 0zM801 268l6 1l6 0l1 2l4 1l3 1l-3 1l-3 -1l-2 0l-3 0l-3 0l-3 -1l-2 -1l-6 -1l-3 -1l2 -3l3 1l2 1zM790 253l0 2l1 2l2 0l2 2l-1 3l0 4l-3 0l-2 -2l-4 -2l-1 -2l-2 -2l-2 -2l-2 -4l-2 -3l-1 -2l-1 -2l-3 -2l-1 -2l-2 -2l-3 -3l0 -1l1 0l5 0l2 3l2 2l2 1l3 3l2 0l3 2l1 2l2 2l-1 2l2 1zM309 396l1 1l2 3l3 1l4 1l-1 1l-3 0l-1 -1l-2 0l-3 0l0 -6zM340 334l-1 2l-1 3l1 3l-1 2l0 2l3 2l0 2l1 1l0 2l-2 3l-5 2l-5 0l-3 0l0 2l0 2l0 1l-1 1l-3 0l-3 -1l0 4l1 1l2 -1l1 1l-3 1l-2 2l0 3l-1 1l-3 0l-2 2l-1 2l3 2l3 0l-1 3l-4 1l-1 4l-3 1l-1 1l1 3l2 1l-4 0l-7 -1l-1 -1l0 -2l-2 0l-1 -4l2 -1l1 -2l0 -1l1 -3l1 -3l0 -2l1 -1l-1 -1l-1 -2l0 -4l0 -4l1 -2l1 -3l1 -1l-1 -3l0 -2l3 -2l-1 -2l2 -3l0 -3l-2 -5l2 -3l0 -2l1 -3l1 -3l2 -1l0 -2l0 -5l3 -1l1 -3l2 -3l4 0l1 2l1 -2l3 0l6 5l2 1l4 2l3 1l0 1l-3 4l3 1l3 1l2 -1l3 -2l0 -3l2 0l1 2l0 2l-2 1l-2 1l-3 3l-4 4zM309 396l0 6l3 0l2 0l-3 2l-2 0l-1 0l-2 -1l-3 0l-4 -2l-3 -1l-3 -3l2 0l4 2l3 1l2 -1l1 -2l2 -1l2 0zM307 299l1 2l0 2l2 1l-1 3l2 3l1 4l2 -1l-1 4l-3 1l0 5l0 2l-2 1l-1 3l-1 3l0 2l-2 3l1 5l1 3l-2 3l1 2l-3 2l0 2l1 3l-1 1l-1 3l-1 2l1 4l-1 4l1 1l1 1l-1 2l0 2l-1 3l-1 3l0 1l-1 2l-2 1l0 3l3 1l0 2l1 1l7 1l3 0l-3 0l-1 1l-3 1l0 3l-5 -1l-3 -2l-3 -2l-1 -2l1 -1l-2 -2l0 -5l1 -2l3 -3l-4 0l3 -3l0 -4l4 0l1 -5l-2 -1l-1 3l-1 0l0 -4l1 -5l2 -2l-1 -3l0 -3l2 -4l2 -5l2 -4l-1 -4l1 -2l-1 -4l2 -3l1 -6l0 -5l1 -7l0 -4l0 -4l1 -1l1 -1zM581 262l1 3l0 1l0 2l2 2l1 3l-4 0l-2 2l1 2l-1 3l0 3l3 1l0 3l-2 0l-1 -2l-3 -1l-1 -2l-1 1l-2 0l-1 -2l-2 0l-1 0l-3 -1l-2 1l-1 0l0 -4l-1 -2l0 -2l-1 -3l-3 0l-1 0l-2 0l-1 1l-2 1l-2 0l-2 -1l-1 -3l-1 -2l-8 0l-2 1l-1 -1l1 -1l1 -2l2 0l1 0l2 1l1 -2l2 -1l0 -3l2 -3l1 -2l2 -1l0 -2l0 -2l1 -3l0 -2l1 -1l0 -2l1 -2l1 -1l1 -1l2 1l2 1l2 0l2 1l1 -2l2 0l3 -1l2 0l1 -1l2 1l2 0l3 2l1 0l2 0l2 -1l3 3l-1 4l1 1l-2 2l-1 1l0 3l-1 3l-1 2l0 2l0 1l0 3zM616 255l-2 -3l0 -10l2 -3l3 -1l2 -2l4 0l8 -8l2 -3l1 -1l0 -2l0 -3l1 -1l1 0l2 0l1 -1l1 2l0 1l-2 4l-1 4l-2 3l-2 4l-2 3l-4 4l-2 2l-5 3l-2 2l-3 4l-1 1zM609 263l-4 -3l0 -1l-10 -6l-1 -3l2 -3l1 -2l-1 -3l0 -2l-2 -2l2 -1l2 -2l1 0l0 2l3 1l4 2l1 0l3 0l3 -2l3 1l-2 3l0 10l2 3l-2 1l-2 1l-1 2l-1 3zM568 227l-2 -1l-1 -2l0 -2l-1 -2l0 -2l-2 -2l-1 -1l1 -2l1 -2l0 -3l1 -2l2 1l0 -11l3 -2l0 -5l12 0l10 0l11 0l1 3l0 3l1 3l3 2l-2 2l-2 0l-1 3l-1 4l0 3l-1 3l-2 1l-1 3l-2 1l-1 3l0 3l0 -2l0 -2l-2 -2l0 -2l0 -2l-1 0l-2 1l1 2l-2 2l-1 2l-1 0l-3 -2l-1 2l-1 0l-3 1l-3 -1l-1 0l-2 -1l-2 -1l-1 2l-1 2l-2 1l2 1zM566 196l0 11l-2 -1l-1 2l-1 2l0 2l-1 2l1 2l1 2l1 1l-2 1l-2 1l-2 3l-2 1l-3 0l0 1l-2 1l-5 2l-1 0l-3 0l0 -2l-2 -2l-1 -2l0 -1l2 0l2 0l-2 -2l1 -2l-1 -2l-1 -2l1 -1l-2 0l0 -2l0 -5l3 -2l1 -4l1 -5l-1 -3l-1 -1l-1 -5l3 -1l11 5l11 6zM301 195l0 2l-1 1l1 2l-2 -1l-1 1l-2 -1l-1 1l-2 -1l3 0l2 0l0 -2l-2 -2l2 0l3 0zM301 200l-1 -2l1 -1l0 -2l2 0l2 0l1 1l2 0l2 2l-2 1l-1 0l-2 0l-1 0l-2 2l-1 -1zM1000 51l0 2l-3 0l3 -2zM635 123l-3 0l-2 3l2 3l0 2l3 3l-2 1l-1 1l-2 -2l-3 -1l-3 -2l-2 1l-4 -2l-4 -1l-3 0l-4 -2l-3 -1l-2 -2l2 0l2 -2l-1 -2l4 -1l-3 0l0 -1l2 -1l2 0l0 -3l1 -1l-4 -2l-1 0l-2 -1l-2 0l-4 0l-1 -2l-2 0l1 -2l-2 -1l-3 0l-2 0l-1 -2l2 -1l0 -1l-2 0l-3 -3l1 -2l-3 -1l-1 0l-4 -1l-1 -2l0 -1l-1 -1l0 -3l2 -2l3 -2l-3 -1l6 -4l2 -1l2 -2l-5 -2l2 -1l-3 -2l2 -3l-3 -3l2 -2l-4 -2l0 -2l3 0l4 -1l3 -1l5 1l7 1l11 3l2 2l0 1l-3 2l-4 1l-13 -2l-2 0l5 2l0 1l0 3l4 1l2 1l0 -2l-2 -1l2 -1l7 2l2 -1l-2 -2l7 -3l2 1l3 0l2 -1l-3 -2l2 -2l-2 -1l7 0l2 2l-3 0l0 2l2 1l4 -1l1 -2l6 -1l9 -2l2 0l-2 2l3 0l2 -1l5 0l4 -1l4 1l3 -2l-3 -1l1 -1l8 1l4 1l10 3l2 -2l-3 -1l-3 -1l1 -1l-2 -2l5 -4l2 -2l2 -1l8 1l0 1l-2 3l1 1l1 1l0 4l3 2l-2 2l-5 4l3 0l4 -2l1 -1l2 -1l-1 -2l1 -2l-3 0l-1 -1l3 -3l-4 -2l5 -2l-1 -2l2 0l1 1l-1 3l3 0l-1 -2l4 -1l6 0l5 2l-2 -3l0 -3l4 0l7 0l6 0l-2 -2l3 -2l3 0l6 -1l7 0l8 -2l3 1l6 -1l5 0l3 -3l7 -1l5 1l-4 1l6 0l1 2l2 -1l9 0l6 1l2 1l-1 2l-3 1l-7 1l-2 1l3 0l4 1l3 0l1 1l2 0l4 -1l9 1l1 1l11 0l0 -2l6 1l5 0l4 1l1 2l-1 1l3 2l5 1l2 -3l5 2l5 -1l5 1l2 -1l5 0l-2 -2l3 -1l25 1l3 2l7 2l11 0l6 0l2 1l0 2l3 1l4 0l5 -1l5 1l5 0l5 2l3 -1l-2 -1l1 -2l9 1l6 0l8 1l4 1l0 12l-4 1l-3 0l2 1l2 2l1 1l0 2l-5 -1l-8 2l-3 1l-4 2l-4 1l-1 2l-4 -2l-7 2l-1 -1l-3 1l-4 0l-1 2l-3 2l3 2l0 4l-3 0l-1 2l-4 3l0 3l-5 1l0 3l-4 2l-1 -2l-2 -4l-1 -6l1 -4l2 -1l1 -2l4 0l5 -4l5 -3l5 -2l2 -4l-4 0l-1 3l-7 3l-2 -4l-8 1l-7 5l3 2l-7 0l-4 1l0 -2l-4 -1l-3 2l-9 -1l-9 1l-9 5l-11 7l5 0l1 2l3 1l2 -2l3 0l4 4l0 2l-2 3l-1 3l-1 4l-4 4l-1 2l-4 4l-4 3l-1 1l-4 2l-2 0l-2 -1l-3 2l1 -5l-1 -2l2 -1l4 1l2 -3l1 -3l2 -4l-5 1l-2 1l-4 0l-1 -2l-4 -2l-4 -1l-1 -3l-1 -2l-3 -4l-3 -1l-4 0l-3 0l-4 0l-2 1l1 1l0 2l-1 1l-3 2l0 2l-4 1l-3 -1l-3 1l-2 -1l-1 -1l-4 2l-4 1l-3 1l-3 -1l-3 0l-1 -1l-3 -2l-3 0l-3 0l-3 1l-4 -1l0 -2l-4 -1l-2 0l-3 -2l-3 3l1 2l-3 2l-4 -1l-3 0l-1 -1l-3 0l-3 -1l-4 1l-5 3l-3 0l-3 -1l-3 0l-4 -2l-1 -1l-1 -1l-4 1l-4 -2l-2 2l-6 -7l-3 -2l-6 1l-3 0l0 -1l-3 -1l-3 1l-1 -3l-5 -1l-3 1l-7 1l-1 1l-10 1l-2 1l2 2l-2 1l-2 2l4 2l-1 1l-4 0l-4 -1l-4 0l-3 1l-4 -1l-6 -2l-4 0l-6 3l0 2l-3 -1l-2 3l-1 3l2 1l2 0l2 2l0 2l1 0l-1 2zM767 24l5 2l6 2l0 3l-6 0l-8 -1l-5 -1l-2 -2l-4 0l7 -2l7 -1zM793 31l-17 3l5 -4l3 0l2 0l7 1zM893 39l10 1l-2 2l-10 0l-5 1l-6 -2l2 -2l4 0l7 0zM919 41l-4 2l-4 -1l-5 -1l6 0l7 0zM891 45l4 0l4 1l-4 1l-6 -1l2 -1zM630 26l4 0l2 0l3 -1l4 1l-5 1l-2 0l-4 1l-3 -1l2 -1l-6 0l5 0zM558 99l-3 0l0 -1l4 -1l3 0l1 1l0 1l-5 0zM655 43l0 -2l6 -1l9 -2l9 0l5 -1l5 -1l2 1l-2 1l-9 2l-9 1l-9 3l-4 2l-4 3l1 2l5 3l-2 0l-9 -1l-1 -1l-5 -1l0 -1l3 -1l0 -1l5 -3l-2 0l6 -2zM898 103l0 3l1 3l3 5l-4 -1l-2 4l3 3l0 2l-2 -2l-2 2l-1 -2l0 -3l0 -3l1 -2l0 -4l-2 -2l1 -4l2 -1l-1 -2l1 0l1 2l1 2zM14 65l2 1l-1 -2l8 0l5 3l-3 1l-4 0l0 3l-4 0l-2 -1l-4 0l0 -2l-3 0l-3 0l-2 -1l-3 0l2 1l-2 2l0 -12l7 3l7 2l0 2zM0 53l0 -2l3 0l4 1l-3 1l-4 0zM281 176l1 -1l2 0l-3 2zM284 175l2 1l0 2l-1 -2l-1 -1zM283 180l2 2l0 2l-2 -1l0 -3zM330 394l3 -2l3 1l1 -1l3 1l-5 2l-1 -1l-3 1l-1 -1zM542 29l5 -1l4 1l9 2l-7 1l-2 2l-2 0l-1 3l-4 0l-6 -2l3 -1l-4 -1l-6 -2l-2 -2l8 -1l1 1l4 0zM586 57l-4 1l-3 0l2 -2l-4 -1l-4 1l-2 2l-2 1l-3 0l-4 0l-3 -2l-2 1l-1 0l-1 2l-5 0l-1 1l-2 0l-2 2l-3 3l-4 4l0 2l-3 0l-2 3l0 3l2 2l-1 3l-2 2l-1 2l-2 -2l-6 3l-3 1l-4 -2l-1 -3l-1 -6l2 -2l8 -2l5 -3l5 -4l7 -5l5 -2l7 -4l6 -1l5 0l4 -2l5 0l5 -1l9 2l-4 1l3 2zM576 28l-4 1l-8 0l-8 0l-5 -1l-3 -1l9 -1l4 1l3 -1l7 1l5 1zM569 34l-7 1l-4 -1l1 0l-1 -1l6 -1l5 2zM370 20l9 -1l10 0l4 -1l10 0l22 0l17 2l-5 1l-11 0l-15 1l2 0l10 0l8 1l5 -1l3 1l-3 2l7 -1l13 -2l9 1l1 1l-11 2l-2 1l-9 0l7 0l-3 2l-3 2l0 3l4 2l-5 0l-4 1l5 2l1 2l-3 0l3 3l-6 0l3 1l-5 1l-3 0l3 2l0 1l-5 -1l-2 1l4 1l4 1l1 3l-5 0l-3 -1l-3 -1l1 1l-3 2l7 0l4 0l-8 3l-7 2l-8 1l-3 0l-3 1l-4 3l-6 2l-2 0l-4 1l-4 0l-2 2l0 2l-1 2l-5 2l1 2l-1 2l-1 3l-4 0l-5 -2l-5 0l-3 -2l-2 -2l-4 -4l-2 -2l0 -2l-4 -3l1 -2l-2 -1l3 -3l4 -1l2 -3l-3 1l-2 0l-2 1l-4 -1l0 -2l1 -2l3 0l5 1l-5 -2l-2 -1l-3 1l-2 -1l3 -3l-2 -1l-2 -2l-3 -3l-4 -1l-7 -2l-6 -1l-8 1l-6 0l-4 -1l-4 -2l7 -1l6 0l-12 -1l-7 -1l11 -2l10 -2l-6 -2l2 -1l10 -2l4 0l-1 -1l7 -1l8 0l9 0l3 1l7 -2l7 1l4 0l5 1l-6 -1zM691 385l2 1l3 0l-1 2l-4 0l0 -1l0 -2zM847 275l3 -2l2 0l2 0l-4 2l-3 1l0 -1zM545 329l2 -1l1 2l2 0l1 1l2 -1l2 -1l0 -10l3 3l-1 2l3 0l1 -1l2 -1l0 -1l2 -1l2 1l3 0l1 0l1 -2l2 -1l1 -3l3 -2l4 -2l2 1l3 0l1 4l1 2l-1 3l-2 0l-1 2l2 3l2 -1l0 -1l2 0l0 2l-1 3l-1 1l-1 1l-2 2l-1 2l-2 2l-3 2l-2 2l-2 1l-3 1l-1 1l-2 0l-1 0l-3 0l-2 0l-4 1l-3 1l-1 1l-2 0l-2 -1l-1 -2l0 -2l-1 -1l1 -3l-2 -3l-2 -2l-2 -4zM580 330l1 3l-2 1l-2 1l-2 -2l1 -2l2 -1l1 0l1 0zM175 160l3 -1l3 0l4 2l7 2l5 0l2 0l5 -1l3 2l1 1l1 1l1 2l1 1l3 1l1 -3l3 0l2 1l1 2l1 2l2 1l0 2l1 2l2 1l2 0l0 3l0 2l-1 3l0 2l1 1l0 2l1 2l2 2l1 1l1 2l3 0l3 1l2 0l2 -1l2 0l2 -2l1 -1l0 -3l2 -1l3 -1l3 0l1 0l1 2l-2 2l0 1l0 2l-1 2l-1 0l-2 1l-3 1l-3 0l0 1l-1 0l2 2l1 1l-4 0l-1 3l0 2l-3 -3l-2 -1l-2 -1l-2 0l-2 1l-1 1l-2 -1l-2 -1l-3 -1l-2 0l-3 -2l-2 -1l-3 -1l-3 -1l-1 -1l-3 -2l-1 -1l-1 -2l2 -2l-1 -2l-2 -2l-2 -3l-3 -2l-1 -2l-3 -1l0 -2l-1 -1l-2 -1l0 -2l-2 -1l-1 -1l-2 -1l-1 -3l-1 -3l-2 -2l-3 0l0 2l0 2l3 3l2 2l1 2l1 2l2 1l1 3l1 1l0 1l1 2l1 0l1 1l1 1l-1 2l-1 -2l-2 -2l-2 -1l-2 -1l0 -2l0 -1l-1 -1l-2 -1l-3 -1l-2 -2l2 0l1 -2l-2 -2l-2 -1l-1 -2l-1 -2l-1 -2l-1 -2zM340 334l2 0l3 2l3 1l3 2l1 2l-1 1l1 2l-1 2l-4 1l-2 0l-1 0l-3 -1l-2 0l-1 -2l0 -2l0 -3l1 -3l1 -2zM352 344l-1 -2l1 -1l-1 -2l-3 -2l-2 -1l-4 -2l-2 0l4 -4l3 -3l2 -1l2 -1l0 -2l-1 -2l-2 0l1 -1l0 -2l0 -1l-2 0l-1 -2l0 -2l-3 -2l-4 0l0 -3l-1 -2l1 -2l1 -1l0 -3l0 -1l-2 -1l0 -3l-5 0l-1 -3l1 -1l-1 -3l-2 -1l-1 0l-3 -1l-5 -1l-3 -3l1 -2l0 -3l-4 1l-2 1l-2 1l-2 1l-2 -1l-2 1l-1 0l0 -5l-2 2l-3 0l-1 -2l-1 0l-1 -3l-2 -2l1 -2l2 -1l0 -1l1 -2l3 -2l2 -1l3 0l1 -8l0 -1l0 -1l-2 -1l1 -3l1 0l-1 -3l5 0l2 0l1 2l2 1l2 0l3 -2l1 -1l2 -1l-3 -1l0 -2l0 -2l-1 0l3 0l2 1l3 -2l3 -1l0 -1l2 -1l0 2l2 2l-2 3l1 2l0 1l2 1l1 0l3 -1l2 0l2 0l1 -2l2 0l2 1l1 0l1 0l2 0l2 -3l2 -3l1 2l2 5l1 0l0 2l-2 2l6 2l0 2l2 -1l4 1l4 1l2 2l-1 1l3 0l6 1l4 0l4 2l4 3l2 1l2 0l2 5l1 1l-2 5l-1 2l-4 4l-2 3l-2 2l-1 2l0 6l-1 4l0 2l-1 4l-3 4l-1 3l-2 1l-1 2l-3 0l-4 1l-2 1l-3 1l-3 2l-3 3l0 2l0 1l0 3l-1 2l-2 1l-3 5l-2 2l-2 2l-1 2l-2 2zM307 280l2 1l1 0l3 -2l2 -1l4 -1l-1 2l0 3l3 3l3 0l3 2l3 0l2 1l0 2l1 2l0 3l5 0l0 2l2 2l0 1l0 3l-1 1l0 1l-3 -1l-3 0l-5 1l-1 2l0 1l-1 4l-4 -1l-1 2l-1 -2l-4 0l-2 2l-2 1l-1 -4l-2 -3l1 -3l-2 -1l0 -2l-1 -2l1 -3l-1 -2l0 -2l1 -2l1 -2l0 -2l-2 -6zM306 262l-3 0l-2 1l-3 2l-1 1l0 2l-2 1l-1 2l2 2l1 2l1 1l1 2l3 0l2 -2l0 5l1 0l2 -1l2 5l0 3l-1 2l-1 2l0 2l1 2l-1 3l-1 1l-1 1l-3 -2l-6 -4l-5 -3l-2 -1l-1 -3l-2 -4l-3 -5l-3 -6l-1 -1l-1 -2l-2 -2l-2 -1l1 -1l-1 -3l1 -2l2 -2l-1 2l2 1l2 2l2 -1l0 -2l2 -3l3 -1l3 -3l1 -1l0 -3l2 1l1 2l1 1l2 2l2 1l2 -1l2 0l2 2l-1 2l2 2zM314 247l-1 -2l-2 0l-5 0l0 2l2 0l-2 1l-1 3l2 1l0 1l0 1l-1 8l-2 -2l1 -2l-2 -2l-1 1l-3 0l-2 -1l-2 -2l-1 -1l-1 -2l-2 -1l-2 0l-1 -1l-3 0l-4 -3l0 -2l3 -1l1 -2l1 -2l-1 -2l0 -3l0 -3l-1 -1l0 -1l1 -1l0 -2l2 0l2 -2l1 -1l0 -2l2 -2l2 0l2 0l2 -2l3 -2l1 1l-2 2l-1 1l-2 2l0 2l-1 2l2 0l0 1l1 2l0 1l1 2l4 -1l1 1l2 2l3 0l2 0l0 2l0 2l0 2l1 2l-1 1l1 2l1 3zM285 226l0 2l-1 1l0 1l-2 -2l0 -2l-2 -1l-1 0l-2 2l1 2l-3 1l0 -2l-1 1l-2 -2l-2 0l0 -1l0 -2l2 0l1 1l2 0l3 -1l2 -1l2 1l1 0l2 2zM271 223l-1 2l0 1l-2 1l0 -2l-2 -1l-2 -2l0 1l-2 -1l0 -1l-1 -1l3 0l2 -1l1 1l1 1l3 2zM268 220l-2 0l-1 -1l-3 0l-1 -1l-1 -1l-2 -2l-2 -1l2 0l1 -2l1 0l2 0l1 -2l1 -1l1 0l2 0l1 -1l1 2l-1 2l0 2l0 2l-1 1l0 1l1 2zM269 208l-1 1l-2 0l-2 0l-1 1l-1 1l-2 1l-1 0l0 1l-2 1l-1 -1l0 -2l-2 1l-1 -2l-1 -1l2 -2l1 -1l2 0l2 0l1 0l1 0l2 0l1 0l1 0l1 1l2 1zM252 210l1 1l2 0l1 2l-2 0l-2 0l-1 -1l0 -1zM244 210l0 -2l1 -3l4 0l-1 -1l-2 -2l1 0l0 -1l3 0l2 0l0 2l0 3l2 0l-2 2l0 2l-2 1l-2 0l-1 0l-2 0l-1 -1zM252 201l2 -2l1 2l0 1l0 2l-2 2l-1 -3l0 -2zM331 236l0 1l-3 1l-2 1l-3 0l-3 -1l1 3l0 2l3 0l-2 2l-1 1l-3 1l-2 1l-2 -1l-1 -3l-1 -2l1 -1l-1 -2l0 -2l0 -2l1 -2l-3 0l-2 0l-3 -2l-1 -1l-4 1l-1 -2l0 -1l-1 -2l0 -1l-2 0l1 -2l0 -2l2 -2l1 -1l2 -1l-2 1l1 2l0 1l-1 2l1 2l2 -2l-1 -3l3 -2l0 -1l2 1l2 0l1 2l3 1l3 -1l2 2l2 0l1 -1l4 -1l3 0l-2 1l1 1l2 1l2 1l0 2l2 0l-1 2l1 2l-3 1l0 2l1 3zM343 245l-2 0l-2 1l-3 0l-2 -1l0 -1l-1 -2l1 -2l0 -2l-1 -2l-2 0l-2 -3l1 -2l2 0l0 -2l2 -2l2 1l2 2l0 1l2 1l1 4l-2 1l0 2l1 2l1 1l2 3zM349 244l-2 -1l-1 0l-2 1l-1 1l-2 -3l0 -1l-2 -2l0 -2l2 -1l0 -3l4 1l2 -1l3 1l-1 2l0 2l1 2l-1 2zM357 238l-2 3l-1 2l-2 1l-2 0l-1 0l0 -3l0 -3l0 -2l1 -2l3 1l3 2zM517 113l1 0l4 1l-1 2l0 2l-2 0l-2 2l0 1l1 0l1 1l1 2l-1 3l2 0l0 2l-3 1l-5 -1l-4 1l-1 2l-3 0l-3 -1l-6 -1l0 -2l1 -6l-3 -3l-2 -1l-4 -1l-1 -2l4 -1l5 1l-1 -3l2 1l7 -2l1 -3l2 0l2 1l1 1l2 1l1 0l3 1l1 1zM524 132l2 -1l1 2l-1 2l-2 -1l0 -1zM291 250l0 3l-1 1l-3 3l-3 1l-2 3l0 2l-2 1l-1 -2l-2 0l0 -1l1 -4l0 -1l-1 1l-2 -1l0 -3l2 -2l1 -2l1 -2l2 -1l3 2l3 1l2 1zM316 199l1 0l0 1l-2 0l-2 0l1 -1l2 0zM285 199l1 0l2 1l-2 0l-2 0l-2 -1l2 0zM271 186l3 0l2 0l3 1l3 0l4 3l1 1l3 1l2 1l2 1l-2 1l-2 0l-2 0l-4 0l2 -2l-3 -1l-2 -2l-1 0l-3 -1l-4 -1l0 -1l-3 0l-2 1l-1 1l-2 0l1 -2l1 0l2 -1l2 0zM587 312l-2 0l-2 -1l-3 -1l-2 0l-1 -2l-1 -1l-3 -3l-1 -2l-2 -3l3 1l2 0l2 -2l2 -2l1 -1l2 -2l2 0l3 1l1 1l2 1l1 0l0 4l0 2l0 2l0 2l-1 3l-3 3zM582 311l-4 2l-3 2l-1 2l-2 2l0 1l-2 1l-3 0l-1 0l-3 0l0 1l-2 1l-1 1l-2 1l0 -3l-2 -3l-1 -8l3 0l0 -10l2 0l4 -1l3 0l3 -1l1 2l2 3l3 3l1 1l1 2l2 0l2 1zM555 319l0 10l-2 1l-2 1l-1 -1l-2 0l-1 -2l-2 1l-2 -2l-1 -2l0 -2l-1 -2l-1 -5l0 -3l0 -2l-3 -3l-1 -3l-1 -2l-2 -3l0 -2l1 0l2 -1l1 0l2 1l12 0l2 1l6 1l5 -1l3 -1l2 0l-1 2l-3 1l-5 0l-2 0l0 10l-3 0l0 8zM454 212l-2 -2l-1 -1l1 0l2 -2l0 -2l3 0l1 -1l2 0l1 1l2 0l1 2l2 2l0 2l1 2l1 2l-2 0l-3 0l-1 0l-5 0l-2 0l-1 1l-1 -3l3 1l2 -2l2 1l2 -1l-2 0l-2 -1l-1 1l-3 0zM468 215l0 -2l-2 -2l0 -2l2 -2l2 1l2 -1l1 0l12 0l0 -2l-2 -12l-1 -12l4 0l10 6l9 6l1 1l1 1l2 0l0 2l3 0l0 6l-2 2l0 2l-2 0l-4 0l-3 2l-2 0l-2 -1l-3 2l-2 2l-2 1l-1 0l-1 2l-3 2l0 3l0 1l-2 1l-1 -1l-3 1l-2 -1l-1 -2l0 -2l-1 -1l-2 0l-1 1l-2 -1l-2 0zM453 192l11 -1l0 -4l0 -2l3 0l0 -7l9 0l0 -4l10 7l-4 0l1 12l2 12l0 2l-12 0l-1 0l-2 1l-2 -1l-1 2l-3 -2l-1 -2l-2 0l-1 -1l-2 0l-1 1l-2 -1l0 -2l0 -2l0 -3l0 -1l0 -2l-1 -1l-1 -1zM507 233l-2 0l-1 -2l1 -6l-1 -2l-2 -2l0 -2l2 -1l1 0l2 -2l3 2l1 2l-1 2l-1 2l-1 2l0 2l-1 5zM541 186l1 5l1 1l1 3l-1 5l-1 4l-3 2l-1 4l1 3l2 0l-1 1l-1 1l-2 -3l-3 2l-2 -1l-1 0l-3 0l-2 1l-1 0l-3 -1l-2 1l-1 0l-4 -3l-3 1l-1 2l-1 4l-2 -2l-2 1l0 -2l-3 -1l0 -1l-2 -2l0 -1l0 -1l2 -1l5 -1l2 0l0 -2l2 -2l0 -6l4 -1l8 -6l9 -5l5 1l1 2l2 -2zM507 233l1 -5l0 -2l0 -1l2 -3l1 -2l-1 -1l0 -4l1 -3l4 -1l3 2l2 1l2 -1l3 1l1 0l2 -1l2 0l2 0l2 1l2 -2l3 3l1 1l0 2l-2 2l-1 2l0 1l-2 3l-1 1l0 1l-1 3l-2 1l-2 -2l-3 2l-2 3l0 2l-3 1l-2 0l-3 0l-1 -2l-1 -2l-2 -1l-2 0l-3 0zM540 214l1 2l1 2l-1 2l2 2l-2 0l-2 0l0 1l1 2l2 1l1 3l-2 3l-1 3l0 2l2 1l1 3l1 1l0 1l0 2l-2 0l-2 -1l-4 0l-2 0l-1 0l-2 0l-4 0l0 -3l-1 -1l-1 -1l-1 -1l0 -3l2 -3l2 -2l3 2l2 -1l1 -3l0 -1l1 -1l1 -2l1 -2l1 -2l2 -2l0 -2l-1 -2zM502 219l0 2l2 2l0 1l0 7l1 2l-2 1l-1 -3l-1 -2l1 -2l-1 -3l0 -2l-1 -2l2 -1zM500 219l1 3l0 2l0 2l0 3l1 2l0 2l-3 2l-2 1l-2 1l-3 -1l-1 -3l1 -3l1 -3l-1 -4l0 -2l0 -1l5 -1l1 1l2 -1zM478 222l3 0l2 -1l2 0l1 1l2 1l2 -1l2 1l1 4l-1 3l-1 3l1 2l-1 1l-2 0l-2 0l-3 0l-2 1l-3 1l0 -2l0 -2l-2 -1l0 -2l-1 -2l1 -2l1 -1l0 -2l-1 -2zM462 215l1 0l2 1l3 0l1 0l2 1l2 -1l1 0l2 1l0 2l1 2l0 2l1 3l-1 1l0 2l-1 0l-2 1l0 -2l-1 -2l-1 1l-2 -2l0 -2l-3 -1l-2 1l0 1l-2 1l-1 -1l-2 -2l-1 -2l-1 -1l1 -1l2 0l1 -2l0 -1zM454 216l1 -1l2 0l5 0l0 1l-1 2l-1 0l-2 1l-2 -1l-1 -1l-1 -1zM477 229l0 2l-1 1l2 1l1 2l0 3l-4 -1l-3 -3l-2 -1l-2 -2l1 -2l1 -1l2 -1l1 -1l1 2l0 2l2 -1zM463 225l2 -1l0 -1l2 -1l2 0l1 2l1 2l-1 2l-1 1l-1 2l-3 -1l-1 -2l-1 -3zM485 221l0 -1l0 -3l3 -2l0 -2l2 0l2 -1l2 -2l3 -2l2 0l2 1l0 1l0 1l2 2l0 1l3 1l0 2l-2 1l-1 1l-3 0l-1 0l-2 0l-5 1l0 1l0 2l-2 -1l-1 1l-2 0l-2 -2zM576 235l-3 1l-2 -1l-1 1l-2 0l-3 1l-2 0l-1 2l-2 -1l-2 0l-2 -1l-2 -1l-1 1l-1 1l-1 2l-2 0l-1 0l-2 1l-2 3l0 -2l-1 -1l-1 -2l-2 -2l0 -2l0 -2l2 -4l3 0l1 0l4 -1l3 -2l0 -1l3 0l2 -1l2 -3l2 -1l2 -1l1 3l0 2l1 2l2 1l2 1l2 3l1 1l1 1l2 2zM551 240l0 2l-1 1l0 2l-1 3l1 1l-1 2l-2 2l-1 2l-2 3l0 2l-2 2l-1 2l-2 -1l-1 0l-2 0l-2 0l-3 -2l2 -1l-1 -2l3 -1l0 -2l1 2l3 0l1 -1l0 -2l0 -2l-2 -2l2 -3l-3 -1l-1 -1l0 -1l4 0l2 1l2 0l0 -1l2 -3l2 -1l1 0l2 0zM531 244l2 0l1 0l2 0l0 1l1 1l2 0l-1 4l2 2l0 2l0 2l-1 1l-3 0l-1 -2l0 2l-2 0l0 3l-2 1l-3 -3l-2 -2l-2 -3l1 -2l1 -2l0 -2l5 0l0 -3zM527 244l4 0l0 3l-4 0l-1 0l1 -3zM585 273l3 1l1 1l2 1l1 1l1 2l-1 3l1 3l-2 3l1 1l-8 2l0 2l-2 0l-2 2l-1 1l-2 2l-2 2l-2 0l-3 -1l-1 -1l-2 0l-3 1l-1 -2l-2 -2l0 -9l6 0l0 -2l-1 -1l1 -2l2 0l2 0l1 2l2 0l1 -1l1 2l2 0l2 3l2 0l0 -3l-2 -1l-1 -3l1 -3l-1 -2l1 -1l4 -1zM591 276l3 0l1 2l1 4l-1 2l1 4l2 1l1 2l0 3l-1 1l-1 2l-1 -2l-1 -2l1 -1l-1 -2l-3 -1l-1 -1l1 -2l0 -4l1 -2l-1 -3l-1 -1zM596 282l2 0l3 1l3 -1l3 -1l3 -1l2 -1l0 1l0 3l1 2l0 4l0 2l-1 2l-1 2l-1 1l-3 2l-3 1l-3 3l-3 2l-2 3l2 2l0 2l1 3l-1 1l0 2l-3 2l-3 1l-2 1l1 2l0 1l-2 0l0 -1l-1 -1l1 -4l-1 -2l-1 -4l3 -3l0 -2l1 -2l0 -3l0 -2l0 -4l-1 0l-2 -1l-1 -1l-3 0l0 -3l8 -2l2 1l2 1l-1 2l1 2l1 2l1 -2l1 -1l0 -3l-1 -2l-2 -1l-1 -4l1 -2zM589 324l0 1l-2 1l-2 -2l1 -2l2 0l1 1l0 1zM536 263l-1 2l0 1l-2 -2l2 -2zM534 267l2 0l9 -1l1 2l1 2l2 2l1 0l3 0l1 -2l2 0l1 -1l3 1l0 2l1 3l0 1l1 5l1 0l2 -1l1 0l0 3l1 1l0 2l-6 0l0 9l2 2l1 2l-5 1l-6 -1l-2 -1l-12 0l-2 -1l-1 0l-2 1l-1 0l-1 -2l1 -2l1 -3l1 -3l2 -3l1 -2l0 -2l0 -1l-2 -3l0 -2l1 -1l-1 -3l-1 -2l-1 -2zM585 257l0 1l0 2l-1 1l-3 1l0 -3l0 -1l1 0l1 -1l2 0zM599 159l-1 1l-1 1l0 2l1 0l-1 5l-2 -5l2 -2l0 -2l2 -1zM600 158l-2 0l1 -2l1 -2l1 0l-1 2l0 2zM638 285l1 3l0 3l1 1l0 2l-1 -1l0 3l-2 2l0 2l-1 3l-1 4l-2 5l-1 4l-1 3l-2 1l-3 1l-1 -1l-3 -1l0 -1l-1 -3l-1 -2l0 -2l1 -2l1 0l1 -3l1 -2l-1 -1l-1 -2l0 -3l1 -1l0 -2l2 0l1 -1l3 0l1 -2l3 -1l0 -2l3 -3l0 -1l1 -2zM598 163l-1 0l0 -2l1 -1l1 2zM454 212l3 0l1 -1l2 1l2 0l-2 1l-1 0l-2 0l-4 0l1 -1zM526 166l-1 -5l-2 -1l-2 -3l0 -2l2 -1l0 -3l0 -2l0 -2l3 -1l2 1l0 1l3 -1l-2 2l0 1l1 3l-2 2l1 1l1 0l1 2l1 2l-2 1l-2 2l0 2l-2 1zM476 174l0 -4l4 -2l3 -1l2 0l2 -2l3 -1l0 -2l1 0l2 -1l3 -1l0 -1l-1 -3l0 -2l-1 -2l3 -1l3 -1l1 -1l3 -1l5 0l4 0l2 0l2 -1l3 0l3 0l0 2l0 2l0 3l-2 1l0 2l2 2l2 2l1 5l1 2l0 2l0 2l0 1l0 2l0 1l1 4l1 2l1 0l2 1l1 2l-9 5l-8 6l-4 1l-3 0l0 -2l-2 0l-1 -1l-1 -1l-9 -6l-10 -6l-10 -7zM599 160l3 0l6 -3l1 4l-6 1l3 3l-2 2l-2 0l-2 2l-3 -1l1 -4l1 -2l0 -2zM643 183l3 0l2 0l2 0l2 -2l2 -2l2 -1l1 3l-2 0l0 2l-1 2l-1 2l-9 -1l-1 -3zM641 181l0 -2l1 -1l1 0l0 2l0 2l-2 -1zM633 167l1 1l0 3l-1 0l-1 -2l-3 0l2 -2l2 0zM609 161l-1 -4l6 -3l1 -3l0 -2l1 -1l2 -1l4 0l2 0l2 3l2 1l0 2l-1 0l-1 3l2 2l3 2l2 2l-1 2l1 1l2 2l-2 0l-2 0l-2 2l-5 0l-8 -6l-4 -2l-3 0zM653 187l1 -2l2 -2l-1 -2l2 0l1 2l1 1l2 0l2 1l1 1l2 1l-1 3l-1 1l-2 2l-1 0l-1 2l1 2l-2 0l-2 1l0 2l-2 0l-1 2l-2 1l-1 0l-2 1l-1 0l-1 -2l-3 -5l9 -3l2 -5l-2 -2zM963 294l0 -3l1 0l1 3l-2 0zM785 216l-1 -3l2 -3l4 0l2 0l3 1l1 -1l2 1l1 1l0 4l-5 2l1 2l-3 0l-2 1l-3 -1l-1 -1l-1 -3zM792 210l-2 0l-4 0l-2 3l1 3l-3 -1l-2 0l0 -2l-2 0l0 3l-2 4l-1 2l1 2l1 0l2 3l0 2l2 2l1 0l2 2l-3 1l0 -1l-3 -1l-1 -1l-1 -1l-1 -2l-1 -1l-1 1l0 -1l0 -2l1 -3l1 -2l2 -3l-1 -3l0 -1l-1 -1l-2 -3l0 -1l2 -3l-1 -2l-2 -2l-2 -2l3 -4l2 0l2 -1l1 -1l1 1l0 2l2 0l0 3l0 2l3 -1l2 0l3 -1l2 3l0 2l2 3l0 2l-1 1zM798 211l-2 -1l-1 1l-3 -1l1 -1l0 -2l-2 -3l0 -2l-2 -3l-2 0l-3 1l-3 1l0 -2l0 -3l-2 0l0 -2l-1 -1l3 -3l2 1l-1 -3l2 0l1 2l2 2l3 0l1 3l-2 0l3 3l2 3l2 3l2 2l1 2l-1 3zM778 193l-1 1l-2 1l-2 0l-1 3l0 3l2 2l1 2l-1 2l-1 2l2 3l1 1l0 1l1 3l-2 3l-1 2l-1 -2l1 -2l-1 -1l1 -3l-1 -2l-1 -3l-1 -4l-1 -2l-2 1l-3 2l-2 0l-1 -1l1 -3l-1 -3l-2 -3l-1 -1l-2 -2l-1 -3l1 -1l2 -1l0 -2l0 -3l2 1l2 -3l0 -1l1 -2l0 -2l4 -2l2 1l0 -2l0 -2l2 0l1 2l1 1l0 2l0 2l-3 2l0 4l3 -1l1 3l1 0l0 3l2 1l1 0l2 -1l-2 3zM790 221l2 -1l3 0l-1 -2l5 -2l0 -4l-1 -1l1 -3l-1 -2l-2 -2l-2 -3l-2 -3l-3 -2l2 -1l-1 -3l-3 0l-2 -2l-1 -2l1 -1l3 0l2 0l3 -2l1 1l2 1l0 1l1 1l3 1l-4 3l-2 2l0 2l2 3l2 4l3 1l1 3l2 5l-1 5l-2 1l-3 2l-2 3l-4 2l-1 -2l1 -2l-2 -1zM863 132l-2 1l-1 3l-1 1l-2 1l-2 1l-1 1l0 1l3 2l-2 1l-2 0l-1 1l-1 0l-2 0l-1 0l-2 -1l1 -1l1 -2l-2 -1l-1 -1l2 -2l4 -1l1 -2l2 1l2 0l0 -2l4 -1l1 -1l2 1zM850 145l2 0l1 -1l2 0l2 -1l2 3l1 2l0 3l-1 2l-3 0l-2 1l-3 0l0 -1l1 -2l-2 -3l2 0l-2 -3zM744 113l3 0l5 -3l4 -1l3 1l3 0l1 1l3 0l4 1l3 -2l-1 -2l3 -3l3 2l2 0l4 1l0 2l4 1l3 -1l3 0l3 0l3 2l1 1l3 0l3 1l3 -1l4 -1l4 -2l1 1l2 1l3 -1l-1 3l-2 2l2 1l3 1l2 -2l2 1l3 2l-3 1l-4 0l-2 1l-2 2l-4 1l-3 2l-3 -1l-1 0l-2 2l2 1l-2 1l-2 2l-4 1l-4 0l-4 1l-3 1l-2 0l-3 0l-4 -2l-3 -1l-4 1l-5 -1l-3 0l-2 -1l-1 -3l-2 0l-3 -2l-4 0l-3 -1l-1 -1l1 -3l-2 -2l-4 -2l-3 -1l0 -2zM770 171l0 2l0 2l-2 -1l-4 2l0 2l-1 2l0 1l-2 3l-2 -1l0 3l0 2l-2 1l-1 -5l-1 2l-2 -1l1 -2l1 0l2 -2l-2 -1l-3 0l-2 0l0 -2l-2 0l-2 -1l-1 1l2 2l-2 1l1 2l0 1l1 2l0 3l-2 1l-3 0l0 2l-2 2l-4 2l-3 3l-2 2l-3 2l0 1l-1 1l-3 1l-1 0l-1 2l1 4l0 2l-1 3l0 4l-2 0l-1 2l-2 2l0 2l-4 -2l-2 -4l-1 -2l-1 -2l-1 -2l-1 -4l0 -2l-3 -3l-1 -6l-1 -3l0 -4l0 -2l-4 1l-2 0l-4 -3l1 -1l-4 -4l2 -2l6 0l0 -2l-2 -1l0 -3l-2 -1l3 -3l3 0l3 -2l2 -3l3 -3l0 -2l2 -2l-2 -1l-1 -2l-1 -2l1 -2l4 1l4 0l2 -3l3 4l0 2l1 1l0 2l-2 -1l1 3l2 2l4 2l-1 1l-2 3l3 1l3 1l3 2l4 0l2 2l2 0l3 1l3 0l0 -3l1 -2l1 2l2 2l2 -1l2 1l3 -1l0 -1l1 -1l2 -3l4 -1l2 0l2 -1l1 2l2 1zM757 189l0 2l0 2l-1 -2l0 -1l-1 -2l-1 -1l-3 0l0 2l-2 0l-2 0l0 -3l-1 -2l0 -1l-1 -1l2 -2l-2 -2l1 -1l2 1l2 0l0 2l2 0l3 0l2 1l-2 2l-1 0l-1 2l2 1l0 -2l2 5zM755 173l1 2l-3 1l-2 -1l-2 1l-2 -1l2 -3l1 -1l2 1l1 0l2 1zM745 173l0 3l-3 1l-3 -1l-2 0l-2 -2l-4 0l-3 -2l-3 -1l-3 -1l2 -3l1 -1l4 0l2 2l2 1l1 1l2 0l2 2l4 0l3 1zM716 151l-2 3l-4 0l-4 -1l-1 2l1 2l1 2l2 1l-2 2l0 2l-3 3l-2 3l-3 2l-3 0l-3 3l2 1l0 3l2 1l0 2l-6 0l-2 2l-2 -1l0 -2l-3 -2l-5 1l-4 0l-4 0l1 -3l4 -1l0 -2l-2 0l0 -2l-2 -2l-2 -1l-1 -2l5 2l3 -1l1 0l3 0l3 -1l0 -2l2 -2l2 0l2 -1l3 -1l-1 -1l2 -2l1 -1l-1 -2l3 1l1 -2l1 -2l0 -1l1 -2l3 -1l3 0l1 -1l2 0l2 1l1 2l4 1zM685 146l1 0l2 1l3 -1l2 0l2 0l0 -2l3 0l0 3l3 0l1 0l2 -1l1 0l3 0l-2 2l-3 0l-3 1l-2 1l1 2l-1 2l-1 2l-3 -1l1 2l-1 1l-2 2l1 1l-3 1l-2 0l-2 1l-2 2l0 2l-3 1l-2 0l-2 0l-3 1l-5 -2l3 -2l-1 -2l-2 -1l0 -1l-1 -3l1 -1l-1 -1l1 -2l1 -3l3 1l2 0l1 -2l2 0l1 -1l1 -2l2 -1l2 0zM688 147l2 -3l-1 -2l-2 -1l1 -1l2 0l2 -1l1 -2l3 -1l0 2l1 0l-4 1l0 1l3 0l3 1l6 -1l0 3l3 0l0 3l-3 0l-1 0l-2 1l-1 0l-3 0l1 -2l-2 -2l-2 2l-2 1l-1 1l-3 0zM697 133l1 -2l2 0l4 1l1 -2l1 0l4 1l6 0l4 0l1 1l2 0l-5 2l-4 2l-1 2l-3 -1l-2 1l-3 1l0 1l-6 1l-3 -1l-3 0l0 -1l3 0l3 -1l4 -2l-3 -1l-2 1l-2 -1l2 -2zM646 134l1 -1l3 -1l2 1l2 2l1 0l4 0l-1 -1l3 -1l2 -2l4 2l0 2l4 0l2 4l3 2l2 1l3 1l4 2l0 1l-2 -1l-3 2l-1 2l-1 1l-2 0l-1 2l-2 0l-3 -1l0 -2l-2 0l-3 -3l-3 0l-3 -2l-2 0l-1 1l-2 0l-2 1l-2 1l-1 -2l1 -3l-2 -1l0 -2l-2 0l1 -3l3 1l2 -1l-2 -1l-1 -2l-2 1l0 2l-1 -2zM635 167l-2 -2l0 -1l0 -2l-2 -2l-3 -2l-2 -2l1 -3l1 0l0 -2l-2 -1l-2 -3l-1 -2l0 -5l1 0l2 2l2 0l4 -2l2 1l-1 1l2 2l2 2l2 0l2 2l4 0l5 -1l2 -1l2 -1l2 0l1 -1l2 0l3 2l3 0l3 3l2 0l0 2l-1 3l-1 2l1 1l-1 1l1 3l0 1l2 1l1 2l-3 2l1 2l2 1l2 2l0 2l2 0l0 2l-4 1l-1 3l-5 -1l-3 0l-4 0l-1 -4l-1 0l-2 0l-3 1l-3 0l-3 -3l-3 0l-2 -3l-2 -4l-1 1l-2 -1zM599 159l1 -1l0 -2l2 -1l-2 -1l0 -2l1 -2l1 -2l4 -1l1 1l3 0l3 -1l1 0l4 0l-2 1l-1 1l0 2l-1 3l-6 3l-6 3l-3 -1zM629 142l-2 -1l-1 -1l-2 0l-3 -2l1 -1l3 -2l2 2l0 1l1 2l1 0l0 2zM531 87l1 -2l2 -2l1 -3l-2 -2l0 -3l2 -3l3 0l0 -2l4 -4l3 -3l2 -2l2 0l1 -1l5 0l1 -2l1 0l4 1l4 2l0 5l-3 1l-3 2l0 2l-4 2l-5 3l-2 4l2 2l2 1l-2 3l-3 1l-1 5l-2 2l-3 0l-2 2l-3 0l-1 -2l-2 -4l-2 -3zM578 94l3 1l2 0l3 1l0 1l1 3l3 1l0 1l-3 0l1 3l-2 0l-1 2l-4 0l-2 0l-3 0l-3 -1l-3 0l-2 0l-1 1l-2 0l0 -2l-1 -1l2 0l-1 -3l0 -1l3 0l3 -1l1 -1l2 -1l0 -1l1 -1l3 -1zM589 105l2 0l3 0l2 1l-1 2l2 0l1 1l4 1l2 0l2 1l1 0l4 1l-1 2l1 2l-3 1l-2 1l0 1l-2 0l-2 1l-2 0l-3 1l0 2l2 1l2 0l-3 1l-4 2l-1 -1l0 -1l-3 -1l3 -1l-5 -2l-3 0l-1 1l-2 2l-1 0l-1 0l-2 0l2 -2l0 -1l3 0l-1 -1l-1 -2l-1 -2l-4 -1l-1 1l-2 0l-3 1l-2 0l-2 0l-2 -1l-1 0l-2 -1l2 -1l2 -4l1 0l-1 -3l2 0l1 -1l2 0l3 0l3 1l2 0l3 0l3 0l1 -1l3 -1zM565 100l0 1l1 3l-2 0l1 1l0 2l2 2l-2 1l-2 3l0 1l-3 -1l-2 0l-1 0l-2 0l-1 -1l-2 1l-1 -2l-2 0l-2 -1l-2 0l-2 -1l-1 -1l-1 -2l-1 -2l0 -2l-1 -1l2 -1l4 -1l4 -1l3 0l3 1l3 0l5 0l2 0zM547 116l-2 1l0 3l-3 0l-1 1l-3 0l-4 -1l-3 0l-2 0l-1 0l-2 -1l1 -1l2 1l3 -1l2 -1l1 1l1 -2l2 -2l2 1l1 -1l4 1l1 -1l1 1l0 1zM561 115l2 1l-2 2l-1 1l-2 2l-2 1l-2 0l-2 0l-3 0l-2 -1l-2 -1l1 -2l1 -2l2 1l3 0l1 -1l2 0l1 0l2 -1l3 1zM574 116l2 -1l2 1l3 1l1 1l1 2l-2 1l-1 1l-2 2l0 -2l0 -2l-1 -2l-2 -2zM578 124l2 0l1 0l1 0l-1 1l-2 4l-1 -1l-2 -1l-4 1l-1 1l-4 -1l-2 0l-2 -1l-1 -1l-2 0l-2 -2l-2 -2l2 -1l2 -2l1 -1l2 -1l3 0l2 0l1 0l3 0l2 -1l2 1l2 3l0 1l0 3zM574 96l0 1l-2 1l-1 1l-3 1l-3 0l-2 -1l0 -1l-1 -1l-3 0l-1 -3l4 0l4 0l3 -1l2 1l3 2zM576 90l1 1l0 1l1 2l-3 1l-1 1l-3 -2l-2 0l-3 0l-4 0l-4 0l1 -2l1 -1l3 -1l2 2l2 0l1 -3l2 0l1 0l3 1l2 0zM578 85l-2 2l1 2l-3 1l-3 -1l-1 0l-2 0l0 -1l-3 -1l0 -1l3 -1l4 -1l3 1l3 0zM539 101l1 1l0 2l1 1l1 3l-2 0l-1 1l-2 0l-3 1l1 2l1 1l2 1l-1 2l-1 2l-2 -1l-2 1l-3 0l-2 0l-3 -1l-3 1l0 -2l1 -2l-4 -1l-1 0l0 -2l0 -2l0 -3l1 0l2 -4l0 -1l2 0l2 -1l0 -3l2 1l2 -1l2 2l3 0l2 0l3 1l1 1zM563 127l2 1l2 0l4 1l1 -1l4 -1l2 1l1 1l-1 1l-1 2l1 1l-3 0l-2 1l0 1l-3 0l-2 -1l-2 1l-2 0l0 -2l-2 -1l1 -1l0 -2l0 -2zM573 152l-4 1l-4 -1l2 0l3 0l2 0l1 0zM564 135l2 0l2 -1l2 1l3 0l0 -1l1 1l-1 1l-2 1l-2 -1l-3 1l2 2l-2 0l-1 0l-2 -1l0 2l2 1l0 2l2 1l0 1l-3 0l1 1l-2 0l1 3l-2 0l-2 -1l-1 -3l0 -1l-1 -2l-2 -1l1 -2l1 -2l2 -1l3 0zM624 147l-1 0l-4 -1l-5 1l-1 0l-3 1l-3 0l-1 -1l-3 1l-2 2l-2 -1l-3 -1l-1 1l-5 1l-2 -2l-3 0l-3 2l-2 -2l-3 0l-2 -3l-2 -1l1 -2l-1 -2l3 -2l4 0l1 -2l6 0l3 -2l3 -1l5 0l5 2l4 1l3 0l2 0l3 -1l3 -1l3 2l0 2l2 1l0 1l0 4l1 3zM573 134l2 -1l3 0l3 2l-4 1l-4 2l-1 -1l2 -2l-1 -1zM558 137l-1 2l-1 1l-2 -2l0 -1l0 -2l0 -1l1 -3l1 1l1 2l0 2zM546 121l3 1l2 1l2 1l0 1l-1 0l-2 0l-3 -1l-1 0l-2 0l1 3l2 2l2 1l3 2l-3 -1l-2 -1l-3 -1l-2 -2l-1 -1l-1 -2l-2 1l2 -1l1 0l3 -1l2 -2zM527 118l1 2l1 0l-1 1l-2 0l-2 1l-2 1l-2 0l-2 -2l-1 0l0 -1l2 -1l2 -1l2 0l4 0zM517 111l0 2l-1 -1l0 -1zM517 109l0 2l-1 1l-3 -1l-1 0l-2 -1l-1 -1l-2 0l2 -2l2 1l3 -1l2 1l1 1zM519 101l0 4l-2 1l0 3l-1 -1l-2 -1l-3 1l-2 -1l2 0l2 -4l4 -2l2 0zM475 134l2 -1l1 1l1 0l2 0l1 1l-1 1l0 2l-1 2l-1 0l1 2l0 1l0 2l-1 2l-2 0l-2 1l1 -3l-1 -1l-1 -1l0 -2l1 -3l1 -1l-1 -2zM479 147l1 -2l0 -2l0 -1l-1 -2l1 0l0 -2l1 -2l1 -1l-1 -1l-1 0l-2 0l-1 -1l-2 1l0 -2l-1 -2l4 -2l3 1l4 0l3 0l2 0l5 0l6 3l4 0l3 0l0 2l-2 1l-4 1l-2 3l-1 2l1 1l-1 2l-1 1l-2 1l-2 2l-3 0l-3 0l-2 1l-2 1l-2 -3l-3 0zM483 100l0 2l-2 3l-5 1l-4 0l3 -3l-2 -3l4 -2l2 -1l1 1l-1 2l2 0l2 0zM960 309l3 1l1 2l-2 -1l-2 -1l-2 -1l-2 -2l2 0l2 1zM949 277l-2 -2l-1 -2l2 2l1 2zM947 277l-3 0l0 -1l1 0l2 1zM943 272l1 2l-2 -1l-1 -1l-1 -2l1 1l2 1zM991 361l-1 2l-1 2l-2 1l-2 -1l2 -3l-1 -1l-3 -1l2 -2l0 -2l0 -2l-1 -2l-1 -2l-2 -2l-1 -2l2 1l2 1l1 2l2 3l0 -2l1 1l1 2l2 1l2 0l1 -1l2 1l-1 2l-1 2l-2 0l0 2zM971 371l3 -1l1 -2l2 -2l1 -2l2 -2l1 3l2 -1l1 2l-1 1l-2 2l-1 1l1 2l-2 0l-3 1l0 2l-2 3l-2 1l-2 1l-2 -1l-2 0l-3 -1l1 -3l4 -2l1 -1l2 -1zM910 363l2 1l0 3l-1 3l-3 1l-2 0l-2 -2l0 -2l-2 -3l0 -1l2 0l3 1l1 0l2 -1zM850 339l-3 2l-2 1l0 1l-4 1l-2 0l-2 0l-2 0l-2 0l-2 2l-2 1l-1 0l-2 0l-2 0l-3 -1l-1 -1l0 -2l1 0l0 -2l1 -2l-1 -1l-1 -3l-1 -2l1 -1l-2 -2l-1 -2l0 -2l-2 -2l0 -3l1 1l0 -3l-1 -1l0 -2l1 -2l0 -2l1 -2l0 3l1 -2l3 -1l1 -1l2 -1l1 -1l3 0l2 -1l3 -1l3 0l1 -2l1 -1l2 -1l0 -3l2 -2l1 2l0 -2l1 -1l1 0l0 -2l2 -1l2 -2l1 0l2 -1l1 -1l2 2l2 1l1 0l2 1l-1 -2l2 -2l1 -1l1 -2l2 -1l1 0l2 0l0 -2l-2 -1l2 0l1 1l2 1l2 0l3 1l1 -1l2 0l1 1l0 2l-2 1l-1 3l-1 1l3 2l2 1l1 1l2 2l2 0l3 2l2 -1l1 -1l0 -1l1 -2l1 -2l-1 -2l0 -2l0 -2l1 -2l0 -1l1 -2l1 -1l1 1l0 2l1 1l1 2l0 1l1 3l2 -1l2 3l0 1l0 2l1 2l1 2l0 2l1 2l3 1l2 1l1 2l2 2l1 3l2 1l1 2l2 2l1 1l3 2l0 2l0 2l0 2l2 2l-1 3l0 1l-1 2l0 2l0 2l-2 2l-2 2l-1 2l-1 1l0 3l-1 1l-1 2l0 2l-2 2l-3 0l-3 1l-1 1l-2 1l-2 -1l-2 0l1 -2l-2 1l-2 2l-2 -1l-2 0l-2 -1l-2 0l-2 -2l-1 -2l0 -2l-2 -1l-2 0l1 -1l-1 -2l-1 1l-3 1l2 -2l0 -1l1 -2l0 -2l-2 3l-2 1l-1 2l-2 -1l0 -2l-2 -2l-2 -1l-3 -2l-2 0l-2 -2l-5 1l-4 1l-3 1l-3 -1zM727 229l0 3l-4 1l-1 -2l-1 -4l2 -4l2 1l1 2l1 3zM804 199l-2 0l0 -3l1 -1l3 -1l2 0l-1 3l-1 1l-2 1zM723 132l0 -1l2 -1l-3 -5l6 -1l1 0l2 -5l6 0l1 -1l0 -3l3 0l2 -2l1 2l3 1l4 2l2 2l-1 3l1 1l3 1l4 0l3 2l2 0l1 3l2 1l3 0l5 1l4 -1l3 1l4 2l3 0l2 0l3 -1l4 -1l4 0l4 -1l2 -2l2 -1l-2 -1l2 -2l1 0l3 1l3 -2l4 -1l2 -2l2 -1l4 0l2 0l-2 -3l-2 -1l-2 2l-3 -1l-1 0l1 -3l1 -3l3 1l4 -1l0 -2l3 -2l1 -1l0 -2l-1 -1l2 -1l4 0l3 0l4 0l3 1l2 3l2 3l1 3l4 1l4 2l1 2l4 0l2 -1l5 -1l-1 3l-2 4l-2 3l-4 -1l-2 1l1 2l-1 4l-1 0l0 1l-2 -1l-1 1l-4 1l0 2l-2 0l-2 -1l-1 2l-4 1l-2 2l-4 1l-2 1l-3 1l2 -1l1 -3l-1 -2l-3 1l-3 2l-1 2l-3 0l-2 1l2 2l2 1l0 1l3 1l3 -2l2 1l2 0l0 1l-4 1l-1 2l-3 1l-1 2l3 2l1 2l2 3l2 2l0 2l-2 1l1 1l1 1l0 2l-1 3l-2 0l-2 3l-2 3l-2 4l-4 2l-4 3l-3 0l-2 1l-2 1l-4 1l-3 1l-1 2l-2 1l0 -2l-4 -2l-1 0l-3 -1l-1 -1l0 -1l-2 -1l-1 -1l-3 2l-2 0l-3 0l-1 1l-2 0l1 3l-2 0l0 -2l-2 1l-1 0l-2 -1l0 -3l-1 0l-1 -3l-3 1l0 -4l3 -2l0 -2l0 -2l-1 -1l-1 -2l-2 0l-3 0l0 -3l-2 1l-2 0l-4 1l-2 3l-2 0l-2 -1l-1 0l-2 -1l-1 1l-2 2l-1 -2l-1 1l-3 -1l-4 0l-2 -2l-2 0l-1 -1l-2 -1l-2 -2l-3 -1l-5 -1l-2 -2l-1 -3l2 1l0 -2l-1 -1l0 -2l-3 -4l-4 -1l-1 -2l-2 -1l-1 -3l-2 -1l-1 -3l0 -1l3 -1l2 -1l3 1l1 -2l3 0l6 -3zM838 182l-1 5l-2 2l-1 -2l0 -2l1 -3l2 -2l2 1l-1 1zM529 120l2 0l3 -1l4 2l0 1l-1 1l-3 1l0 1l1 3l3 1l1 2l3 2l2 0l3 3l2 0l2 2l0 1l-2 -1l-2 0l-1 1l2 1l-1 2l-2 2l-1 -2l0 -2l-1 -1l-2 -2l-2 0l-1 -1l-2 -1l-2 -1l-3 -2l-2 -1l-1 -3l-1 0l-2 -1l-2 0l-1 1l-3 -1l0 -2l0 -2l1 0l2 0l1 -1l2 0l3 -1l1 0zM541 144l2 0l-1 2l0 2l-2 -1l-2 0l-3 -1l0 -2l3 0l3 0zM524 136l2 0l1 1l0 4l-1 0l-3 0l0 -3l0 -2l1 0zM528 97l-2 1l-2 -1l-1 -1l-1 -3l2 -2l2 0l3 -1l0 1l0 2l1 0l-1 1l-2 2l1 1zM534 94l1 2l-1 2l-3 -2l3 -2zM483 100l-2 0l-2 0l1 -2l-1 -1l2 0l3 1l-1 2zM491 102l1 -2l-2 -2l-3 0l0 -2l-3 0l0 -2l-1 -2l1 -3l2 -2l2 0l4 0l-3 3l3 0l3 0l-1 2l-3 3l3 0l3 3l2 1l2 3l4 2l-1 1l-1 1l1 2l-2 1l-4 0l-5 1l-1 -1l-2 1l-3 0l-2 1l-1 0l4 -3l3 -1l-5 0l2 -2l-1 -2l0 -2l4 1zM460 65l-1 2l3 2l-3 2l-8 2l-3 1l-3 -1l-8 -1l3 -1l-7 -1l5 -1l-6 -1l2 -2l5 0l4 1l4 -1l4 1l4 -2l5 0zM629 134l3 2l1 0l2 -2l1 1l2 2l1 0l-1 1l-1 3l-1 1l0 2l-3 -2l1 -1l-2 -1l-3 2l0 -2l-1 0l-1 -2l-1 -1l-1 -2l3 1l1 0l-1 -2zM628 142l-2 0l-1 -1l2 -1l1 2zM611 129l3 0l4 1l4 1l2 0l2 1l3 2l1 2l-2 0l-2 -1l-5 1l-3 -2l-3 1l0 -3l-1 -1l-2 -1zM836 215l-2 -2l3 0l0 3l-1 -1zM841 222l1 -2l1 0l0 1l2 -2l-1 2l-1 3l-3 -1zM851 227l0 1l0 2l0 3l-1 -3l-2 1l1 2l-1 1l-3 -1l-1 -2l1 -1l-2 -2l-2 1l-2 2l1 -3l2 -1l1 -1l1 1l2 -1l1 -1l2 0l-1 -2l3 1l0 2zM829 224l-4 3l2 -2l2 -2l2 -2l1 -3l0 3l-1 1l-2 2zM840 199l0 4l0 2l-2 1l0 2l0 2l2 1l1 -1l3 2l0 1l1 2l-3 -1l-1 -2l-2 0l-3 0l-1 0l1 -2l-2 -2l-1 -1l0 -2l1 -4l1 -2l2 0l2 0zM839 218l0 -1l1 1l2 0l-1 2l-2 1l0 -1l0 -2zM849 216l0 3l-2 0l1 2l-1 1l0 -2l-2 -2l2 0l-2 -3l3 0zM778 232l3 1l0 1l2 0l1 -1l2 2l1 2l0 1l0 2l1 2l2 3l-2 2l-3 -2l-3 -3l-1 -1l-1 -2l-1 -2l-1 -2l1 -2zM827 239l-2 -1l-3 0l-1 3l-3 5l-2 1l-3 -1l-1 0l-1 1l-2 0l-2 1l-2 -2l0 -2l2 1l2 0l0 -2l5 -2l2 -2l1 -2l1 2l2 -1l1 -2l0 -1l2 -2l1 -2l3 1l0 1l2 1l2 1l-2 1l0 2l-2 1zM821 235l0 1l-1 2l-1 0l-2 -1l4 -2zM538 121l3 0l1 -1l2 0l2 1l-2 1l-1 1l-2 0l-3 1l0 -2l0 -1zM579 58l0 2l4 2l-2 2l3 3l-2 3l3 2l-2 1l5 2l-2 2l-2 1l-6 4l-5 0l-5 1l-4 1l-2 -2l-3 -1l1 -2l-2 -3l2 -2l2 -1l7 -3l2 -1l-5 -2l-1 -6l-4 -2l-4 -1l2 -1l3 2l4 0l3 0l2 -1l2 -2l4 -1l4 1l-2 2zM563 114l-2 1l-3 0l-2 1l-1 0l-2 0l-1 1l-2 0l-3 -1l0 -1l2 -1l1 0l2 -1l2 -1l1 1l2 0l1 0l2 0l3 1zM542 108l1 1l2 0l1 2l3 -1l2 1l1 2l-1 0l-1 1l-2 0l-2 0l-1 1l-3 -1l-2 1l-2 -1l-2 -1l-1 -1l-1 -2l2 0l3 -1l1 -1l2 0zM601 210l1 -5l0 -2l3 -1l2 -2l1 3l1 3l2 1l3 3l2 1l1 2l3 2l-2 0l-2 -2l-2 -1l-3 -2l-2 0l-2 0l-2 -2l-1 3l-3 -1zM894 141l-2 3l0 3l-1 2l0 1l-1 2l-4 2l-5 0l-4 3l-2 -1l0 -2l-5 1l-3 1l-3 0l3 2l-2 5l-2 1l-1 -1l0 -3l-1 -1l-2 -1l3 -1l2 -2l2 -2l2 -1l6 -1l3 0l3 -5l2 2l4 -3l1 -1l2 -4l0 -3l1 -1l3 -1l1 4l0 2zM902 128l2 -1l0 3l-4 1l-2 2l-5 -2l-1 3l-3 1l-1 -3l2 -2l3 -1l1 -3l0 -3l4 3l2 1l2 1zM868 157l1 -2l2 1l3 -1l-1 3l-3 0l-1 1l-1 -1l0 -1zM338 306l1 2l0 3l3 1l3 0l1 3l1 2l2 0l0 1l0 2l-1 1l0 3l-3 2l-2 1l-3 -1l-3 -1l3 -4l0 -1l-3 -1l-4 -2l-2 -1l-5 -4l1 -4l0 -1l1 -2l5 -1l3 0l2 1zM644 197l3 5l1 2l-2 0l-1 2l-3 2l-4 1l-3 2l-1 0l-2 1l-2 1l-3 0l-1 1l-2 1l-3 0l-1 -2l0 -1l-1 -3l0 -1l0 -2l0 -1l1 -1l1 -3l1 1l4 0l3 0l2 1l1 -1l2 -2l2 -2l8 -1zM597 168l3 1l1 -1l3 -1l2 -2l-3 -3l5 -1l4 0l4 2l8 6l5 0l3 0l1 2l1 0l2 2l1 1l2 2l0 2l1 2l1 1l2 1l0 1l1 3l9 2l2 1l-2 5l-9 3l-8 1l-2 2l-2 2l-1 1l-2 -1l-3 0l-4 0l-1 -1l-1 2l-1 2l-1 -2l-2 -3l-1 -2l-1 -2l-2 -2l-1 0l-2 -3l-1 -2l1 -2l-2 -3l-1 -1l-2 0l-1 -2l0 -2l-2 -3l-2 -2l-1 -2l-2 0l1 -1l0 -3zM591 152l3 0l2 -1l-2 1l-1 0l-2 1zM591 152l1 0l2 1l-2 1l-2 0l1 -2zM494 152l1 2l0 2l1 3l0 1l-3 1l-2 1l-1 0l0 2l-3 1l-2 2l-2 0l-3 1l-4 2l0 3l0 2l-2 0l-2 0l-4 0l-1 2l-2 4l-4 3l-1 4l-1 1l-6 1l0 -1l2 -2l1 -3l1 -2l2 -2l0 -1l1 -2l2 -1l2 -3l1 -1l3 0l2 -2l1 -1l2 -2l0 -4l1 -2l0 -1l2 -2l3 -2l2 -1l2 -3l1 -1l2 0l1 1l3 0l3 0l1 0zM602 189l-11 0l-10 0l-12 0l0 -10l0 -10l0 -2l0 -2l1 -3l4 0l2 1l3 1l1 0l2 -1l4 -1l2 1l1 1l3 0l2 0l1 -1l2 4l-1 2l0 2l-1 2l-2 -1l-1 -1l-2 -4l1 3l2 3l2 4l1 2l1 1l2 4l0 2l3 2zM569 189l0 5l-3 0l-11 -4l-11 -5l-3 1l-2 2l-1 -2l-5 -1l-1 -2l-2 -1l-1 0l-1 -1l-2 -3l1 -3l0 -2l0 -1l0 -2l0 -2l-1 -2l2 -1l0 -2l2 -1l2 -2l0 -2l3 1l4 0l3 1l2 3l2 0l4 2l3 1l1 -1l2 -1l-1 -2l1 -2l2 -1l2 0l4 0l1 2l1 0l3 0l0 3l0 3l0 2l0 10l0 10zM633 228l-8 8l-4 0l-2 2l-2 0l-3 1l-3 0l-3 1l-1 0l-5 -2l-2 0l-1 -3l-1 0l-2 -3l-1 -1l-2 -2l-1 -1l0 -1l2 0l0 -4l1 -3l1 0l2 -4l2 -1l1 -3l0 -2l3 1l1 -3l2 2l2 -1l2 1l3 1l2 2l1 1l0 2l-1 2l0 1l2 0l1 1l0 2l1 1l10 5l3 0zM618 215l2 0l0 2l-1 0l0 3l-1 -1l-2 0l0 -1l1 -2l1 -1zM636 218l0 4l0 2l-1 1l-2 3l-3 0l-9 -4l-2 -2l-1 -1l2 -3l1 2l2 1l1 0l3 -1l3 0l2 -1l1 0l3 -1zM594 253l-5 0l-4 0l-2 1l-1 -2l1 -4l1 -1l1 -1l2 -2l-1 -4l3 0l2 -1l2 0l1 -1l2 2l0 2l1 3l-1 2l-1 2l-1 4zM584 253l2 2l-1 1l-2 1l-1 1l-1 0l0 -2l0 -1l2 -1l1 -1zM552 132l-3 -2l-2 -1l-1 -1l-2 -2l1 -1l2 -1l3 1l2 0l1 0l0 2l1 1l0 1l-2 1l0 2zM562 132l2 1l0 2l-3 1l-3 1l-1 -2l1 -2l1 0l2 -1l1 0zM552 122l2 0l2 0l2 1l2 1l2 2l1 0l-1 2l2 2l-2 2l-1 0l-1 -1l-2 -1l-1 1l-2 -1l-1 0l0 -2l-1 -1l1 -2l-1 -1zM556 132l-2 1l-3 -1l1 -2l1 -1l2 1l1 2zM557 134l-1 -2l0 -1l2 -1l1 1l1 0l0 2l-2 0zM329 220l1 0l1 2l-3 0l1 -2zM586 240l-3 -2l-2 0l-1 0l-2 0l-2 -3l-2 -2l-1 -1l-1 -1l-2 -2l-2 -2l-2 -1l2 -1l1 -2l1 -2l2 0l2 2l1 0l2 0l3 1l2 -1l1 -2l3 2l1 0l1 -2l2 -2l0 -1l1 -2l1 0l0 2l0 2l2 1l0 3l0 2l-2 1l0 1l1 1l2 1l1 2l2 3l-2 2l-2 1l-1 1l-2 0l-2 1l-2 -1z";
+const GEO = {
+ "q_20261001_01":[50.45,30.52,"Kyiv"],"q_20261009_02":[50.45,30.52,"Kyiv"],"q_20261011_01":[50.45,30.52,"Kyiv"],"q_20261008_02":[50.45,30.52,"Kyiv"],
+ "q_20260928_03":[55.75,37.62,"Moscow"],
+ "q_20261011_02":[28.61,77.21,"New Delhi"],"q_20261011_03":[28.61,77.21,"New Delhi"],
+ "q_20261012_04":[20.14,74.23,"Lasalgaon"],
+ "q_20261012_01":[19.08,72.88,"Mumbai"],"q_20261011_04":[19.08,72.88,"Mumbai"],"q_20261010_01":[19.08,72.88,"Mumbai"],
+ "q_20261012_03":[50.85,4.35,"Brussels"],"q_20261005_05":[50.85,4.35,"Brussels"],
+ "q_20261012_02":[52.52,13.40,"Berlin"],
+ "q_20261010_02":[-15.79,-47.88,"Brasília"],"q_20260928_04":[-15.79,-47.88,"Brasília"],
+ "q_20261005_04":[38.90,-77.04,"Washington"],"q_20260928_01":[38.90,-77.04,"Washington"],"q_20261009_04":[38.90,-77.04,"Washington"],"q_20261008_03":[38.90,-77.04,"Washington"],"q_20261012_07":[38.90,-77.04,"Washington"],
+ "q_20260928_02":[37.77,-122.42,"San Francisco"],"q_20261001_02":[37.39,-122.08,"Mountain View"],"q_20261009_03":[30.27,-97.74,"Austin"],
+ "q_20261009_01":[26.57,56.25,"Strait of Hormuz"],"q_20261005_03":[26.57,56.25,"Strait of Hormuz"],"q_20261008_01":[35.69,51.39,"Tehran"],
+ "q_20261001_03":[37.57,126.98,"Seoul"],
+ "q_20261012_05":[40.71,-74.01,"New York"],"q_20261012_06":[40.71,-74.01,"New York"],
+};
+const proj = (lat,lon) => [ (lon+180)/360*1000, (90-lat)/180*500 ];
 // Publication window shown on every forecast. Proposed, not announced.
 const ACCESS = {holders:"06:00 UTC", pub:"18:00 UTC"};
 const GF = s => `https://www.google.com/finance/quote/${s}`;
@@ -1293,7 +1419,8 @@ function openShare(f){
 function select(id){
   selected = selected===id ? null : id;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
-  if(!selected){ dos.classList.add("hidden"); ed.classList.remove("hidden"); renderSide(); return; }
+  if(!selected){ dos.classList.add("hidden"); if(document.getElementById("navDash").classList.contains("on")){ document.getElementById("dash").classList.remove("hidden"); } else ed.classList.remove("hidden"); renderSide(); return; }
+  document.getElementById("dash").classList.add("hidden");
   const f=byId[id]; const c=currentOf(id);
   const d=now(f)-first(f);
   const hist=f.hist.map(([dt,p],i)=>{
@@ -1304,7 +1431,7 @@ function select(id){
   const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${c.h}</h3>${c.body.slice(0,2).map(p=>`<p>${p}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
   dos.innerHTML=`<div class="dossier">
     <button type="button" class="back" id="back">← BACK TO THE EDITION</button>
-    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px"><img class="av big" src="${FRAMES[f.hist.length>1&&now(f)!==first(f)?"portrait_red":"portrait"]}" alt="" width="34" height="34" title="${f.hist.length>1&&now(f)!==first(f)?"UBIK has changed its mind on this one":"UBIK"}"><span class="status" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--teal);border-radius:2px;color:var(--teal)">FORECAST / ${f.status==="yes"?"RESOLVED":"ACTIVE"}</span><span class="mono" style="font-size:11px;color:var(--muted)">${f.id}</span><span class="eyebrow">${THEMES[f.theme]}</span></div>
+    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px"><img class="av big" src="${FRAMES[f.hist.length>1&&now(f)!==first(f)?"portrait_red":"portrait"]}" alt="" width="34" height="34" title="${f.hist.length>1&&now(f)!==first(f)?"UBIK has changed its mind on this one":"UBIK"}"><span class="status" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--teal);border-radius:2px;color:var(--teal)">FORECAST / ${f.status==="yes"?"RESOLVED":"ACTIVE"}</span><span class="mono" style="font-size:11px;color:var(--muted)">${f.id}</span><span class="eyebrow">${THEMES[f.theme]}</span></div>
     <h2 class="t">${f.q}</h2>
     <div class="card" style="grid-template-columns:1fr;padding:0;border:0;background:none">
       <div class="nums" style="margin-top:0"><span>Now<b>${pct(now(f))}</b></span><span>Issued ${fmt(issued(f))}<b>${pct(first(f))}</b></span><span class="delta ${d>0?"up":d<0?"down":""}">Change<b>${d===0?"—":(d>0?"+":"−")+Math.round(Math.abs(d)*100)}</b></span><span>Resolves<b style="font-size:16px;margin-top:4px">${fmt(f.due)}</b></span></div>
@@ -1337,7 +1464,7 @@ function selectEdition(d){
     <div class="num" style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em">EDITION ${d}</div>
     <h2 class="t">${e.title}</h2><p style="font-size:16px">${e.sum}</p>
     <p style="font-size:13px;color:var(--muted)">Full text of this edition is not in the snapshot. The forecasts it issued are, with their histories.</p>
-    <div class="fcs" style="display:grid;gap:8px;margin-top:14px">${fs.map(f=>`<button type="button" data-id="${f.id}" style="display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer"><span class="p" style="font-family:var(--mono);color:var(--ring);font-weight:500">${pct(first(f))}${f.hist.length>1?` → ${pct(now(f))}`:""}</span><span>${f.q}</span><span class="d" style="font-family:var(--mono);font-size:10px;color:var(--muted)">by ${fmt(f.due)}</span></button>`).join("")}</div>
+    <div class="fcs" style="display:grid;gap:8px;margin-top:14px">${fs.map(f=>`<button type="button" data-id="${f.id}" style="display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer"><span class="p" style="font-family:var(--mono);color:var(--ring);font-weight:500">${pct(first(f))}${f.hist.length>1?` → ${pct(now(f))}`:""}</span><span>${f.q}</span><span class="d" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">by ${fmt(f.due)}</span></button>`).join("")}</div>
   </div>`;
   ed.classList.add("hidden"); dos.classList.remove("hidden");
   document.getElementById("back").addEventListener("click",()=>selectEdition(d));
@@ -1357,7 +1484,7 @@ function answer(qtext){
 function renderResolved(){
   const f=F.find(x=>x.status==="yes");
   document.getElementById("resolved").innerHTML=`
-    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${f.id}</span></div>
+    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${f.id}</span></div>
     <h3 style="font-size:18px;margin-top:8px">${f.q}</h3>
     <div class="row" style="margin-top:10px"><span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span><span>Resolved ${fmt(f.resolved)}<b>YES</b></span><span>Brier<b>${f.brier.toFixed(4)}</b></span></div>
     <div class="ev">${tagEl("v")}${f.evidence}</div>
@@ -1444,6 +1571,102 @@ document.querySelectorAll(".side h2.fold").forEach(h=>{
   const toggle=()=>{ open=!open; set(open); try{localStorage.setItem("ubik-fold-"+h.dataset.fold,open?"1":"0")}catch(e){} };
   h.addEventListener("click",toggle); h.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
 });
+
+// ---------------- Dashboard: numbers, a map, and the question titles. No prose. ----------------
+const TODAY="2026-10-13";
+const daysTo = d => Math.round((new Date(d)-new Date(TODAY))/864e5);
+const esc = s => s.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+const shortQ = q => q.replace(/^Will /,"").replace(/\?$/,"");
+
+function renderDash(){
+  const open=F.filter(f=>f.status==="open"), res=F.filter(f=>f.resolved);
+  const withM=F.filter(f=>f.status==="open"&&MKT[f.id]&&MKT[f.id].venue);
+  const brier=res.length?res.reduce((a,f)=>a+f.brier,0)/res.length:null;
+  const mean=withM.length?Math.round(withM.reduce((a,f)=>a+Math.abs(gapOf(f))*100,0)/withM.length):0;
+  const changed=F.filter(f=>f.hist.length>1&&f.hist[f.hist.length-1][0]>="2026-10-06").length;
+  const next=open.map(f=>daysTo(f.due)).sort((a,b)=>a-b)[0];
+  const tiles=`<div class="tiles">
+    <div><i>Open</i><b>${open.length}</b></div><div><i>Settled</i><b>${res.length}</b></div><div><i>Brier</i><b>${brier!==null?brier.toFixed(3):"—"}</b></div>
+    <div><i>Priced vs market</i><b>${withM.length}</b></div><div><i>Mean gap</i><b>${mean}<small>pts</small></b></div><div><i>Changed, 7 days</i><b>${changed}</b></div><div><i>Next resolves</i><b>${next}<small>days</small></b></div>
+  </div>`;
+
+  // Map: pins aggregated by place
+  const places={};
+  for(const f of F){ const g=GEO[f.id]; if(!g) continue; const k=g[2]; (places[k]=places[k]||{lat:g[0],lon:g[1],name:k,ids:[],themes:{}}); places[k].ids.push(f.id); places[k].themes[f.theme]=(places[k].themes[f.theme]||0)+1; }
+  const pins=Object.values(places).map(pl=>{ const [x,y]=proj(pl.lat,pl.lon); const theme=Object.entries(pl.themes).sort((a,b)=>b[1]-a[1])[0][0]; const soon=Math.min(...pl.ids.map(id=>daysTo(byId[id].due)));
+    return `<g class="pin" data-place="${esc(pl.name)}" data-t="${theme}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><circle class="halo" r="${(6+pl.ids.length*2.2).toFixed(1)}"/><circle class="dot" r="${(2.6+pl.ids.length*0.9).toFixed(1)}"/><text class="lbl" x="${(8+pl.ids.length*1.5).toFixed(1)}" y="3.5">${esc(pl.name)} <tspan class="n">${pl.ids.length}${soon<=18?" · "+soon+"d":""}</tspan></text></g>`; }).join("");
+  const map=`<section class="mod map-mod"><h3><span class="withav">${ICON("watch")}Where the questions are</span><span class="mono">${Object.keys(places).length} places · ${F.length} questions · scroll to zoom, drag to pan</span></h3>
+    <div class="mapwrap"><svg id="wmap" viewBox="0 0 1000 500" aria-label="World map of open questions"><rect class="sea" x="-2000" y="-2000" width="5000" height="5000"/><path class="land" d="${WORLD}"/><g id="pins">${pins}</g></svg>
+    <div class="mapctl"><button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="out" aria-label="Zoom out">−</button><button type="button" data-z="reset" aria-label="Reset">⟲</button></div>
+    <div class="maplist" id="maplist"></div></div></section>`;
+
+  // Horizon: next 90 days
+  const H=90; const byDay={}; for(const f of open){ const d=daysTo(f.due); if(d>=0&&d<=H){ (byDay[d]=byDay[d]||[]).push(f); } }
+  const beyond=open.filter(f=>daysTo(f.due)>H).length;
+  const hz=`<section class="mod"><h3><span class="withav">${ICON("history")}Resolution horizon</span><span class="mono">next ${H} days · ${beyond} beyond</span></h3>
+    <div class="horizon"><div class="axis">${[0,15,30,45,60,75,90].map(d=>`<span style="left:${d/H*100}%">${d===0?"today":fmt(new Date(new Date(TODAY).getTime()+d*864e5).toISOString().slice(0,10))}</span>`).join("")}</div>
+    ${Object.entries(byDay).map(([d,fs])=>{ const t=fs[0].theme; return `<button type="button" class="hz" data-t="${t}" data-id="${fs[0].id}" style="left:${d/H*100}%;--n:${fs.length}" title="${fs.map(f=>f.q).join("\n")}"><i>${fs.length>1?fs.length:""}</i><span>${fmt(fs[0].due)} · ${fs.length}</span></button>`; }).join("")}</div></section>`;
+
+  // Probability matrix
+  const rows=[...open].sort((a,b)=>a.due.localeCompare(b.due)).map(f=>{ const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null; const p0=first(f), p1=now(f);
+    return `<button type="button" class="mrow" data-id="${f.id}" data-t="${f.theme}"><span class="k">${THEMES[f.theme]}</span><span class="q">${esc(shortQ(f.q))}</span>
+      <span class="track"><i class="ghost" style="left:${p0*100}%"></i>${p0!==p1?`<i class="drift" style="left:${Math.min(p0,p1)*100}%;width:${Math.abs(p1-p0)*100}%"></i>`:""}${m?`<i class="mkt" style="left:${m.p*100}%" title="${m.venue} ${pct(m.p)}"></i>`:""}<i class="now" style="left:${p1*100}%"></i></span>
+      <span class="val"><b>${pct(p1)}</b>${m?`<small>mkt ${pct(m.p)}</small>`:""}</span><span class="due">${fmt(f.due)}</span></button>`; }).join("");
+  const matrix=`<section class="mod"><h3><span class="withav">${ICON("head")}Every open question</span><span class="mono">● now · ○ market · ◌ at issue · soonest first</span></h3><div class="matrix"><div class="scale"><span></span><span class="ticks"><i>0</i><i>25</i><i>50</i><i>75</i><i>100</i></span><span></span><span></span></div>${rows}</div></section>`;
+
+  // Movers
+  const movers=[...F].filter(f=>f.hist.length>1).map(f=>({f,d:now(f)-first(f)})).filter(x=>x.d!==0).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)).slice(0,8);
+  const mv=`<section class="mod half"><h3><span class="withav">${ICON("signals")}Largest moves since issue</span></h3><div class="movers">${movers.map(({f,d})=>`<button type="button" class="mover" data-id="${f.id}" data-t="${f.theme}"><span class="sp">${spark(f,72,22)}</span><span class="q">${esc(shortQ(f.q))}</span><span class="d ${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</span><span class="p">${pct(first(f))} → ${pct(now(f))}</span></button>`).join("")}</div></section>`;
+
+  // vs market bars
+  const vs=`<section class="mod half"><h3><span class="withav">${ICON("vs")}UBIK vs the market</span><span class="mono">gap in points</span></h3><div class="gapbars">${withM.sort((a,b)=>Math.abs(gapOf(b))-Math.abs(gapOf(a))).map(f=>{ const g=Math.round(gapOf(f)*100), m=MKT[f.id];
+    return `<button type="button" class="gb" data-id="${f.id}" data-t="${f.theme}"><span class="q">${esc(shortQ(f.q))}${m.adj?' <em>adj.</em>':''}</span><span class="bar"><i class="${g>0?"up":"dn"}" style="${g>0?`left:50%;width:${Math.abs(g)/40*50}%`:`right:50%;width:${Math.abs(g)/40*50}%`}"></i></span><span class="n">${g>0?"+":"−"}${Math.abs(g)}</span><span class="pp">${pct(now(f))} · ${m.venue} ${pct(m.p)}</span></button>`; }).join("")}
+    <p class="note">${open.length-withM.length} open questions have no listed contract.</p></div></section>`;
+
+  // Calibration
+  const bins=[0,0.2,0.4,0.6,0.8,1]; const pts=res.map(f=>({p:first(f),o:f.status==="yes"?1:0}));
+  const cal=`<section class="mod half"><h3><span class="withav">${ICON("record")}Calibration</span><span class="mono">n = ${res.length} · meaningful from ~30</span></h3>
+    <svg class="calib" viewBox="0 0 240 240" aria-label="Calibration plot"><g class="grid">${[0,1,2,3,4].map(i=>`<line x1="40" y1="${20+i*45}" x2="220" y2="${20+i*45}"/><line x1="${40+i*45}" y1="20" x2="${40+i*45}" y2="200"/>`).join("")}</g>
+      <line class="diag" x1="40" y1="200" x2="220" y2="20"/>
+      ${pts.map(pt=>`<circle class="pt" cx="${40+pt.p*180}" cy="${200-pt.o*180}" r="5"/>`).join("")}
+      <text class="ax" x="130" y="228">forecast probability</text><text class="ax" transform="translate(14 110) rotate(-90)">observed</text>
+      <text class="tk" x="40" y="214">0</text><text class="tk" x="220" y="214">1</text><text class="tk" x="28" y="204">0</text><text class="tk" x="28" y="24">1</text></svg></section>`;
+
+  // Theme load
+  const counts=Object.keys(THEMES).map(k=>({k,open:open.filter(f=>f.theme===k).length,set:res.filter(f=>f.theme===k).length})).filter(x=>x.open+x.set).sort((a,b)=>(b.open+b.set)-(a.open+a.set)); const mx=Math.max(...counts.map(c=>c.open+c.set));
+  const load=`<section class="mod half"><h3><span class="withav">${ICON("edition")}Questions by theme</span><span class="mono">open · settled</span></h3><div class="load">${counts.map(c=>`<button type="button" class="ld" data-k="${c.k}" data-t="${c.k}"><span class="k">${THEMES[c.k]}</span><span class="bar"><i style="width:${c.open/mx*100}%"></i><i class="set" style="width:${c.set/mx*100}%"></i></span><span class="n">${c.open}${c.set?` · ${c.set}`:""}</span></button>`).join("")}</div></section>`;
+
+  document.getElementById("dash").innerHTML=`<div class="dash">${tiles}${map}${hz}${matrix}<div class="grid2">${mv}${vs}${cal}${load}</div></div>`;
+  document.querySelectorAll("#dash [data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
+  document.querySelectorAll("#dash .ld").forEach(b=>b.addEventListener("click",()=>{ active=b.dataset.k; try{localStorage.setItem("ubik-theme",active)}catch(e){} showEdition(); renderAll(); }));
+  wireMap(places);
+}
+
+// Map: zoom on the wheel and the buttons, pan by dragging, pins keep their size.
+function wireMap(places){
+  const svg=document.getElementById("wmap"); if(!svg) return;
+  const base={x:120,y:60,w:780,h:390}; let vb={...base};
+  const apply=()=>{ svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`); const k=vb.w/1000; svg.style.setProperty("--k",k); };
+  const zoomAt=(fx,fy,factor)=>{ const nw=Math.max(60,Math.min(1000,vb.w*factor)); const nh=nw/2; vb={x:vb.x+(vb.w-nw)*fx, y:vb.y+(vb.h-nh)*fy, w:nw, h:nh}; clamp(); apply(); };
+  const clamp=()=>{ vb.x=Math.max(-vb.w*0.2,Math.min(1000-vb.w*0.8,vb.x)); vb.y=Math.max(-vb.h*0.2,Math.min(500-vb.h*0.8,vb.y)); };
+  svg.addEventListener("wheel",e=>{ e.preventDefault(); const r=svg.getBoundingClientRect(); zoomAt((e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height, e.deltaY>0?1.18:0.85); },{passive:false});
+  let drag=null;
+  svg.addEventListener("pointerdown",e=>{ drag={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y}; svg.setPointerCapture(e.pointerId); svg.classList.add("grab"); });
+  svg.addEventListener("pointermove",e=>{ if(!drag) return; const r=svg.getBoundingClientRect(); vb.x=drag.vx-(e.clientX-drag.x)*vb.w/r.width; vb.y=drag.vy-(e.clientY-drag.y)*vb.h/r.height; clamp(); apply(); });
+  const end=()=>{ drag=null; svg.classList.remove("grab"); }; svg.addEventListener("pointerup",end); svg.addEventListener("pointercancel",end);
+  document.querySelectorAll(".mapctl button").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.z==="reset"){ vb={...base}; apply(); } else zoomAt(.5,.5,b.dataset.z==="in"?0.7:1.43); }));
+  const list=document.getElementById("maplist");
+  svg.querySelectorAll(".pin").forEach(g=>g.addEventListener("click",e=>{ e.stopPropagation(); const pl=places[g.dataset.place]; svg.querySelectorAll(".pin").forEach(x=>x.classList.toggle("on",x===g));
+    list.innerHTML=`<span class="lab2">${esc(pl.name)} · ${pl.ids.length}</span>`+pl.ids.map(id=>byId[id]).sort((a,b)=>a.due.localeCompare(b.due)).map(f=>`<button type="button" class="lnk" data-id="${f.id}"><b>${pct(now(f))}</b> ${esc(shortQ(f.q))} <span class="mono">${fmt(f.due)}</span></button>`).join("");
+    list.querySelectorAll("[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id))); }));
+  apply();
+}
+function showDash(){ selected="dash"; document.querySelector(".main").classList.add("wide"); document.getElementById("edition").classList.add("hidden"); document.getElementById("dossier").classList.add("hidden"); const d=document.getElementById("dash"); d.classList.remove("hidden"); renderDash(); document.getElementById("navDash").classList.add("on"); document.getElementById("navEdition").classList.remove("on"); renderSide(); try{localStorage.setItem("ubik-view","dash")}catch(e){} }
+function showEdition(){ selected=null; document.querySelector(".main").classList.remove("wide"); document.getElementById("dash").classList.add("hidden"); document.getElementById("dossier").classList.add("hidden"); document.getElementById("edition").classList.remove("hidden"); document.getElementById("navDash").classList.remove("on"); document.getElementById("navEdition").classList.add("on"); renderSide(); try{localStorage.setItem("ubik-view","edition")}catch(e){} }
+document.getElementById("navDash").addEventListener("click",e=>{ e.preventDefault(); showDash(); window.scrollTo({top:document.getElementById("dash").offsetTop-80,behavior:"smooth"}); });
+document.getElementById("navEdition").addEventListener("click",e=>{ e.preventDefault(); showEdition(); });
+try{ if(localStorage.getItem("ubik-view")==="dash") showDash(); }catch(e){}
+
 // ledger rows open the dossier too
 document.getElementById("tbody").addEventListener("click",e=>{ const tr=e.target.closest("tr"); if(tr&&tr.dataset.id) select(tr.dataset.id); });
 </script>
