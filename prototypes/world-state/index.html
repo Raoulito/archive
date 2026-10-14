@@ -1167,6 +1167,63 @@ body.covered{overflow:hidden}
 .tabs a[aria-current="page"]{border-bottom-color:var(--ring)}
 .ticker .run button .t.new{color:var(--ring-text)}
 .fig .eye{animation-name:ubikpulse}
+/* ---- the board: every open question in one table, then the edition ---- */
+#board{padding-block:22px 8px}
+.bhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;border-bottom:2px solid var(--rule);padding-bottom:8px;margin-bottom:0}
+.bhead .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bhead .num b{color:var(--ink);font-weight:600}
+.bhead .sorts{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.bhead .sorts button{font-family:var(--ui);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
+.bhead .sorts button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#board .more{display:block;width:100%;text-align:center;font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;border:0;border-bottom:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 0;cursor:pointer}
+.shell.boarded .side #forecasts,.shell.boarded .side #scards{display:none}
+table.board{width:100%;border-collapse:collapse}
+table.board th{text-align:left;font-family:var(--ui);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px 6px 0;border-bottom:1px solid var(--line)}
+table.board td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+table.board tr.r{cursor:pointer}
+table.board tr.r:hover td{background:var(--surface)}
+table.board tr.r[data-t] td.q .k{color:var(--tc)}
+table.board td.n{font-family:var(--mono);font-size:10.5px;color:var(--muted);width:26px}
+table.board td.q{font-family:var(--body);font-size:14px;line-height:1.3;color:var(--ink);min-width:0}
+table.board td.q .k{display:block;font-family:var(--ui);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table.board td.q .k span{color:var(--muted);letter-spacing:.04em;text-transform:none;font-family:var(--mono)}
+table.board td.p{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--ink);white-space:nowrap;width:84px}
+table.board td.p em{display:inline-block;font-style:normal;font-size:11px;margin-left:6px;vertical-align:2px}
+table.board td.p em.up{color:var(--ring-text)} table.board td.p em.dn{color:var(--cyan)}
+table.board td.sp{width:92px}
+table.board td.sp svg{display:block}
+table.board td.mk{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap;width:120px}
+table.board td.mk b{color:var(--ink);font-weight:500}
+table.board td.mk i{font-style:normal;color:var(--ring-text)}
+table.board td.due{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap;width:70px}
+table.board td.due.soon{color:var(--ring-text)}
+table.board td.st{width:28px;text-align:right}
+table.board td.st .star{display:inline-grid;place-items:center;width:22px;height:22px;cursor:pointer;color:var(--muted)}
+table.board td.st .star[aria-pressed="true"]{color:var(--ring-text)}
+.changes{margin:0 0 18px;border-top:0}
+.changes .num{display:flex;align-items:baseline;gap:10px;font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 0}
+.changes .num .mono{margin-left:auto;font-family:var(--mono);letter-spacing:0;text-transform:none;font-size:11px}
+.changes .num .live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ring);box-shadow:0 0 0 3px color-mix(in srgb,var(--ring) 25%,transparent);margin-right:4px;vertical-align:1px}
+.changes ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0 28px;border-bottom:2px solid var(--rule)}
+.changes li button{display:grid;grid-template-columns:70px 1fr;gap:2px 12px;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 0;cursor:pointer}
+.changes li button:hover .q{color:var(--ring-text)}
+.changes .t{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.4}
+.changes .t small{display:block;font-size:10px;opacity:.7}
+.changes .body{min-width:0}
+.changes .act{display:block;font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.changes .act b{font-family:var(--mono);letter-spacing:0;font-size:11.5px;color:var(--ink);font-weight:500;margin-left:6px}
+.changes .act.raised b{color:var(--ring-text)} .changes .act.lowered b{color:var(--cyan)} .changes .act.settled b{color:var(--good)} .changes .act.new b{color:var(--ink)}
+.changes .q{display:block;font-family:var(--body);font-size:13.5px;line-height:1.35;color:var(--ink)}
+.changes .why{display:block;font-family:var(--body);font-size:12.5px;line-height:1.4;color:var(--muted);margin-top:2px}
+.edhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin-top:44px;border-top:2px solid var(--rule);padding-top:10px}
+.edhead .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);font-weight:600}
+.edhead .mono{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.state{padding-block:30px 10px}
+.state .date{font-size:clamp(22px,2.8vw,34px)}
+.state .state-main>p{font-size:16px;line-height:1.5;max-width:70ch}
+.counts{margin-top:14px}
+@media (max-width:760px){table.board td.sp,table.board th.sp,table.board td.mk,table.board th.mk{display:none}table.board td.p{font-size:16px;width:auto}}
+@media (max-width:959px){#board .changes ol{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
@@ -1188,7 +1245,7 @@ body.covered{overflow:hidden}
         <a href="https://www.coingecko.com/en/coins/ubik" target="_blank" rel="noopener">coingecko</a>
         <a class="llms" href="https://ubik-web-testing.up.railway.app/llms.txt" target="_blank" rel="noopener" title="This edition as plain text, for any model">llms.txt</a>
       </nav>
-      <span class="stamp">EDITION 2026-10-14 · UPDATED 06:47 EDT</span>
+      <span class="stamp" id="stamp">EDITION 2026-10-14 · UPDATED 06:47 EDT</span>
       <span class="who" id="who"></span>
     </div>
     <div class="clocks" aria-label="World clocks" id="clocks"></div>
@@ -1200,8 +1257,8 @@ body.covered{overflow:hidden}
    <div class="state-main">
     <div class="date">The world on 14 October 2026</div>
     <p>The day's four main changes follow one pattern. A few actors control narrow points that others cannot avoid, and each now uses its narrow point to set terms. Iran can make the Strait of Hormuz dangerous for ships, and two Iranian officials say it will keep oil high until the US votes on 3 November. The US controls the intelligence that Ukraine uses, and SpaceX controls the satellite link for Ukraine's drones, so a truce without a text binds only Kyiv while Russia hits its heating plants. ASML is the only maker of the machines that print the most advanced chips, and it will charge more from 2027 while model prices fall. The EU controls access to its car market, and its walls pull Chinese factories into Europe.</p>
-    <p style="font-size:16px;color:var(--muted)">The side that depends on the narrow point pays: India's state oil companies, Spain's tax budget, Kyiv's left bank, Korea's pension savers, the labs that rent their hardware. Three political dates decide how long the shields hold: Spain's committee vote on 16 October, the Graham Act deadline on 18 October, and the midterms on 3 November.</p>
-    <div class="length" role="group" aria-label="Reading length"><span class="lab2">Read it in</span><button type="button" data-len="tldr">TL;DR <small>1 min</small></button><button type="button" data-len="digest" aria-pressed="true">Digest <small>5 min</small></button><button type="button" data-len="full">Full <small>20 min</small></button></div>
+    
+    
     <div class="counts" id="counts">
       <span><b>5</b> currents</span><span><b>29</b> open forecasts</span><span><b>5</b> changes of mind today</span><span><b>255</b> sources</span><span class="sep"></span><span id="score"></span>
     </div>
@@ -1225,6 +1282,8 @@ body.covered{overflow:hidden}
   <div class="shell">
     <div class="main">
       <div id="edition">
+        <section id="board" aria-label="The board"></section>
+        <div class="edhead" id="edhead"><span class="num">THE EDITION · THE WORLD ON 14 OCTOBER 2026 · 5 CURRENTS · ABOUT 20 MINUTES</span><span class="mono">the reading behind the numbers above</span></div>
         <div id="dev"></div>
       </div>
 
@@ -1344,7 +1403,7 @@ body.covered{overflow:hidden}
       <p class="thesis" id="cover-thesis"></p>
       <div class="coverscore" id="cover-score"></div>
       <div class="doors">
-        <button type="button" data-reader="human"><b>Read it as a human</b><span>The edition: four currents, why they matter, the film, the forecasts.</span></button>
+        <button type="button" data-reader="human"><b>Read it as a human</b><span>The board: every open question with its number, then the edition behind it.</span></button>
         <button type="button" data-reader="agent"><b>Read it as an agent</b><span>The same edition as data: thesis, mechanisms, record IDs, llms.txt, API and MCP.</span></button>
       </div>
       <p class="coverfoot">Your choice is remembered on this device. The tabs switch between the two at any time.</p>
@@ -1604,6 +1663,22 @@ const EDITIONS = [
  {d:"2026-09-28", title:"Edition of 28 September", sum:"First edition in the record. Fed, OpenAI training, Russian decree, Lula."},
 ];
 
+
+// Every revision with its timestamp, from /forecasts (read 14 Oct 2026 20:30 CET). `hist` keeps the dates; this keeps the clock.
+const TS={"q_20261010_01":[["2026-10-10T06:00:30-04:00",0.1],["2026-10-14T05:56:51-04:00",0.08]],"q_20261011_02":[["2026-10-11T06:00:11-04:00",0.16],["2026-10-12T18:32:23-04:00",0.22],["2026-10-14T05:56:51-04:00",0.23]],"q_20261012_01":[["2026-10-12T00:48:18-04:00",0.69],["2026-10-12T09:43:00-04:00",0.71]],"q_20261008_02":[["2026-10-08T18:22:40-04:00",0.17],["2026-10-10T06:00:30-04:00",0.1],["2026-10-11T01:01:42-04:00",0.08],["2026-10-11T21:01:32-04:00",0.11],["2026-10-12T00:48:18-04:00",0.1],["2026-10-12T12:43:06-04:00",0.08],["2026-10-13T09:33:12-04:00",0.07],["2026-10-13T17:54:17-04:00",0.08],["2026-10-14T05:56:37-04:00",0.06]],"q_20261012_03":[["2026-10-12T18:32:23-04:00",0.22],["2026-10-14T05:56:37-04:00",0.23]],"q_20261009_02":[["2026-10-09T06:00:17-04:00",0.62],["2026-10-12T21:30:18-04:00",0.65],["2026-10-13T09:33:27-04:00",0.67],["2026-10-13T21:55:49-04:00",0.71],["2026-10-14T01:55:31-04:00",0.75]],"q_20261012_04":[["2026-10-12T18:32:23-04:00",0.36]],"q_20261012_02":[["2026-10-12T00:48:18-04:00",0.07],["2026-10-12T01:41:40-04:00",0.08]],"q_20261011_01":[["2026-10-11T06:00:11-04:00",0.63]],"q_20261011_03":[["2026-10-11T06:00:11-04:00",0.88]],"q_20261011_04":[["2026-10-11T06:00:11-04:00",0.28]],"q_20261010_02":[["2026-10-10T06:00:30-04:00",0.28]],"q_20261005_04":[["2026-10-05T13:40:39-04:00",0.6],["2026-10-10T06:00:30-04:00",0.75]],"q_20260928_04":[["2026-09-28T15:54:22-04:00",0.44],["2026-10-08T18:22:40-04:00",0.16],["2026-10-10T00:56:41-04:00",0.15]],"q_20261009_01":[["2026-10-09T06:00:17-04:00",0.56],["2026-10-09T17:55:29-04:00",0.54]],"q_20261009_04":[["2026-10-09T06:00:17-04:00",0.25]],"q_20261009_03":[["2026-10-09T06:00:17-04:00",0.37]],"q_20261008_01":[["2026-10-08T18:22:40-04:00",0.1]],"q_20261008_03":[["2026-10-08T18:22:40-04:00",0.3]],"q_20261001_01":[["2026-10-01T07:12:10-04:00",0.76]],"q_20260928_01":[["2026-09-28T15:54:22-04:00",0.67],["2026-10-01T07:12:10-04:00",0.34],["2026-10-05T13:40:39-04:00",0.13]],"q_20261005_03":[["2026-10-05T13:40:39-04:00",0.35]],"q_20261005_05":[["2026-10-05T13:40:39-04:00",0.45]],"q_20261001_02":[["2026-10-01T07:12:10-04:00",0.63]],"q_20261001_03":[["2026-10-01T07:12:10-04:00",0.4]],"q_20260928_02":[["2026-09-28T15:54:22-04:00",0.47]],"q_20260928_03":[["2026-09-28T15:54:22-04:00",0.6]],
+"q_20261012_05":[["2026-10-12T19:28:00-04:00",0.58]],"q_20261012_06":[["2026-10-12T19:28:00-04:00",0.54]],"q_20261012_07":[["2026-10-12T19:28:00-04:00",0.21]]};
+const RESOLVED_AT={"q_20261001_01":"2026-10-08T18:22:40-04:00"};
+// the record as a stream: every revision, settlement and new question, newest first
+function changes(){
+  const out=[];
+  for(const f of F){ const h=TS[f.id]||[]; h.forEach((e,i)=>{ if(i===0) out.push({t:e[0],k:"new",f,p:e[1]}); else if(e[1]!==h[i-1][1]) out.push({t:e[0],k:e[1]>h[i-1][1]?"raised":"lowered",f,from:h[i-1][1],p:e[1]}); });
+    if(RESOLVED_AT[f.id]) out.push({t:RESOLVED_AT[f.id],k:"settled",f,p:f.hist[f.hist.length-1][1],outcome:f.status}); }
+  return out.sort((a,b)=>b.t.localeCompare(a.t));
+}
+const LAST_CHANGE=changes()[0].t;
+function ago(iso){ const ms=Date.now()-new Date(iso).getTime(); const m=Math.round(ms/6e4); if(m<60) return `${m}m ago`; const h=Math.round(m/60); if(h<48) return `${h}h ago`; return `${Math.round(h/24)}d ago`; }
+function clock(iso){ return new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"UTC"}).format(new Date(iso))+" UTC"; }
+
 // ---- helpers ----
 const pct = p => Math.round(p*100)+"%";
 const byId = Object.fromEntries(F.map(f=>[f.id,f]));
@@ -1678,7 +1753,7 @@ function wireStills(root){
   }));
 }
 // Tier one: the digest. Number, title, opener, lead lines, why you should care, forecasts, and a way into the full section.
-let LEN="digest"; try{ LEN=localStorage.getItem("ubik-length")||"digest"; }catch(e){}
+let LEN="digest";
 function setLen(l){ LEN=l; try{localStorage.setItem("ubik-length",l)}catch(e){} document.querySelectorAll(".length button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.len===l)); renderDev(); }
 document.querySelectorAll(".length button").forEach(b=>{ b.setAttribute("aria-pressed",b.dataset.len===LEN); b.addEventListener("click",()=>setLen(b.dataset.len)); });
 function renderDev(){
@@ -1726,7 +1801,7 @@ function renderDev(){
 }
 // Tier two: the full section in the main column, like a dossier.
 // While a section or a forecast dossier is open, the headline block and filters step aside.
-function focusMode(on){ document.querySelector(".state").classList.toggle("hidden", on || view!=="edition"); document.querySelector(".qnav").classList.toggle("hidden", on || !(view==="edition"||(view==="ledger"&&pane==="forecasts"))); }
+function focusMode(on){ document.querySelector(".state").classList.toggle("hidden", on || view!=="edition"); document.getElementById("board").classList.toggle("hidden", on || view!=="edition"); document.getElementById("edhead").classList.toggle("hidden", on || view!=="edition"); document.querySelector(".qnav").classList.toggle("hidden", on || !(view==="edition"||(view==="ledger"&&pane==="forecasts"))); }
 function selectSection(theme){
   const c=CURRENTS.find(x=>x.theme===theme); if(!c) return;
   selected="sec:"+theme;
@@ -1954,7 +2029,31 @@ function renderTicker(){
   run.style.setProperty("--tick-dur", Math.max(40, Math.min(sig.length,14)*7)+"s");
   run.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
 }
-function renderAll(){ renderFilters(); renderDev(); renderLedger(); renderSide(); renderTicker(); renderScore(); }
+
+// ---- the board: every open question, sortable, with what changed under it ----
+let boardAll=false; let boardSort="soonest"; try{ boardSort=localStorage.getItem("ubik-sort")||"soonest"; }catch(e){}
+function renderBoard(){
+  const el=document.getElementById("board"); if(!el) return;
+  let rows=F.filter(f=>f.status==="open"&&(active==="all"||f.theme===active)&&matches(f));
+  const sorters={soonest:(a,b)=>a.due.localeCompare(b.due), move:(a,b)=>Math.abs(now(b)-first(b))-Math.abs(now(a)-first(a))||a.due.localeCompare(b.due), gap:(a,b)=>(gapOf(b)===null?-1:Math.abs(gapOf(b)))-(gapOf(a)===null?-1:Math.abs(gapOf(a))), newest:(a,b)=>issued(b).localeCompare(issued(a))||a.due.localeCompare(b.due), prob:(a,b)=>now(b)-now(a)};
+  rows.sort(sorters[boardSort]||sorters.soonest);
+  const head=`<div class="bhead"><span class="num"><b>${rows.length}</b> open question${rows.length===1?"":"s"}${active!=="all"?` · ${THEMES[active]}`:""}${query?` · “${esc(query)}”`:""}</span><span class="num">last change ${ago(LAST_CHANGE)}</span><span class="sorts" role="group" aria-label="Sort">${[["soonest","Soonest"],["move","Biggest move"],["gap","Gap to market"],["prob","Most likely"],["newest","Newest"]].map(([k,l])=>`<button type="button" data-sort="${k}" aria-pressed="${boardSort===k}">${l}</button>`).join("")}</span></div>`;
+  const tr=(f,i)=>{ const d=now(f)-first(f), m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null, g=gapOf(f), days=daysTo(f.due);
+    return `<tr class="r" data-id="${f.id}" data-t="${f.theme}" tabindex="0"><td class="n">${String(i+1).padStart(2,"0")}</td><td class="q"><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""} <span>${f.id}</span></span>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="sp">${spark(f,88,24)}</td><td class="mk">${m?`<b>${pct(m.p)}</b> ${m.venue}${m.adj?" adj":""}${g!==null?` <i>${g>0?"+":"−"}${Math.round(Math.abs(g)*100)}</i>`:""}`:"<span>no contract</span>"}</td><td class="due${days<=14?" soon":""}">${fmt(f.due)}${days<=14?`<br><small>${days}d</small>`:""}</td><td class="st">${starBtn(f.id)}</td></tr>`; };
+  const LIM=12, shown=boardAll?rows:rows.slice(0,LIM);
+  const table=`<table class="board"><thead><tr><th>#</th><th>Question</th><th>UBIK</th><th class="sp">14 days</th><th class="mk">Market · gap</th><th>Resolves</th><th></th></tr></thead><tbody>${shown.map(tr).join("")}</tbody></table>${rows.length>LIM?`<button type="button" class="more" id="boardmore">${boardAll?"Show the first 12":`Show all ${rows.length} →`}</button>`:""}`;
+  const ch=changes().filter(c=>active==="all"||c.f.theme===active).slice(0,6);
+  const list=`<div class="changes"><div class="num"><span><i class="live"></i>What changed</span><span class="mono">${changes().length} entries in the record · newest first · <a href="#ledger/history" data-goto="ledger" style="color:inherit">all in the ledger →</a></span></div><ol>${ch.map(c=>`<li><button type="button" data-id="${c.f.id}"><span class="t">${ago(c.t)}<small>${fmt(c.t.slice(0,10))} ${clock(c.t)}</small></span><span class="body"><span class="act ${c.k}">${c.k==="settled"?`settled ${c.outcome}`:c.k}<b>${c.k==="new"?pct(c.p):c.k==="settled"?pct(c.p):`${pct(c.from)} → ${pct(c.p)}`}</b></span><span class="q">${esc(shortQ(c.f.q))}</span>${c.k!=="new"&&c.f.change&&c.t===((TS[c.f.id]||[]).slice(-1)[0]||[])[0]?`<span class="why">${esc(c.f.change)}</span>`:""}</span></button></li>`).join("")}</ol></div>`;
+  el.innerHTML=head+list+table;
+  const bm=document.getElementById("boardmore"); if(bm) bm.addEventListener("click",()=>{ boardAll=!boardAll; renderBoard(); if(!boardAll) el.scrollIntoView({block:"start"}); });
+  el.querySelectorAll(".sorts button").forEach(b=>b.addEventListener("click",()=>{ boardSort=b.dataset.sort; try{localStorage.setItem("ubik-sort",boardSort)}catch(e){} renderBoard(); }));
+  el.querySelectorAll("tr.r").forEach(r=>{ r.addEventListener("click",()=>select(r.dataset.id)); r.addEventListener("keydown",e=>{ if(e.key==="Enter") select(r.dataset.id); }); });
+  el.querySelectorAll(".changes button[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
+  el.querySelectorAll("[data-goto]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.goto,true,"history"); }));
+  wireStars(el);
+  const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION 2026-10-14 · LAST CHANGE ${ago(LAST_CHANGE).toUpperCase()}`;
+}
+function renderAll(){ renderFilters(); renderBoard(); renderDev(); renderLedger(); renderSide(); renderTicker(); renderScore(); }
 
 // World clocks: the capitals this edition turns on. Local time, 24h, ticks each minute.
 const ZONES=[["Washington","America/New_York"],["London","Europe/London"],["Kyiv","Europe/Kyiv"],["Riyadh","Asia/Riyadh"],["New Delhi","Asia/Kolkata"],["Tokyo","Asia/Tokyo"]];
@@ -2005,7 +2104,7 @@ function openSignin(){ const d=document.getElementById("signin"); d.querySelecto
 function updateMineCount(){ const n=mineQuestions().length; const el=document.getElementById("minecnt"); if(el) el.textContent=n?n:""; }
 function inMine(f){ return MINE.stars.has(f.id) || MINE.themes.has(f.theme) || (GEO[f.id]&&MINE.places.has(GEO[f.id][2])) || topicsOf(f).length>0; }
 function mineQuestions(){ return F.filter(inMine); }
-function toggleStar(id){ MINE.stars.has(id)?MINE.stars.delete(id):MINE.stars.add(id); saveMine(); renderSide(); if(view==="mine") renderMine(); if(view==="dash") renderDash(); const d=document.querySelector(`.dossier .star[data-id="${id}"]`); if(d) d.setAttribute("aria-pressed",MINE.stars.has(id)); }
+function toggleStar(id){ MINE.stars.has(id)?MINE.stars.delete(id):MINE.stars.add(id); saveMine(); renderSide(); if(view==="edition") renderBoard(); if(view==="mine") renderMine(); if(view==="dash") renderDash(); const d=document.querySelector(`.dossier .star[data-id="${id}"]`); if(d) d.setAttribute("aria-pressed",MINE.stars.has(id)); }
 function toggleTheme(k){ MINE.themes.has(k)?MINE.themes.delete(k):MINE.themes.add(k); saveMine(); if(view==="mine") renderMine(); renderSide(); }
 function togglePlace(k){ MINE.places.has(k)?MINE.places.delete(k):MINE.places.add(k); saveMine(); if(view==="mine") renderMine(); renderSide(); }
 // a span, not a button: stars sit inside buttons (cards, rows), and a button inside a button is dropped by the parser
@@ -2058,7 +2157,7 @@ updateMineCount();
 try{ const s=localStorage.getItem("ubik-theme"); if(s && (s==="all"||THEMES[s])) active=s; }catch(e){}
 renderResolved(); renderAll();
 
-document.getElementById("search").addEventListener("input",e=>{ query=e.target.value.trim().toLowerCase(); renderDev(); renderLedger(); renderSide(); });
+document.getElementById("search").addEventListener("input",e=>{ query=e.target.value.trim().toLowerCase(); renderBoard(); renderDev(); renderLedger(); renderSide(); });
 document.getElementById("sortlink").addEventListener("click",e=>e.preventDefault());
 document.getElementById("chatform").addEventListener("submit",e=>{
   e.preventDefault(); const inp=document.getElementById("chatin"); const t=inp.value.trim(); if(!t) return;
@@ -2086,7 +2185,7 @@ document.querySelectorAll(".side h2.fold").forEach(h=>{
 });
 
 // ---------------- Dashboard: numbers, a map, and the question titles. No prose. ----------------
-var TODAY="2026-10-13";
+var TODAY="2026-10-14";
 function daysTo(d){ return Math.round((new Date(d)-new Date(TODAY))/864e5); }
 function esc(s){ return s.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c])); }
 function shortQ(q){ return q.replace(/^Will /,"").replace(/\?$/,""); }
@@ -2184,7 +2283,7 @@ function go(v, scroll, sub){
   for(const k in VIEWS){ document.getElementById(VIEWS[k]).classList.toggle("hidden", k!==v); }
   document.getElementById("dossier").classList.add("hidden");
   const solo=(v==="dash"||v==="ledger"||v==="agent"||v==="films");
-  document.querySelector(".shell").classList.toggle("solo", solo);
+  document.querySelector(".shell").classList.toggle("solo", solo); document.querySelector(".shell").classList.toggle("boarded", v==="edition");
   document.querySelector(".main").classList.toggle("wide", solo);
   document.querySelectorAll(".tabs a").forEach(a=>{ if(a.dataset.view===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   document.querySelector(".qnav").classList.toggle("hidden", !(v==="edition"||(v==="ledger"&&(sub||pane)==="forecasts")));
