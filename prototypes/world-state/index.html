@@ -993,6 +993,35 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 .access .note code{font-family:var(--mono);font-size:12px;color:var(--ink)}
 @media(max-width:640px){.endpoints>div{grid-template-columns:1fr}}
 
+/* ---- reading length ---- */
+.length{display:flex;align-items:center;gap:0;margin-top:22px;flex-wrap:wrap}
+.length .lab2{margin-right:12px}
+.length button{font-family:var(--ui);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:7px 14px;border:1px solid var(--line);border-right-width:0;background:var(--surface);color:var(--muted);cursor:pointer;display:inline-flex;gap:8px;align-items:baseline}
+.length button:last-child{border-right-width:1px}
+.length button small{font-family:var(--ui);font-size:10px;letter-spacing:.06em;text-transform:none;color:var(--muted);font-weight:400}
+.length button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.length button[aria-pressed="true"] small{color:var(--bg);opacity:.7}
+.length button:hover:not([aria-pressed="true"]){color:var(--ink)}
+.tldr{padding-top:28px}
+.tl{display:grid;grid-template-columns:48px minmax(0,1fr) 260px;gap:0 22px;align-items:start;padding:20px 0;border-top:1px solid var(--line)}
+.tl:first-child{border-top:1px solid var(--rule)}
+.tl.hide{display:none}
+.tl .num{font-family:var(--display);font-size:34px;line-height:1;color:var(--tc);font-weight:400}
+.tl .body{display:grid;gap:6px;min-width:0}
+.tl .h{font-family:var(--display);font-size:22px;line-height:1.15;background:none;border:0;padding:0;text-align:left;color:var(--ink);cursor:pointer;font-weight:400}
+.tl .h:hover{color:var(--ring-text)}
+.tl .l{font-family:var(--body);font-size:16px;line-height:1.45;color:var(--ink)}
+.tl .fc{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:baseline;text-align:left;background:var(--tw,var(--teal-soft));border:0;border-left:3px solid var(--tc,var(--ring));padding:10px 12px;cursor:pointer;font:inherit;color:inherit;min-width:0}
+.tl .fc b{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--ring-text);grid-row:1/3}
+.tl .fc span{font-family:var(--display);font-size:14px;line-height:1.25}
+.tl .fc small{font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tl .fc:hover{box-shadow:inset 0 0 0 1px var(--tc,var(--ring))}
+.tl.sum .h{cursor:default}
+.tl.sum .h:hover{color:var(--ink)}
+.tl.sum .fc b{font-size:18px}
+.tlnote{font-family:var(--body);font-size:13.5px;color:var(--muted);margin:14px 0 0}
+@media(max-width:760px){.tl{grid-template-columns:36px minmax(0,1fr)}.tl .fc{grid-column:2;margin-top:10px}.tl .num{font-size:26px}}
+
 </style>
 
 <div class="wrap">
@@ -1023,6 +1052,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
     <div class="date">The world on 12 October 2026</div>
     <p>The US holds its midterm elections on November 3. Until then, Washington wants cheaper fuel and no new war. That aim shapes the day's two largest stories. In the Gulf, Trump rules out a strike on Iran before the vote. Iran keeps the Strait of Hormuz shut, and Houthi missiles keep Riyadh's airport closed. In Ukraine, Washington licenses Russian diesel and backs a truce that protects Russia's refineries but not Ukraine's grid.</p>
     <p style="font-size:16px;color:var(--muted)">Countries that import oil pay the bill, and India shows the cost most clearly. A record El Niño adds a food shock to India's oil shock. Apart from the wars, the AI race takes memory from phones and puts AI agents into use before any law checks them.</p>
+    <div class="length" role="group" aria-label="Reading length"><span class="lab2">Read it in</span><button type="button" data-len="tldr">TL;DR <small>1 min</small></button><button type="button" data-len="digest" aria-pressed="true">Digest <small>5 min</small></button><button type="button" data-len="full">Full <small>20 min</small></button></div>
     <div class="counts" id="counts">
       <span><b>5</b> currents</span><span><b>29</b> open forecasts</span><span><b>1</b> change of mind today</span><span><b>263</b> sources</span><span class="sep"></span><span id="score"></span>
     </div>
@@ -1432,19 +1462,44 @@ function wireStills(root){
   }));
 }
 // Tier one: the digest. Number, title, opener, lead lines, why you should care, forecasts, and a way into the full section.
+let LEN="digest"; try{ LEN=localStorage.getItem("ubik-length")||"digest"; }catch(e){}
+function setLen(l){ LEN=l; try{localStorage.setItem("ubik-length",l)}catch(e){} document.querySelectorAll(".length button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.len===l)); renderDev(); }
+document.querySelectorAll(".length button").forEach(b=>{ b.setAttribute("aria-pressed",b.dataset.len===LEN); b.addEventListener("click",()=>setLen(b.dataset.len)); });
 function renderDev(){
+  const visibleC=c=>!((active!=="all"&&c.theme!==active) || (query && !c.fcs.some(id=>matches(byId[id])) && !(c.h+" "+c.body.join(" ")).toLowerCase().includes(query)));
+  if(LEN==="tldr"){
+    // One row per current: title, the line that carries the view, the forecast it rests on.
+    const rows=CURRENTS.map(c=>{ const inf=(c.lines.find(l=>l[0]==="i")||c.lines[0])[1]; const f=byId[c.fcs[0]]; const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null;
+      return `<section class="tl ${visibleC(c)?"":"hide"}" id="cur-${c.theme}" data-t="${c.theme}">
+        <span class="num">${c.n}</span>
+        <span class="body"><button type="button" class="h" data-t="${c.theme}">${c.h}</button><span class="l">${inf}</span></span>
+        <button type="button" class="fc" data-id="${f.id}"><b>${pct(now(f))}</b><span>${shortQ(f.q)}</span><small>${fmt(f.due)}${m?` · mkt ${pct(m.p)}`:""}</small></button>
+      </section>`; }).join("");
+    const o=F.filter(f=>f.status==="open"), withM=o.filter(f=>MKT[f.id]&&MKT[f.id].venue), big=withM.slice().sort((a,b)=>Math.abs(gapOf(b))-Math.abs(gapOf(a)))[0], nxt=o.slice().sort((a,b)=>a.due.localeCompare(b.due))[0];
+    document.getElementById("dev").innerHTML=`<div class="tldr">${rows}
+      <section class="tl sum" data-t="markets"><span class="num">∑</span><span class="body"><span class="h">The record</span><span class="l">${o.length} open, ${F.filter(f=>f.resolved).length} settled, Brier ${F.filter(f=>f.resolved).map(f=>f.brier)[0]?.toFixed(3)||"—"}. Largest disagreement with the market: ${shortQ(big.q)}, UBIK ${pct(now(big))} vs ${pct(MKT[big.id].p)}. Next to resolve: ${shortQ(nxt.q)}, ${fmt(nxt.due)}.</span></span><button type="button" class="fc" data-goto="ledger"><b>→</b><span>Open the ledger</span></button></section>
+      <p class="tlnote">Five currents, one line each, the forecast each rests on. Switch to Digest for the lead lines and why it matters, or Full for the whole edition.</p></div>`;
+    document.querySelectorAll("#dev .tl .h").forEach(b=>b.addEventListener("click",()=>selectSection(b.dataset.t)));
+    document.querySelectorAll("#dev .tl .fc[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
+    document.querySelectorAll("#dev [data-goto]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.goto,true)));
+    return;
+  }
   document.getElementById("dev").innerHTML=CURRENTS.map(c=>{
-    const hide=(active!=="all"&&c.theme!==active) || (query && !c.fcs.some(id=>matches(byId[id])) && !(c.h+" "+c.body.join(" ")).toLowerCase().includes(query));
+    const hide=!visibleC(c);
     const lines=c.lines.map(([k,t])=>`<li>${tagEl(k)}<span class="t">${t}</span></li>`).join("");
     const words=c.body.join(" ").split(/\s+/).length;
+    const full=LEN==="full";
     return `<section class="ed-sec ${hide?"hide":""}" id="cur-${c.theme}" data-t="${c.theme}">
       <div class="num">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · <span class="by">${byOf(c)}</span>`:""}</div>
       <h2 class="t">${c.h}</h2>
       ${opener(c)}
       <ul class="lead-lines">${lines}</ul>
+      ${full?`<div class="prose">${c.body.map(p=>`<p>${p}</p>`).join("")}</div>
+      <div class="block"><span class="lab withav">${ICON("contrary")}THE STRONGEST CONTRARY READING</span>${c.contrary}</div>
+      ${c.chain?`<div class="block chain"><span class="lab withav">${ICON("chain")}THE CHAIN</span>${c.chain}</div>`:""}`:""}
       ${matters(c)}
       <div class="fcs">${fcRows(c)}</div>
-      <button type="button" class="readmore" data-t="${c.theme}">${ICON("edition")}Read the section <span class="mono">${c.body.length} paragraphs · ${words} words · contrary reading · ${c.chain?"chain":""}</span></button>
+      ${full?"":`<button type="button" class="readmore" data-t="${c.theme}">${ICON("edition")}Read the section <span class="mono">${c.body.length} paragraphs · ${words} words · contrary reading · ${c.chain?"chain":""}</span></button>`}
     </section>`;
   }).join("");
   document.querySelectorAll("#dev .fcs button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
