@@ -947,6 +947,52 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 .mrow .due{display:flex;align-items:center;justify-content:flex-end;gap:4px}
 @media(max-width:640px){.mq{grid-template-columns:56px 1fr auto 70px 24px}}
 
+/* ---- four pages, clear divisions ---- */
+.shell.solo{grid-template-columns:minmax(0,1fr)}
+.state.hidden{display:none}
+.dash{padding-top:28px}
+.dash .dhead{margin-bottom:18px}
+.dash .dhead .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.dash .dhead h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.1;margin:12px 0 0}
+.shell.solo .side{display:none}
+.tabs a{font-size:13px;padding:10px 16px 8px}
+.lp{padding-top:28px}
+.lp .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lp h2.t{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.1;margin:12px 0 18px}
+.subtabs{display:flex;gap:0;border-bottom:1px solid var(--rule);margin-bottom:8px;flex-wrap:wrap}
+.subtabs a{font-family:var(--ui);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;text-decoration:none;color:var(--muted);padding:10px 16px 8px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.subtabs a:hover{color:var(--ink)}
+.subtabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ring)}
+.subtabs .cnt{display:inline-block;min-width:16px;padding:0 4px;margin-left:4px;font-family:var(--mono);font-size:10px;letter-spacing:0;text-align:center;background:var(--ring);color:#fff;border-radius:8px;vertical-align:1px}
+.subtabs .cnt:empty{display:none}
+#ledgerpage section{padding-block:18px 8px}
+#pane-forecasts .qnav{border-bottom:0;padding-top:6px}
+#ledgerpage section>h2{border-top:0;padding-top:4px}
+#ledgerpage .mine{padding-top:8px}
+.hist{display:grid}
+.hrow{display:grid;grid-template-columns:110px 1fr 120px;gap:0 20px;align-items:start;width:100%;text-align:left;padding:16px 0;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:inherit;cursor:pointer}
+.hrow .d{font-family:var(--ui);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hrow .d b{display:block;font-family:var(--display);font-size:18px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:400}
+.hrow .h{display:block;font-family:var(--display);font-size:19px;line-height:1.2}
+.hrow .s{display:block;font-family:var(--body);font-size:14.5px;color:var(--muted);margin-top:4px}
+.hrow .n{text-align:right;font-family:var(--ui);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hrow .n b{display:block;font-family:var(--mono);font-size:22px;letter-spacing:0;color:var(--ink);font-weight:500}
+.hrow .n small{display:block;font-size:10px;margin-top:4px}
+.hrow:hover .h{color:var(--ring-text)}
+@media(max-width:640px){.hrow{grid-template-columns:80px 1fr}.hrow .n{display:none}}
+.access{margin-top:36px;padding-top:22px;border-top:1px solid var(--rule)}
+.access h3{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 14px;font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink)}
+.access h3 .mono{font-family:var(--ui);letter-spacing:.06em;text-transform:none;color:var(--muted);font-weight:400;font-size:11px}
+.access h3 .ic{width:16px;height:16px}
+.endpoints{display:grid;gap:0;border-top:1px solid var(--line)}
+.endpoints>div{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:start}
+.endpoints code{font-family:var(--mono);font-size:12.5px;color:var(--ink);word-break:break-all}
+.endpoints span{font-family:var(--body);font-size:14px;color:var(--muted);line-height:1.45}
+.endpoints em{font-style:italic;color:var(--ink)}
+.access .note{font-family:var(--body);font-size:13.5px;color:var(--muted);margin:12px 0 0}
+.access .note code{font-family:var(--mono);font-size:12px;color:var(--ink)}
+@media(max-width:640px){.endpoints>div{grid-template-columns:1fr}}
+
 </style>
 
 <div class="wrap">
@@ -954,7 +1000,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
     <div class="row1">
       <svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10.5" fill="none" stroke="var(--ring)" stroke-width="4"/></svg>
       <h1>UBIK <span class="slash">/</span> WORLD STATE</h1>
-      <nav class="tabs" aria-label="Pages"><a href="#edition" data-view="edition" aria-current="page">Edition</a><a href="#dashboard" data-view="dash">Dashboard</a><a href="#chat" data-view="chat">Chat</a><a href="#mine" data-view="mine" class="mine">Mine <span class="cnt" id="minecnt"></span></a></nav>
+      <nav class="tabs" aria-label="Pages"><a href="#edition" data-view="edition" aria-current="page">Edition</a><a href="#dashboard" data-view="dash">Dashboard</a><a href="#agent" data-view="agent">Agent</a><a href="#ledger" data-view="ledger">Ledger</a></nav>
       <span class="tog" role="group" aria-label="Appearance"><button type="button" data-m="light">Light</button><button type="button" data-m="system">Auto</button><button type="button" data-m="dark">Dark</button><button type="button" data-m="neon">Neon</button></span>
     </div>
     <div class="row2">
@@ -963,7 +1009,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
         <a href="https://www.instagram.com/ubik" target="_blank" rel="noopener">instagram</a><span class="dot">·</span>
         <a href="https://www.tiktok.com/@ubik" target="_blank" rel="noopener">tiktok</a><span class="dot">·</span>
         <a href="https://www.coingecko.com/en/coins/ubik" target="_blank" rel="noopener">coingecko</a>
-        <a class="agent" href="#ledger" title="Forecast record, MCP and API for your agent">for your agent <span aria-hidden="true">↓</span></a>
+        <a class="agent" href="#agent" data-goto="agent" title="MCP and API access">for your agent <span aria-hidden="true">→</span></a>
       </nav>
       <span class="stamp">EDITION 2026-10-12 · UPDATED 19:28 EDT</span>
     </div>
@@ -994,7 +1040,6 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
   </div>
 
   <nav class="qnav" aria-label="Sections and themes">
-    <span class="links"><a href="#forecasts">Forecasts</a><a href="#record">Record</a><a href="#ledger">Ledger</a><a href="#history">History</a></span>
     <div class="filters" id="filters" role="group" aria-label="Filter by theme"></div>
   </nav>
 
@@ -1006,23 +1051,24 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 
       <div id="dossier" class="hidden"></div>
       <div id="dash" class="hidden"></div>
-      <div id="minepage" class="hidden"></div>
-      <div id="chatpage" class="hidden">
-        <div class="chatpage">
-          <div class="num">ASK UBIK · HOLDER ACCESS · MCP</div>
-          <h2 class="t">Ask the engine about any open question.</h2>
-          <p class="lede">Answers come from UBIK's own state and cite the forecast they rest on, with its record ID. In this prototype the chat searches the snapshot; the real one talks to the holder MCP endpoint.</p>
-          <div class="chips" id="chips"></div>
-          <div class="chat" id="chatbox">
-            <div class="log" id="chatlog"><div class="a"><img class="av" src="" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
-            <form id="chatform"><input id="chatin" type="text" placeholder="Why 22% on Delhi fuel?" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
-            <div class="note">PROTOTYPE · will connect to the MCP endpoint. For now it searches the record.</div>
+      <div id="ledgerpage" class="hidden">
+        <div class="lp">
+          <div class="num">LEDGER · APPEND-ONLY · EVERY CALL, EVERY EDITION, EVERY SCORE</div>
+          <h2 class="t">The record UBIK is judged by.</h2>
+          <nav class="subtabs" aria-label="Ledger sections"><a href="#ledger/forecasts" data-pane="forecasts" aria-current="page">Forecasts</a><a href="#ledger/record" data-pane="record">Record</a><a href="#ledger/history" data-pane="history">History</a><a href="#ledger/mine" data-pane="mine">Mine <span class="cnt" id="minecnt"></span></a></nav>
+          <div id="pane-forecasts" class="pane">
+          <section id="ledger">
+        
+        <div class="ledger"><table>
+          <thead><tr><th>Issued</th><th>Question</th><th>Theme</th><th>First</th><th>Now</th><th>History</th><th>Resolves</th><th>Status</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table></div>
+        <p class="lg" id="lgcount"></p>
+      </section>
           </div>
-        </div>
-      </div>
-
-      <section id="record">
-        <h2><span class="withav" id="recicon"><span class="big">Record</span></span> what has resolved</h2>
+          <div id="pane-record" class="pane hidden">
+          <section id="record">
+        
         <div class="rec">
           <div class="row">
             <span>Resolved<b>1</b></span><span>Open<b>29</b></span><span>Brier, resolved<b>0.058</b></span><span>Calibration<b>n/a</b></span>
@@ -1032,14 +1078,35 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
         </div>
       </section>
 
-      <section id="ledger">
-        <h2><span class="withav" id="ledicon"><span class="big">Ledger</span></span> every published forecast</h2>
-        <div class="ledger"><table>
-          <thead><tr><th>Issued</th><th>Question</th><th>Theme</th><th>First</th><th>Now</th><th>History</th><th>Resolves</th><th>Status</th></tr></thead>
-          <tbody id="tbody"></tbody>
-        </table></div>
-        <p class="lg" id="lgcount"></p>
-      </section>
+          </div>
+          <div id="pane-history" class="pane hidden"></div>
+          <div id="pane-mine" class="pane hidden"><div id="minepage"></div></div>
+        </div>
+      </div>
+      <div id="chatpage" class="hidden">
+        <div class="chatpage">
+          <div class="num">AGENT · ASK UBIK · MCP AND API</div>
+          <h2 class="t">Talk to the engine, or plug yours into it.</h2>
+          <p class="lede">Answers come from UBIK's own state and cite the forecast they rest on, with its record ID. In this prototype the chat searches the snapshot; the real one talks to the holder MCP endpoint.</p>
+          <div class="chips" id="chips"></div>
+          <div class="chat" id="chatbox">
+            <div class="log" id="chatlog"><div class="a"><img class="av" src="" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
+            <form id="chatform"><input id="chatin" type="text" placeholder="Why 22% on Delhi fuel?" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
+            <div class="note">PROTOTYPE · will connect to the MCP endpoint. For now it searches the record.</div>
+          </div>
+          <section class="access">
+            <h3><span class="withav"><span id="apiicon"></span>For your agent</span><span class="mono">read the same record, machine-side</span></h3>
+            <div class="endpoints">
+              <div><code>GET /synthesis?include=thesis,interpretation,watch,currents,developments,forecasts,sources</code><span>Today's edition as data: the currents, their lead lines with provenance, the forecasts they rest on.</span></div>
+              <div><code>GET /forecasts</code><span>Every published forecast, paged by 20: claim, deadline, resolution rule and source, probability, history.</span></div>
+              <div><code>GET /forecasts/{id}</code><span>One forecast in full: evidence, reasoning, uncertainty, confirmation and disconfirmation signals, causal chain, outcome and Brier once resolved.</span></div>
+              <div><code>MCP · holders</code><span>The same calls as tools, plus <em>ask</em>: the engine's state in answer to a question. Proposed window: holders 06:00 UTC, public 18:00 UTC.</span></div>
+            </div>
+            <p class="note">Record IDs look like <code>q_20261012_04</code>: the day the question was issued and its number that day. Quote them. They are what anyone can check later.</p>
+          </section>
+        </div>
+      </div>
+
     </div>
 
     <aside class="side" aria-label="Forecasts, history and search">
@@ -1508,7 +1575,7 @@ function select(id){
   selected = selected===id ? null : id;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
   if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); renderSide(); return; }
-  document.getElementById("dash").classList.add("hidden"); document.getElementById("chatpage").classList.add("hidden");
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden");
   const f=byId[id]; const c=currentOf(id);
   const d=now(f)-first(f);
   const hist=f.hist.map(([dt,p],i)=>{
@@ -1547,7 +1614,8 @@ function select(id){
 function selectEdition(d){
   selected = selected==="ed:"+d ? null : "ed:"+d;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
-  if(!selected || d==="2026-10-12"){ selected=null; dos.classList.add("hidden"); ed.classList.remove("hidden"); renderSide(); ed.scrollIntoView({behavior:"smooth"}); return; }
+  if(d==="2026-10-12"){ selected=null; dos.classList.add("hidden"); go("edition",true); return; }
+  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); renderSide(); return; }
   const e=EDITIONS.find(x=>x.d===d); const fs=F.filter(f=>issued(f)===d);
   dos.innerHTML=`<div class="dossier"><button type="button" class="back" id="back">← BACK TO THE CURRENT EDITION</button>
     <div class="num" style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em">EDITION ${d}</div>
@@ -1555,7 +1623,7 @@ function selectEdition(d){
     <p style="font-size:13px;color:var(--muted)">Full text of this edition is not in the snapshot. The forecasts it issued are, with their histories.</p>
     <div class="fcs" style="display:grid;gap:8px;margin-top:14px">${fs.map(f=>`<button type="button" data-id="${f.id}" style="display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer"><span class="p" style="font-family:var(--mono);color:var(--ring);font-weight:500">${pct(first(f))}${f.hist.length>1?` → ${pct(now(f))}`:""}</span><span>${f.q}</span><span class="d" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">by ${fmt(f.due)}</span></button>`).join("")}</div>
   </div>`;
-  ed.classList.add("hidden"); dos.classList.remove("hidden");
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); dos.classList.remove("hidden");
   document.getElementById("back").addEventListener("click",()=>selectEdition(d));
   dos.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",()=>{selected=null;select(b.dataset.id);}));
   renderSide();
@@ -1629,7 +1697,7 @@ function tickClocks(){
   });
 }
 document.getElementById("aboutportrait").src=FRAMES.portrait;
-for(const [id,n] of [["vsicon","vs"],["askicon","ask"],["fcicon","head"],["hiicon","history"],["sigicon","signals"],["recicon","record"],["ledicon","edition"]]){ const el=document.getElementById(id); if(el) el.insertAdjacentHTML("afterbegin",ICON(n)); }
+for(const [id,n] of [["apiicon","contracts"],["vsicon","vs"],["askicon","ask"],["fcicon","head"],["hiicon","history"],["sigicon","signals"],["recicon","record"],["ledicon","edition"]]){ const el=document.getElementById(id); if(el) el.insertAdjacentHTML("afterbegin",ICON(n)); }
 tickClocks(); setTimeout(()=>{ tickClocks(); setInterval(tickClocks,60000); }, (60-new Date().getSeconds())*1000);
 
 // ---------------- Mine: each viewer's own archive. Themes followed, questions starred, kept in this browser. ----------------
@@ -1774,7 +1842,7 @@ function renderDash(){
   const counts=Object.keys(THEMES).map(k=>({k,open:open.filter(f=>f.theme===k).length,set:res.filter(f=>f.theme===k).length})).filter(x=>x.open+x.set).sort((a,b)=>(b.open+b.set)-(a.open+a.set)); const mx=Math.max(...counts.map(c=>c.open+c.set));
   const load=`<section class="mod half"><h3><span class="withav">${ICON("edition")}Questions by theme</span><span class="mono">open · settled</span></h3><div class="load">${counts.map(c=>`<button type="button" class="ld" data-k="${c.k}" data-t="${c.k}"><span class="k">${THEMES[c.k]}</span><span class="bar"><i style="width:${c.open/mx*100}%"></i><i class="set" style="width:${c.set/mx*100}%"></i></span><span class="n">${c.open}${c.set?` · ${c.set}`:""}</span></button>`).join("")}</div></section>`;
 
-  document.getElementById("dash").innerHTML=`<div class="dash">${tiles}${map}${hz}${matrix}<div class="grid2">${mv}${vs}${cal}${load}</div></div>`;
+  document.getElementById("dash").innerHTML=`<div class="dash"><div class="dhead"><div class="num">DASHBOARD · THE NUMBERS · EDITION 2026-10-12</div><h2>Where UBIK stands, in figures.</h2></div>${tiles}${map}${hz}${matrix}<div class="grid2">${mv}${vs}${cal}${load}</div></div>`;
   document.querySelectorAll("#dash [data-id]:not(.star)").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
   wireStars(document.getElementById("dash"));
   document.querySelectorAll("#dash .ld").forEach(b=>b.addEventListener("click",()=>{ active=b.dataset.k; try{localStorage.setItem("ubik-theme",active)}catch(e){} showEdition(); renderAll(); }));
@@ -1800,28 +1868,52 @@ function wireMap(places){
     list.querySelectorAll("[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id))); }));
   apply();
 }
-const VIEWS={edition:"edition",dash:"dash",chat:"chatpage",mine:"minepage"};
-let view="edition";
-function go(v, scroll){
+const VIEWS={edition:"edition",dash:"dash",agent:"chatpage",ledger:"ledgerpage"};
+const HASH={edition:"#edition",dash:"#dashboard",agent:"#agent",ledger:"#ledger"};
+let view="edition", pane="forecasts";
+function go(v, scroll, sub){
   if(!VIEWS[v]) v="edition";
   view=v; selected=null;
   for(const k in VIEWS){ document.getElementById(VIEWS[k]).classList.toggle("hidden", k!==v); }
   document.getElementById("dossier").classList.add("hidden");
-  document.querySelector(".main").classList.toggle("wide", v==="dash");
+  const solo=(v==="dash"||v==="ledger");
+  document.querySelector(".shell").classList.toggle("solo", solo);
+  document.querySelector(".main").classList.toggle("wide", solo);
   document.querySelectorAll(".tabs a").forEach(a=>{ if(a.dataset.view===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
-  document.querySelector(".qnav").classList.toggle("hidden", v==="chat");
-  document.querySelectorAll("#record,#ledger").forEach(el=>el.classList.toggle("hidden", v!=="edition"));
+  document.querySelector(".qnav").classList.toggle("hidden", !(v==="edition"||(v==="ledger"&&(sub||pane)==="forecasts")));
+  document.querySelector(".state").classList.toggle("hidden", v!=="edition");
+  if(v!=="ledger"){ const q=document.querySelector(".qnav"), shell=document.querySelector(".shell"); if(q.nextElementSibling!==shell) shell.parentElement.insertBefore(q, shell); }
   if(v==="dash") renderDash();
-  if(v==="chat") renderChips();
-  if(v==="mine") renderMine();
+  if(v==="agent") renderChips();
+  if(v==="ledger") showPane(sub||pane);
   renderSide();
-  const hash=v==="dash"?"#dashboard":"#"+v; if(location.hash!==hash) history.replaceState(null,"",hash);
+  const hash=v==="ledger"?"#ledger/"+(sub||pane):HASH[v]; if(location.hash!==hash) history.replaceState(null,"",hash);
   try{localStorage.setItem("ubik-view",v)}catch(e){}
-  if(scroll) window.scrollTo({top:document.querySelector(".qnav").offsetTop-10,behavior:"smooth"});
+  if(scroll) window.scrollTo({top:document.querySelector(".mast").offsetHeight+document.querySelector(".ticker").offsetHeight,behavior:"smooth"});
+}
+function showPane(pn){
+  if(!["forecasts","record","history","mine"].includes(pn)) pn="forecasts";
+  pane=pn;
+  document.querySelectorAll("#ledgerpage .pane").forEach(el=>el.classList.toggle("hidden", el.id!=="pane-"+pn));
+  document.querySelectorAll(".subtabs a").forEach(a=>{ if(a.dataset.pane===pn) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  document.querySelector(".qnav").classList.toggle("hidden", pn!=="forecasts");
+  const q=document.querySelector(".qnav"), host=document.getElementById("pane-forecasts"); if(pn==="forecasts" && q.parentElement!==host) host.prepend(q);
+  if(pn==="history") renderHistory();
+  if(pn==="mine") renderMine();
+  const hash="#ledger/"+pn; if(location.hash!==hash) history.replaceState(null,"",hash);
+  try{localStorage.setItem("ubik-pane",pn)}catch(e){}
+}
+function renderHistory(){
+  document.getElementById("pane-history").innerHTML=`<div class="hist">${EDITIONS.map(e=>{ const fs=F.filter(f=>issued(f)===e.d); const moved=fs.filter(f=>f.hist.length>1).length;
+    return `<button type="button" class="hrow" data-d="${e.d}"><span class="d"><b>${fmt(e.d)}</b>${e.d.slice(0,4)}</span><span class="body"><span class="h">${esc(e.title)}${e.current?' <span class="tag">CURRENT</span>':""}</span><span class="s">${esc(e.sum)}</span></span><span class="n"><b>${fs.length}</b> issued${moved?`<small>${moved} since revised</small>`:""}</span></button>`; }).join("")}</div>`;
+  document.querySelectorAll("#pane-history .hrow").forEach(b=>b.addEventListener("click",()=>selectEdition(b.dataset.d)));
 }
 const showDash=()=>go("dash"), showEdition=()=>go("edition");
 document.querySelectorAll(".tabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.view,true); }));
-window.addEventListener("hashchange",()=>{ const h=location.hash.replace("#",""); if(h==="dashboard") go("dash"); else if(h==="chat") go("chat"); else if(h==="mine") go("mine"); else if(h==="edition") go("edition"); });
+document.querySelectorAll(".subtabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); showPane(a.dataset.pane); }));
+document.querySelectorAll("[data-goto]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.goto,true); }));
+function route(){ const h=location.hash.replace("#",""); if(!h) return false; const [top,sub]=h.split("/"); const map={edition:"edition",dashboard:"dash",agent:"agent",chat:"agent",ledger:"ledger",mine:"ledger",forecasts:"ledger",record:"ledger",history:"ledger"}; if(!map[top]) return false; go(map[top], false, top==="mine"?"mine":top==="record"?"record":top==="history"?"history":sub); return true; }
+window.addEventListener("hashchange",route);
 function renderChips(){
   const soon=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due))[0];
   const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?","Why 22% on Delhi fuel?",`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,40)}…?`,"What changed its mind?","What is the Brier score?"];
@@ -1829,7 +1921,8 @@ function renderChips(){
   document.querySelectorAll("#chips button").forEach(b=>b.addEventListener("click",()=>{ const inp=document.getElementById("chatin"); inp.value=b.textContent; document.getElementById("chatform").requestSubmit(); }));
   const av=document.getElementById("chatav2"); if(av&&!av.src) av.src=FRAMES.portrait;
 }
-(function(){ const h=location.hash.replace("#",""); let v=null; if(h==="dashboard") v="dash"; else if(h==="chat") v="chat"; else if(h==="mine") v="mine"; else if(h==="edition") v="edition"; if(!v){ try{ v=localStorage.getItem("ubik-view"); }catch(e){} } go(v||"edition"); })();
+try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
+if(!route()){ let v=null; try{ v=localStorage.getItem("ubik-view"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||"edition"); }
 
 
 // ledger rows open the dossier too

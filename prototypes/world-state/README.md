@@ -2,7 +2,7 @@
 
 A single static page built on a snapshot of the pre cog preview API (12–13 October 2026), to show what the engine's data looks like with a human surface. Not an official page, and not connected to the deployment: every number in it is inlined.
 
-Open `index.html` in a browser; there is no build step and no dependency beyond Google Fonts. Four pages, switched in the masthead and addressable by hash: `#edition`, `#dashboard`, `#chat`, `#mine`.
+Open `index.html` in a browser; there is no build step and no dependency beyond Google Fonts. Four pages, switched by the tabs in the masthead and addressable by hash: `#edition` (what UBIK says today), `#dashboard` (the numbers), `#agent` (chat, MCP and API), `#ledger` (the record, with sub-tabs Forecasts, Record, History, Mine).
 
 What it shows: the day's synthesis; each current as a digest (lead lines with provenance tags, "why you should care", forecasts) that opens into the full section; a dossier per forecast with the probability history, resolution rule and editorial history; UBIK's number next to the market price where a contract exists; the record and ledger; editions history; a signals ticker; world clocks; light, dark and neon modes; a share card per forecast; a Dashboard view (score tiles, a zoomable world map of where the questions are, a resolution horizon, every open question as a probability row with the market and issue marks, largest moves, UBIK vs market gaps, a calibration plot, questions by theme); a Chat page for the holder MCP endpoint (searches the snapshot for now); a Mine page where each viewer follows themes and places and stars questions, kept in their browser, and sees only what moved, what resolves next and which sections concern them.
 
