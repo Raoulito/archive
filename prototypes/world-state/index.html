@@ -1877,15 +1877,24 @@ function renderScore(){
 
 // Share card: 1200×675 PNG drawn on a canvas, for X. Shows UBIK's number next to the market's.
 const PORTRAIT_IMG=new Image(); PORTRAIT_IMG.src=FRAMES.portrait;
+// the mark, drawn: same geometry as the SVG (128-unit box), centred on cx,cy with outer radius r
+function drawMark(x,cx,cy,r){ const k=r/60, P=Math.PI; x.save(); x.translate(cx,cy); x.scale(k,k);
+  x.fillStyle="#0e0e0e"; x.beginPath(); x.arc(0,0,60,0,P*2); x.fill(); x.strokeStyle="#f0cd7a"; x.lineWidth=3; x.stroke();
+  x.fillStyle="#35b5c0"; x.beginPath(); x.arc(0,0,60,-P/2,P/2); x.closePath(); x.fill();
+  x.strokeStyle="#f0cd7a"; x.lineWidth=1.3; x.beginPath(); x.arc(0,0,46,P/2,3*P/2); x.stroke(); x.beginPath(); x.arc(0,0,52,P/2,3*P/2); x.stroke();
+  x.fillStyle="#0e0e0e"; x.beginPath(); x.arc(0,0,40,0,P*2); x.fill();
+  x.fillStyle="#f0cd7a"; x.beginPath(); x.arc(0,0,28,-P/2,P/2); x.closePath(); x.fill(); x.beginPath(); x.arc(0,0,16,0,P*2); x.fill();
+  x.fillStyle="#f2476f"; x.beginPath(); x.arc(0,0,10,0,P*2); x.fill(); x.restore(); }
 function shareCard(f){
   const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null;
   const W=1200,H=675, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
   const dark=matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.dataset.theme!=="light" || document.documentElement.dataset.theme==="dark";
-  const bg=dark?"#151411":"#fdfcf9", ink=dark?"#ebe7dc":"#111110", mut=dark?"#9d988c":"#7a7568", red="#d8352b";
+  const bg=dark?"#26282a":"#efece6", ink=dark?"#ece6d8":"#15140f", mut=dark?"#a8a396":"#625d54", red=dark?"#f0cd7a":"#8a6710", gold="#f0cd7a";
   x.fillStyle=bg; x.fillRect(0,0,W,H);
-  x.strokeStyle=red; x.lineWidth=14; x.beginPath(); x.arc(92,92,36,0,Math.PI*2); x.stroke();
-  x.fillStyle=ink; x.font="600 22px 'Hanken Grotesk', system-ui, sans-serif"; x.letterSpacing="5px"; x.fillText("UBIK / WORLD STATE",150,100);
-  x.fillStyle=mut; x.font="500 18px 'Hanken Grotesk', system-ui, sans-serif"; x.letterSpacing="3px"; x.textAlign="right"; x.fillText(THEMES[f.theme].toUpperCase()+"  ·  "+f.id.toUpperCase(),W-72,100); x.textAlign="left"; x.letterSpacing="0px";
+  drawMark(x,98,96,40);
+  x.fillStyle=ink; x.font="400 30px Michroma, Eurostile, sans-serif"; x.letterSpacing="1px"; x.fillText("Ubik",156,108);
+  x.fillStyle=mut; x.font="500 15px Archivo, 'Helvetica Neue', sans-serif"; x.letterSpacing="4px"; x.fillText("WORLD STATE",262,106);
+  x.fillStyle=mut; x.font="500 18px Archivo, 'Helvetica Neue', sans-serif"; x.letterSpacing="3px"; x.textAlign="right"; x.fillText(THEMES[f.theme].toUpperCase()+"  ·  "+f.id.toUpperCase(),W-72,106); x.textAlign="left"; x.letterSpacing="0px";
   // question, wrapped
   x.fillStyle=ink; x.font="400 46px Newsreader, Georgia, serif";
   const words=f.q.split(" "); let line="", y=200; const maxW=W-144;
@@ -1893,18 +1902,18 @@ function shareCard(f){
   x.fillText(line,72,y); y+=40;
   // numbers
   const ny=Math.max(y+70, 430);
-  const col=(label,val,px,color)=>{ x.fillStyle=mut; x.font="500 16px 'Hanken Grotesk', system-ui, sans-serif"; x.letterSpacing="3px"; x.fillText(label,px,ny-78); x.letterSpacing="0px"; x.fillStyle=color; x.font="400 104px Newsreader, Georgia, serif"; x.fillText(val,px-4,ny+10); };
+  const col=(label,val,px,color)=>{ x.fillStyle=mut; x.font="500 16px Archivo, 'Helvetica Neue', sans-serif"; x.letterSpacing="3px"; x.fillText(label,px,ny-78); x.letterSpacing="0px"; x.fillStyle=color; x.font="400 104px Newsreader, Georgia, serif"; x.fillText(val,px-4,ny+10); };
   col("UBIK", pct(now(f)), 72, red);
   if(m){ col(m.venue.toUpperCase()+(m.adj?" · ADJACENT":""), pct(m.p), 420, ink); const g=Math.round(gapOf(f)*100); col("GAP", (g>0?"+":"−")+Math.abs(g), 780, mut); }
   else { x.fillStyle=mut; x.font="italic 26px Newsreader, Georgia, serif"; x.fillText("No listed contract. The view stands alone.",420,ny-4); }
   // footer
   x.strokeStyle=dark?"#2f2d27":"#e6e2d8"; x.lineWidth=1; x.beginPath(); x.moveTo(72,H-110); x.lineTo(W-72,H-110); x.stroke();
-  x.fillStyle=ink; x.font="500 17px 'Hanken Grotesk', system-ui, sans-serif"; x.letterSpacing="2px";
+  x.fillStyle=ink; x.font="500 17px Archivo, 'Helvetica Neue', sans-serif"; x.letterSpacing="2px";
   x.fillText(`ISSUED ${fmt(issued(f)).toUpperCase()} ${issued(f).slice(0,4)}  ·  RESOLVES ${fmt(f.due).toUpperCase()} ${f.due.slice(0,4)}  ·  HOLDERS ${ACCESS.holders}  ·  PUBLIC ${ACCESS.pub}`,72,H-76);
   x.fillStyle=mut; x.font="italic 20px Newsreader, Georgia, serif"; x.letterSpacing="0px"; x.fillText("The Archive remembers. UBIK forms a view.",72,H-40);
-  x.font="500 15px 'Hanken Grotesk', system-ui, sans-serif"; x.letterSpacing="2px"; x.textAlign="right"; x.fillText("UBIK.GOLD",W-72,H-40); x.textAlign="left"; x.letterSpacing="0px";
+  x.font="500 15px Archivo, 'Helvetica Neue', sans-serif"; x.letterSpacing="2px"; x.textAlign="right"; x.fillText("UBIK.GOLD",W-72,H-40); x.textAlign="left"; x.letterSpacing="0px";
   // portrait, bottom right above the rule
-  if(PORTRAIT_IMG.complete && PORTRAIT_IMG.naturalWidth){ const s=120, px=W-72-s, py=H-110-s-22; x.save(); x.beginPath(); x.arc(px+s/2,py+s/2,s/2,0,Math.PI*2); x.clip(); x.drawImage(PORTRAIT_IMG,px,py,s,s); x.restore(); x.strokeStyle=red; x.lineWidth=3; x.beginPath(); x.arc(px+s/2,py+s/2,s/2+2,0,Math.PI*2); x.stroke(); }
+  if(PORTRAIT_IMG.complete && PORTRAIT_IMG.naturalWidth){ const s=120, px=W-72-s, py=H-110-s-22; x.save(); x.beginPath(); x.arc(px+s/2,py+s/2,s/2,0,Math.PI*2); x.clip(); x.drawImage(PORTRAIT_IMG,px,py,s,s); x.restore(); x.strokeStyle=gold; x.lineWidth=3; x.beginPath(); x.arc(px+s/2,py+s/2,s/2+2,0,Math.PI*2); x.stroke(); }
   return cv;
 }
 function openShare(f){
