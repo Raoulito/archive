@@ -83,6 +83,8 @@ a{color:inherit}
 /* masthead */
 .mast{display:flex;align-items:center;gap:14px;padding-block:22px 10px;border-bottom:1px solid var(--line)}
 .ring{width:28px;height:28px;flex:none}
+.mast .home{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
+.mast .home:hover .wm{color:var(--ring-text)}
 .mast .mark{width:36px;height:36px;flex:none}
 .mast h1{display:flex;align-items:baseline;gap:10px}
 .mast h1 .wm{font-family:var(--wordmark);font-weight:400;font-size:17px;letter-spacing:.02em;text-transform:none;color:var(--ink)}
@@ -1232,8 +1234,8 @@ table.board td.st .star[aria-pressed="true"]{color:var(--ring-text)}
 <body>
 <header class="mast">
     <div class="row1">
-      <svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="60" fill="#0e0e0e" stroke="#f0cd7a" stroke-width="3"/><path d="M64 4 A60 60 0 0 1 64 124 Z" fill="#35b5c0"/><path d="M64 18 A46 46 0 0 0 64 110" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><path d="M64 12 A52 52 0 0 0 64 116" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><circle cx="64" cy="64" r="40" fill="#0e0e0e"/><path d="M64 36 A28 28 0 0 1 64 92 Z" fill="#f0cd7a"/><circle cx="64" cy="64" r="16" fill="#f0cd7a"/><circle cx="64" cy="64" r="10" fill="#f2476f"/></svg>
-      <h1><span class="wm">Ubik</span><span class="ws">World State</span></h1>
+      <a class="home" href="#cover" title="The cover: choose how to read"><svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="60" fill="#0e0e0e" stroke="#f0cd7a" stroke-width="3"/><path d="M64 4 A60 60 0 0 1 64 124 Z" fill="#35b5c0"/><path d="M64 18 A46 46 0 0 0 64 110" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><path d="M64 12 A52 52 0 0 0 64 116" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><circle cx="64" cy="64" r="40" fill="#0e0e0e"/><path d="M64 36 A28 28 0 0 1 64 92 Z" fill="#f0cd7a"/><circle cx="64" cy="64" r="16" fill="#f0cd7a"/><circle cx="64" cy="64" r="10" fill="#f2476f"/></svg>
+      <h1><span class="wm">Ubik</span><span class="ws">World State</span></h1></a>
       <nav class="tabs" aria-label="Pages"><a href="#agent" data-view="agent" aria-current="page">Agent edition</a><a href="#edition" data-view="edition">Human edition</a><a href="#films" data-view="films">Films</a><a href="#dashboard" data-view="dash">Dashboard</a><a href="#ledger" data-view="ledger">Ledger</a></nav>
       <span class="tog" role="group" aria-label="Appearance"><button type="button" data-m="light">Light</button><button type="button" data-m="system">Auto</button><button type="button" data-m="dark">Dark</button><button type="button" data-m="neon">UBIK</button></span>
     </div>
@@ -2316,6 +2318,7 @@ function renderHistory(){
 }
 const showDash=()=>go("dash"), showEdition=()=>go("edition");
 document.querySelectorAll(".tabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.view,true); }));
+document.querySelector(".mast .home").addEventListener("click",e=>{ e.preventDefault(); showCover(true); });
 document.querySelectorAll(".subtabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); showPane(a.dataset.pane); }));
 document.querySelectorAll("[data-goto]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.goto,true); }));
 function route(){ const h=location.hash.replace("#",""); if(!h) return false; const [top,sub]=h.split("/"); if(top==="cover"){ showCover(true); return true; } const map={edition:"edition",dashboard:"dash",agent:"agent",chat:"agent",ledger:"ledger",mine:"ledger",forecasts:"ledger",record:"ledger",history:"ledger",films:"films"}; if(!map[top]) return false; go(map[top], false, top==="mine"?"mine":top==="record"?"record":top==="history"?"history":sub); return true; }
