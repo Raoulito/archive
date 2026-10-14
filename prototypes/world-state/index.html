@@ -1079,7 +1079,7 @@ pre.agjson{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:v
 #cover .coverhead .ring{width:24px;height:24px}
 #cover .coverhead .slash{color:var(--ring);font-weight:400;margin:0 2px}
 #cover .coverhead .mono{margin-left:auto;font-family:var(--mono);font-weight:400;letter-spacing:.06em;font-size:10.5px;opacity:.75}
-#cover h1{font-family:var(--ui);font-stretch:125%;font-variation-settings:"wdth" 125;font-weight:780;font-size:clamp(28px,4.6vw,64px);line-height:1.04;letter-spacing:-.02em;margin:0;max-width:16ch;text-wrap:balance;color:#ece6d8}
+#cover h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,7vw,96px);line-height:.98;letter-spacing:-.02em;margin:0;max-width:14ch;text-wrap:balance;color:#ece6d8}
 #cover .thesis{font-family:var(--body);font-size:clamp(16px,1.6vw,20px);line-height:1.45;max-width:62ch;margin:0;color:#e4dfd3}
 #cover .coverscore{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:#bdb6a8}
 #cover .coverscore b{color:#fff;font-weight:500}
@@ -1161,8 +1161,8 @@ body.covered{overflow:hidden}
 @media(max-width:760px){.tl{grid-template-columns:36px minmax(0,1fr)}.tl .fc{grid-column:2;margin-top:10px}.tl .num{font-size:26px}}
 
 /* ---- their display face: Michroma for the day's title and the page titles, as on ubik.gold ---- */
-.state .date,.chatpage h2.t,.lp h2.t,.mine h2.t{font-family:var(--ui);font-stretch:125%;font-variation-settings:"wdth" 125;font-weight:750;font-size:clamp(22px,2.6vw,32px);line-height:1.1;letter-spacing:-.015em}
-.state .date{font-size:clamp(26px,3.4vw,42px)}
+.state .date,.chatpage h2.t,.lp h2.t,.mine h2.t{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.1;letter-spacing:-.01em}
+.state .date{font-size:clamp(30px,4vw,46px)}
 .mast h1 .wm{font-size:18px}
 .tabs a[aria-current="page"]{border-bottom-color:var(--ring)}
 .ticker .run button .t.new{color:var(--ring-text)}
@@ -1219,7 +1219,7 @@ table.board td.st .star[aria-pressed="true"]{color:var(--ring-text)}
 .edhead .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);font-weight:600}
 .edhead .mono{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .state{padding-block:30px 10px}
-.state .date{font-size:clamp(22px,2.8vw,34px)}
+.state .date{font-size:clamp(30px,4vw,46px)}
 .state .state-main>p{font-size:16px;line-height:1.5;max-width:70ch}
 .counts{margin-top:14px}
 @media (max-width:760px){table.board td.sp,table.board th.sp,table.board td.mk,table.board th.mk{display:none}table.board td.p{font-size:16px;width:auto}}
@@ -2248,7 +2248,7 @@ function renderDash(){
   const counts=Object.keys(THEMES).map(k=>({k,open:open.filter(f=>f.theme===k).length,set:res.filter(f=>f.theme===k).length})).filter(x=>x.open+x.set).sort((a,b)=>(b.open+b.set)-(a.open+a.set)); const mx=Math.max(...counts.map(c=>c.open+c.set));
   const load=`<section class="mod half"><h3><span class="withav">${ICON("edition")}Questions by theme</span><span class="mono">open · settled</span></h3><div class="load">${counts.map(c=>`<button type="button" class="ld" data-k="${c.k}" data-t="${c.k}"><span class="k">${THEMES[c.k]}</span><span class="bar"><i style="width:${c.open/mx*100}%"></i><i class="set" style="width:${c.set/mx*100}%"></i></span><span class="n">${c.open}${c.set?` · ${c.set}`:""}</span></button>`).join("")}</div></section>`;
 
-  document.getElementById("dash").innerHTML=`<div class="dash"><div class="dhead"><div class="num">DASHBOARD · THE NUMBERS · EDITION 2026-10-12</div><h2>Where UBIK stands, in figures.</h2></div>${tiles}${map}${hz}${matrix}<div class="grid2">${mv}${vs}${cal}${load}</div></div>`;
+  document.getElementById("dash").innerHTML=`<div class="dash"><div class="dhead"><div class="num">DASHBOARD · THE NUMBERS · EDITION 2026-10-14</div><h2>Where UBIK stands, in figures.</h2></div>${tiles}${map}${hz}${matrix}<div class="grid2">${mv}${vs}${cal}${load}</div></div>`;
   document.querySelectorAll("#dash [data-id]:not(.star)").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
   wireStars(document.getElementById("dash"));
   document.querySelectorAll("#dash .ld").forEach(b=>b.addEventListener("click",()=>{ active=b.dataset.k; try{localStorage.setItem("ubik-theme",active)}catch(e){} showEdition(); renderAll(); }));
