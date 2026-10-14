@@ -1036,6 +1036,49 @@ pre.agjson{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:v
 .shell.solo .side{display:none}
 .tabs a{font-size:13px;padding:10px 16px 8px}
 .lp{padding-top:28px}
+.lp.films .lede{font-family:var(--body);font-size:17px;color:var(--muted);margin:0 0 22px;max-width:78ch}
+.lp.films .lede a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.lp.films .note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:18px}
+.filmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px 20px}
+.filmgrid .ft{display:block;min-width:0}
+.filmgrid .ft .still{margin:0 0 8px;aspect-ratio:16/9}
+.filmgrid .ft .still.nofilm{cursor:default;filter:saturate(.6)}
+.filmgrid .ft .still.nofilm .play{opacity:.35}
+.filmgrid .ft .still .meta b{font-size:clamp(15px,1.4vw,18px);max-width:24ch}
+.filmgrid .ft .still.lead{grid-column:1/-1}
+.filmgrid .ft.lead{grid-column:1/-1}
+.filmgrid .ft.lead .still{aspect-ratio:21/9}
+.filmgrid .ft.lead .still .meta b{font-size:clamp(20px,2.6vw,32px);max-width:28ch}
+.filmgrid .ft .cap{display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.filmgrid .ft .cap b{font-family:var(--ui);font-weight:600;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;font-size:10.5px}
+.filmgrid .ft .cap a,.filmgrid .ft .cap button{margin-left:auto;font:inherit;color:var(--ink);background:none;border:0;padding:0;cursor:pointer;border-bottom:1px solid var(--rule);text-decoration:none;white-space:nowrap}
+.filmgrid .ft .sum{font-family:var(--body);font-size:13.5px;line-height:1.45;color:var(--muted);margin:6px 0 0}
+.filmgrid .ft .player{aspect-ratio:16/9;background:#000;margin:0 0 8px}
+.filmgrid .ft .player iframe,.filmgrid .ft .player video{width:100%;height:100%;border:0;display:block}
+#cover{position:fixed;inset:0;z-index:60;background:#121110;color:#f1ede4;overflow:auto}
+#cover .coverfig{position:absolute;inset:0;background:#2a2a2a}
+#cover .coverfig .fig img{object-position:72% 18%;filter:saturate(.75)}
+@media (max-width:640px){#cover .coverfig .fig img{object-position:62% 10%}#cover .coverhead{flex-wrap:wrap}#cover .coverhead .mono{margin-left:0;flex-basis:100%}}
+#cover .coverfig .fig .eye{display:none}
+#cover .coverfig::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.92) 0%,rgba(10,10,10,.78) 38%,rgba(10,10,10,.25) 70%,rgba(10,10,10,.1) 100%),linear-gradient(0deg,rgba(10,10,10,.85) 0%,rgba(10,10,10,0) 50%)}
+#cover .coverin{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:28px clamp(16px,4vw,48px) 36px;min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:14px}
+#cover .coverhead{display:flex;align-items:center;gap:12px;font-family:var(--ui);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px;margin-bottom:auto;padding-top:4px}
+#cover .coverhead .ring{width:24px;height:24px}
+#cover .coverhead .slash{color:var(--ring);font-weight:400;margin:0 2px}
+#cover .coverhead .mono{margin-left:auto;font-family:var(--mono);font-weight:400;letter-spacing:.06em;font-size:10.5px;opacity:.75}
+#cover h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,7vw,96px);line-height:.98;letter-spacing:-.02em;margin:0;max-width:14ch;text-wrap:balance}
+#cover .thesis{font-family:var(--body);font-size:clamp(16px,1.6vw,20px);line-height:1.45;max-width:62ch;margin:0;color:#e4dfd3}
+#cover .coverscore{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:#bdb6a8}
+#cover .coverscore b{color:#fff;font-weight:500}
+#cover .doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;max-width:760px;margin-top:8px}
+#cover .doors button{text-align:left;font:inherit;color:#f1ede4;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.35);padding:16px 18px;cursor:pointer;display:grid;gap:6px;transition:background .15s,border-color .15s}
+#cover .doors button b{font-family:var(--ui);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+#cover .doors button span{font-family:var(--body);font-size:14px;line-height:1.4;color:#cfc8ba}
+#cover .doors button:hover,#cover .doors button:focus-visible{background:var(--ring);border-color:var(--ring);outline:none}
+#cover .doors button:hover span,#cover .doors button:focus-visible span{color:#fff}
+#cover .coverfoot{font-family:var(--mono);font-size:10.5px;color:#9f988b;margin:0}
+body.covered{overflow:hidden}
+:root[data-theme="neon"] #cover .doors button:hover{box-shadow:0 0 24px rgba(var(--n),.6)}
 .lp .num{font-family:var(--ui);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .lp h2.t{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.6vw,40px);line-height:1.1;margin:12px 0 18px}
 .subtabs{display:flex;gap:0;border-bottom:1px solid var(--rule);margin-bottom:8px;flex-wrap:wrap}
@@ -1114,7 +1157,7 @@ pre.agjson{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:v
     <div class="row1">
       <svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10.5" fill="none" stroke="var(--ring)" stroke-width="4"/></svg>
       <h1>UBIK <span class="slash">/</span> WORLD STATE</h1>
-      <nav class="tabs" aria-label="Pages"><a href="#agent" data-view="agent" aria-current="page">Agent edition</a><a href="#edition" data-view="edition">Human edition</a><a href="#dashboard" data-view="dash">Dashboard</a><a href="#ledger" data-view="ledger">Ledger</a></nav>
+      <nav class="tabs" aria-label="Pages"><a href="#agent" data-view="agent" aria-current="page">Agent edition</a><a href="#edition" data-view="edition">Human edition</a><a href="#films" data-view="films">Films</a><a href="#dashboard" data-view="dash">Dashboard</a><a href="#ledger" data-view="ledger">Ledger</a></nav>
       <span class="tog" role="group" aria-label="Appearance"><button type="button" data-m="light">Light</button><button type="button" data-m="system">Auto</button><button type="button" data-m="dark">Dark</button><button type="button" data-m="neon">Neon</button></span>
     </div>
     <div class="row2">
@@ -1167,6 +1210,15 @@ pre.agjson{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:v
 
       <div id="dossier" class="hidden"></div>
       <div id="dash" class="hidden"></div>
+      <div id="filmspage" class="hidden">
+        <div class="lp films">
+          <div class="num">FILMS · ONE PER EDITION · HOSTED ON THE INTERNET ARCHIVE</div>
+          <h2 class="t">The record, as film.</h2>
+          <p class="lede">Each edition is rendered once as a short film, from the day's thesis. The film is kept here with its edition and the forecasts it rests on; the copies cut for <a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">TikTok</a> are linked, not archived. The platform keeps what it made, and points to where it was posted.</p>
+          <div class="filmgrid" id="filmgrid"></div>
+          <p class="note">In this snapshot no edition carries a <code>film</code> URL yet; the stills are the engine's lead frames where the API lists one. When a film is linked the tile plays it in place.</p>
+        </div>
+      </div>
       <div id="ledgerpage" class="hidden">
         <div class="lp">
           <div class="num">LEDGER · APPEND-ONLY · EVERY CALL, EVERY EDITION, EVERY SCORE</div>
@@ -1264,11 +1316,27 @@ pre.agjson{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:v
     </form>
   </dialog>
 
+  <div id="cover" class="hidden" role="dialog" aria-modal="true" aria-labelledby="cover-h">
+    <div class="coverfig" aria-hidden="true"></div>
+    <div class="coverin">
+      <div class="coverhead"><svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10.5" fill="none" stroke="var(--ring)" stroke-width="4"/></svg><span>UBIK <span class="slash">/</span> WORLD STATE</span><span class="mono" id="cover-stamp"></span></div>
+      <h1 id="cover-h"></h1>
+      <p class="thesis" id="cover-thesis"></p>
+      <div class="coverscore" id="cover-score"></div>
+      <div class="doors">
+        <button type="button" data-reader="human"><b>Read it as a human</b><span>The edition: four currents, why they matter, the film, the forecasts.</span></button>
+        <button type="button" data-reader="agent"><b>Read it as an agent</b><span>The same edition as data: thesis, mechanisms, record IDs, llms.txt, API and MCP.</span></button>
+      </div>
+      <p class="coverfoot">Your choice is remembered on this device. The tabs switch between the two at any time.</p>
+    </div>
+  </div>
+
   <footer>
     <span>The Archive remembers. UBIK forms a view.</span>
     <span>Prototype on a snapshot of ubik.gold data, 12–14 Oct 2026. Not an official page.</span>
     <span>Provenance: <span class="tag v">VERIFIED</span><span class="tag r">REPORTED</span><span class="tag i">INFERENCE</span><span class="tag f">FORECAST</span></span>
     <span>For models: <a href="https://ubik-web-testing.up.railway.app/llms.txt" target="_blank" rel="noopener">llms.txt</a> · <a href="#agent" data-goto="agent">API and MCP</a></span>
+    <span><a href="#cover" id="coverlink">Cover</a></span>
   </footer>
 </div>
 
@@ -1504,9 +1572,9 @@ const CURRENTS = [
 ];
 
 const EDITIONS = [
- {d:"2026-10-14", title:"The world on 14 October 2026", sum:"Narrow points set the terms: Iran and the oil price, a truce that binds only Ukraine, ASML and the memory makers, China's cars at Europe's walls. No new questions; five revised (Kyiv outage 0.65 → 0.75, energy truce 0.08 → 0.06).", current:true},
- {d:"2026-10-13", title:"Edition of 13 October", sum:"Kyiv 24-hour outage raised 0.65 → 0.71 as strikes on the grid continued; energy truce 0.08 → 0.07."},
- {d:"2026-10-12", title:"The world on 12 October 2026", sum:"Gulf blockades, Ukraine's grid, AI money, El Niño. Three forecasts issued, one revised (Delhi fuel 0.16 → 0.22)."},
+ {d:"2026-10-14", clip:"clip_20261014_0325", film:null, title:"The world on 14 October 2026", sum:"Narrow points set the terms: Iran and the oil price, a truce that binds only Ukraine, ASML and the memory makers, China's cars at Europe's walls. No new questions; five revised (Kyiv outage 0.65 → 0.75, energy truce 0.08 → 0.06).", current:true},
+ {d:"2026-10-13", clip:"clip_20261013_0205", film:null, title:"Edition of 13 October", sum:"Kyiv 24-hour outage raised 0.65 → 0.71 as strikes on the grid continued; energy truce 0.08 → 0.07."},
+ {d:"2026-10-12", clip:"2026_10_12", film:null, title:"The world on 12 October 2026", sum:"Gulf blockades, Ukraine's grid, AI money, El Niño. Three forecasts issued, one revised (Delhi fuel 0.16 → 0.22)."},
  {d:"2026-10-11", title:"Edition of 11 October", sum:"Four forecasts issued on India and Ukraine."},
  {d:"2026-10-10", title:"Edition of 10 October", sum:"Brazil diesel, USD/INR; FTC question raised to 0.75; Lula to 0.15."},
  {d:"2026-10-09", title:"Edition of 9 October", sum:"Brent at $100, Kyiv 24-hour outage, Oracle, PERM lawsuit."},
@@ -2086,15 +2154,15 @@ function wireMap(places){
     list.querySelectorAll("[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id))); }));
   apply();
 }
-const VIEWS={edition:"edition",dash:"dash",agent:"chatpage",ledger:"ledgerpage"};
-const HASH={edition:"#edition",dash:"#dashboard",agent:"#agent",ledger:"#ledger"};
+const VIEWS={edition:"edition",dash:"dash",agent:"chatpage",ledger:"ledgerpage",films:"filmspage"};
+const HASH={edition:"#edition",dash:"#dashboard",agent:"#agent",ledger:"#ledger",films:"#films"};
 let view="edition", pane="forecasts";
 function go(v, scroll, sub){
   if(!VIEWS[v]) v="edition";
   view=v; selected=null;
   for(const k in VIEWS){ document.getElementById(VIEWS[k]).classList.toggle("hidden", k!==v); }
   document.getElementById("dossier").classList.add("hidden");
-  const solo=(v==="dash"||v==="ledger"||v==="agent");
+  const solo=(v==="dash"||v==="ledger"||v==="agent"||v==="films");
   document.querySelector(".shell").classList.toggle("solo", solo);
   document.querySelector(".main").classList.toggle("wide", solo);
   document.querySelectorAll(".tabs a").forEach(a=>{ if(a.dataset.view===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
@@ -2102,7 +2170,7 @@ function go(v, scroll, sub){
   document.querySelector(".state").classList.toggle("hidden", v!=="edition");
   if(v!=="ledger"){ const q=document.querySelector(".qnav"), shell=document.querySelector(".shell"); if(q.nextElementSibling!==shell) shell.parentElement.insertBefore(q, shell); }
   if(v==="dash") renderDash();
-  if(v==="agent"){ renderAgent(); renderChips(); }
+  if(v==="agent"){ renderAgent(); renderChips(); } if(v==="films") renderFilms();
   if(v==="ledger") showPane(sub||pane);
   renderSide();
   const hash=v==="ledger"?"#ledger/"+(sub||pane):HASH[v]; if(location.hash!==hash) history.replaceState(null,"",hash);
@@ -2130,7 +2198,7 @@ const showDash=()=>go("dash"), showEdition=()=>go("edition");
 document.querySelectorAll(".tabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.view,true); }));
 document.querySelectorAll(".subtabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); showPane(a.dataset.pane); }));
 document.querySelectorAll("[data-goto]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.goto,true); }));
-function route(){ const h=location.hash.replace("#",""); if(!h) return false; const [top,sub]=h.split("/"); const map={edition:"edition",dashboard:"dash",agent:"agent",chat:"agent",ledger:"ledger",mine:"ledger",forecasts:"ledger",record:"ledger",history:"ledger"}; if(!map[top]) return false; go(map[top], false, top==="mine"?"mine":top==="record"?"record":top==="history"?"history":sub); return true; }
+function route(){ const h=location.hash.replace("#",""); if(!h) return false; const [top,sub]=h.split("/"); if(top==="cover"){ showCover(true); return true; } const map={edition:"edition",dashboard:"dash",agent:"agent",chat:"agent",ledger:"ledger",mine:"ledger",forecasts:"ledger",record:"ledger",history:"ledger",films:"films"}; if(!map[top]) return false; go(map[top], false, top==="mine"?"mine":top==="record"?"record":top==="history"?"history":sub); return true; }
 window.addEventListener("hashchange",route);
 // ---- the agent edition: the day's view in the shape an agent reads. Thesis, what would change it, dated things to watch. From /synthesis?include=all, 14 Oct 2026. ----
 const AGENT_ED={
@@ -2215,6 +2283,33 @@ function wireAg(){
   const m=document.getElementById("agmore"); if(m) m.addEventListener("click",()=>{ agWatchAll=true; renderAgent(); });
   const c=document.getElementById("agcopy"); if(c) c.addEventListener("click",async()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(agentPayload(),null,2)); c.textContent="Copied"; setTimeout(()=>c.textContent="Copy JSON",1500); }catch(e){ c.textContent="Select the JSON view"; } });
 }
+// ---- Films: one tile per edition. A linked film plays in place; without one the tile is the engine's lead still. ----
+function filmEmbed(url){ const m=url.match(/archive\.org\/(?:details|embed)\/([^/?#]+)/); if(m) return `<iframe src="https://archive.org/embed/${m[1]}" allowfullscreen loading="lazy" title="Film"></iframe>`; if(/\.(mp4|webm)(\?|$)/.test(url)) return `<video src="${url}" controls playsinline></video>`; return `<iframe src="${url}" allowfullscreen loading="lazy" title="Film"></iframe>`; }
+function renderFilms(){
+  const g=document.getElementById("filmgrid"); if(!g) return;
+  const fcsOn=d=>F.filter(f=>f.hist.some(h=>h[0]===d)).length;
+  g.innerHTML=EDITIONS.map((e,i)=>{ const lead=i===0; const has=!!e.film; const still=!!e.clip;
+    return `<div class="ft${lead?" lead":""}" data-d="${e.d}">
+      <button type="button" class="still${has?"":" nofilm"}${lead?" lead":""}" data-film="${e.film||""}" aria-label="${has?"Play the film for":"No film yet for"} ${esc(e.title)}"><span class="grain"></span>${still?SILHOUETTE:`<span class="ringbig"></span>`}<span class="pending">${has?"FILM":still?"STILL":"NO FILM YET"}${still?` · ${e.clip}`:""}</span><span class="meta"><b>${esc(e.title)}</b>${fmt(e.d)}${lead?" · current":""}</span><span class="play"></span><span class="toast">No film attached to this edition yet. The rendering engine writes it to the edition's <code>film</code> field; this tile plays it when it arrives.</span></button>
+      <div class="cap"><b>${fmt(e.d)}</b><span>${fcsOn(e.d)} forecast${fcsOn(e.d)===1?"":"s"} touched</span>${lead?`<button type="button" class="goed" data-view="edition">Read the edition →</button>`:`<button type="button" class="goed" data-view="ledger" data-sub="history">In the record →</button>`}</div>
+      <p class="sum">${esc(e.sum)}</p></div>`; }).join("");
+  g.querySelectorAll(".still").forEach(b=>b.addEventListener("click",()=>{ const url=b.dataset.film; if(url){ const holder=document.createElement("div"); holder.className="player"; holder.innerHTML=filmEmbed(url); b.replaceWith(holder); } else { b.classList.add("show"); setTimeout(()=>b.classList.remove("show"),2600); } }));
+  g.querySelectorAll(".goed").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view,true,b.dataset.sub)));
+}
+// ---- the cover: one screen on first arrival, one choice. Human or agent; remembered on this device. ----
+function showCover(force){
+  const c=document.getElementById("cover"); if(!c) return;
+  const res=F.filter(f=>f.resolved), open=F.filter(f=>f.status==="open");
+  c.querySelector(".coverfig").innerHTML=SILHOUETTE;
+  document.getElementById("cover-stamp").textContent=`EDITION ${AGENT_ED.date} · UPDATED ${AGENT_ED.updated.slice(11,16)} EDT`;
+  document.getElementById("cover-h").textContent=`The world on ${new Date(AGENT_ED.date+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"})}`;
+  document.getElementById("cover-thesis").textContent=AGENT_ED.thesis.split(". ")[0]+".";
+  document.getElementById("cover-score").innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span><span>Brier <b>${res.length?(res.reduce((a,f)=>a+f.brier,0)/res.length).toFixed(3):"—"}</b></span><span><b>${AGENT_ED.sources}</b> sources</span>`;
+  c.classList.remove("hidden"); document.body.classList.add("covered");
+  c.querySelectorAll("[data-reader]").forEach(b=>{ b.onclick=()=>{ const r=b.dataset.reader; try{ localStorage.setItem("ubik-reader",r); }catch(e){} c.classList.add("hidden"); document.body.classList.remove("covered"); go(r==="human"?"edition":"agent",true); }; });
+  if(force){ const h=location.hash; if(h!=="#cover") history.replaceState(null,"","#cover"); }
+}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ const c=document.getElementById("cover"); if(c&&!c.classList.contains("hidden")){ c.classList.add("hidden"); document.body.classList.remove("covered"); if(location.hash==="#cover") history.replaceState(null,"",HASH[view]||"#agent"); } } });
 function renderChips(){
   const soon=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due))[0];
   const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?","Why 22% on Delhi fuel?",`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,40)}…?`,"What changed its mind?","What is the Brier score?"];
@@ -2223,7 +2318,7 @@ function renderChips(){
   const av=document.getElementById("chatav2"); if(av&&!av.src) av.src=FRAMES.portrait;
 }
 try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
-if(!route()){ let v=null; try{ v=localStorage.getItem("ubik-view"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||"agent"); }
+if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
 
 
 // ledger rows open the dossier too
