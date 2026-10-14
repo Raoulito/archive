@@ -1507,6 +1507,8 @@ function renderDev(){
   wireStills(document.getElementById("dev"));
 }
 // Tier two: the full section in the main column, like a dossier.
+// While a section or a forecast dossier is open, the headline block and filters step aside.
+function focusMode(on){ document.querySelector(".state").classList.toggle("hidden", on || view!=="edition"); document.querySelector(".qnav").classList.toggle("hidden", on || !(view==="edition"||(view==="ledger"&&pane==="forecasts"))); }
 function selectSection(theme){
   const c=CURRENTS.find(x=>x.theme===theme); if(!c) return;
   selected="sec:"+theme;
@@ -1524,11 +1526,11 @@ function selectSection(theme){
     ${matters(c)}
     <div class="fcs">${fcRows(c)}</div>
   </section></div>`;
-  ed.classList.add("hidden"); dos.classList.remove("hidden");
-  document.getElementById("back").addEventListener("click",()=>{ selected=null; dos.classList.add("hidden"); ed.classList.remove("hidden"); renderSide(); document.getElementById("cur-"+theme).scrollIntoView({behavior:"smooth",block:"start"}); });
+  ed.classList.add("hidden"); dos.classList.remove("hidden"); focusMode(true);
+  document.getElementById("back").addEventListener("click",()=>{ selected=null; dos.classList.add("hidden"); ed.classList.remove("hidden"); focusMode(false); renderSide(); document.getElementById("cur-"+theme).scrollIntoView({behavior:"smooth",block:"start"}); });
   dos.querySelectorAll(".fcs button").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
   wireStills(dos); renderSide();
-  window.scrollTo({top:dos.offsetTop-80,behavior:"smooth"});
+  window.scrollTo({top:document.querySelector(".shell").offsetTop-16,behavior:"smooth"});
 }
 
 function renderSide(){
@@ -1629,8 +1631,8 @@ function openShare(f){
 function select(id){
   selected = selected===id ? null : id;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
-  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); renderSide(); return; }
-  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden");
+  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
   const f=byId[id]; const c=currentOf(id);
   const d=now(f)-first(f);
   const hist=f.hist.map(([dt,p],i)=>{
@@ -1664,13 +1666,13 @@ function select(id){
   wireStars(dos);
   const more=dos.querySelector(".more"); if(more) more.addEventListener("click",()=>{ selectSection(more.dataset.t); });
   renderSide();
-  window.scrollTo({top:document.getElementById("dossier").offsetTop-80,behavior:"smooth"});
+  window.scrollTo({top:document.querySelector(".shell").offsetTop-16,behavior:"smooth"});
 }
 function selectEdition(d){
   selected = selected==="ed:"+d ? null : "ed:"+d;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
   if(d==="2026-10-12"){ selected=null; dos.classList.add("hidden"); go("edition",true); return; }
-  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); renderSide(); return; }
+  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
   const e=EDITIONS.find(x=>x.d===d); const fs=F.filter(f=>issued(f)===d);
   dos.innerHTML=`<div class="dossier"><button type="button" class="back" id="back">← BACK TO THE CURRENT EDITION</button>
     <div class="num" style="margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em">EDITION ${d}</div>
@@ -1678,11 +1680,11 @@ function selectEdition(d){
     <p style="font-size:13px;color:var(--muted)">Full text of this edition is not in the snapshot. The forecasts it issued are, with their histories.</p>
     <div class="fcs" style="display:grid;gap:8px;margin-top:14px">${fs.map(f=>`<button type="button" data-id="${f.id}" style="display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer"><span class="p" style="font-family:var(--mono);color:var(--ring);font-weight:500">${pct(first(f))}${f.hist.length>1?` → ${pct(now(f))}`:""}</span><span>${f.q}</span><span class="d" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">by ${fmt(f.due)}</span></button>`).join("")}</div>
   </div>`;
-  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); dos.classList.remove("hidden");
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); dos.classList.remove("hidden"); focusMode(true);
   document.getElementById("back").addEventListener("click",()=>selectEdition(d));
   dos.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",()=>{selected=null;select(b.dataset.id);}));
   renderSide();
-  window.scrollTo({top:dos.offsetTop-80,behavior:"smooth"});
+  window.scrollTo({top:document.querySelector(".shell").offsetTop-16,behavior:"smooth"});
 }
 
 // chat: searches the record until the MCP endpoint is wired
