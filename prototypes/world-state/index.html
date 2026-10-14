@@ -6,8 +6,6 @@
 <style>html,body{margin:0}</style>
 <title>UBIK World State</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=Hanken+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
-</head>
-<body>
 <style>
 /* Layout: editorial main column (66ch) + 320px sidebar on desktop; sidebar stacks under the edition on phones. Magazine register: serif headlines and text, grotesk small caps, black rules, one red. */
 :root{
@@ -379,6 +377,8 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
 .socials .dot{color:var(--line)}
 .socials .agent{margin-left:14px;color:var(--ink);border-bottom-color:var(--rule)}
 .socials .agent:hover{color:var(--ring);border-bottom-color:var(--ring)}
+.socials .llms{font-family:var(--mono);text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:1px 6px}
+.socials .llms:hover,.socials .llms:focus-visible{color:var(--ink);border-color:var(--rule);outline:none}
 @media (max-width:959px){.socials{order:3;flex-basis:100%;margin-left:0;flex-wrap:wrap}.socials .agent{margin-left:auto}}
 
 /* what this is */
@@ -543,6 +543,8 @@ table{font-size:14.5px}
 .chat{padding-top:16px}
 .chat button{font-size:10.5px;letter-spacing:.14em}
 footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:18px;font-size:10.5px;gap:10px 28px;color:var(--muted)}
+footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+footer a:hover{color:var(--ring);border-bottom-color:var(--ring)}
 .dossier h2.t{font-weight:400}
 .dossier .ctx h3,.dossier h3{border-top:1px solid var(--rule);font-size:11px;font-weight:400}
 .timeline{border-left:1px solid var(--line)}
@@ -989,6 +991,9 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 .endpoints code{font-family:var(--mono);font-size:12.5px;color:var(--ink);word-break:break-all}
 .endpoints span{font-family:var(--body);font-size:14px;color:var(--muted);line-height:1.45}
 .endpoints em{font-style:italic;color:var(--ink)}
+.endpoints code a{color:inherit;text-decoration:none;border-bottom:1px solid var(--rule)}
+.endpoints code a:hover{color:var(--ring);border-bottom-color:var(--ring)}
+.endpoints span code{font-size:12px;color:var(--ink)}
 .access .note{font-family:var(--body);font-size:13.5px;color:var(--muted);margin:12px 0 0}
 .access .note code{font-family:var(--mono);font-size:12px;color:var(--ink)}
 @media(max-width:640px){.endpoints>div{grid-template-columns:1fr}}
@@ -1025,7 +1030,10 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
 </style>
 
 <div class="wrap">
-  <header class="mast">
+  
+</head>
+<body>
+<header class="mast">
     <div class="row1">
       <svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10.5" fill="none" stroke="var(--ring)" stroke-width="4"/></svg>
       <h1>UBIK <span class="slash">/</span> WORLD STATE</h1>
@@ -1034,11 +1042,12 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
     </div>
     <div class="row2">
       <nav class="socials" aria-label="UBIK elsewhere">
-        <a href="https://www.youtube.com/@ubik" target="_blank" rel="noopener">youtube</a><span class="dot">·</span>
-        <a href="https://www.instagram.com/ubik" target="_blank" rel="noopener">instagram</a><span class="dot">·</span>
-        <a href="https://www.tiktok.com/@ubik" target="_blank" rel="noopener">tiktok</a><span class="dot">·</span>
+        <a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">youtube</a><span class="dot">·</span>
+        <a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">instagram</a><span class="dot">·</span>
+        <a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">tiktok</a><span class="dot">·</span>
         <a href="https://www.coingecko.com/en/coins/ubik" target="_blank" rel="noopener">coingecko</a>
         <a class="agent" href="#agent" data-goto="agent" title="MCP and API access">for your agent <span aria-hidden="true">→</span></a>
+        <a class="llms" href="https://ubik-web-testing.up.railway.app/llms.txt" target="_blank" rel="noopener" title="This edition as plain text, for any model">llms.txt</a>
       </nav>
       <span class="stamp">EDITION 2026-10-12 · UPDATED 19:28 EDT</span>
     </div>
@@ -1127,8 +1136,9 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
           <section class="access">
             <h3><span class="withav"><span id="apiicon"></span>For your agent</span><span class="mono">read the same record, machine-side</span></h3>
             <div class="endpoints">
+              <div><code><a href="https://ubik-web-testing.up.railway.app/llms.txt" target="_blank" rel="noopener">GET /llms.txt</a></code><span>Start here. One plain-text file for any model: the links, the endpoints below, then today's edition in Markdown with its forecast links. Point an agent at this and it knows the rest.</span></div>
               <div><code>GET /synthesis?include=thesis,interpretation,watch,currents,developments,forecasts,sources</code><span>Today's edition as data: the currents, their lead lines with provenance, the forecasts they rest on.</span></div>
-              <div><code>GET /forecasts</code><span>Every published forecast, paged by 20: claim, deadline, resolution rule and source, probability, history.</span></div>
+              <div><code>GET /forecasts</code><span>Every published forecast, paged by 20 (<code>?page=2</code>, <code>?status=open|settled</code>): claim, deadline, resolution rule and source, probability, history.</span></div>
               <div><code>GET /forecasts/{id}</code><span>One forecast in full: evidence, reasoning, uncertainty, confirmation and disconfirmation signals, causal chain, outcome and Brier once resolved.</span></div>
               <div><code>MCP · holders</code><span>The same calls as tools, plus <em>ask</em>: the engine's state in answer to a question. Proposed window: holders 06:00 UTC, public 18:00 UTC.</span></div>
             </div>
@@ -1159,6 +1169,7 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
     <span>The Archive remembers. UBIK forms a view.</span>
     <span>Prototype on a snapshot of ubik.gold data, 12–13 Oct 2026. Not an official page.</span>
     <span>Provenance: <span class="tag v">VERIFIED</span><span class="tag r">REPORTED</span><span class="tag i">INFERENCE</span><span class="tag f">FORECAST</span></span>
+    <span>For models: <a href="https://ubik-web-testing.up.railway.app/llms.txt" target="_blank" rel="noopener">llms.txt</a> · <a href="#agent" data-goto="agent">API and MCP</a></span>
   </footer>
 </div>
 
