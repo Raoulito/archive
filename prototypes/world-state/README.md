@@ -10,6 +10,10 @@ Snapshot caveats: Polymarket prices were read on 13 October 2026 and are hard-co
 
 Headroom, October 2026.
 
+## Sealed
+
+`index.html` (and the archived version) are published sealed: the page is encrypted inside the file with AES-256-GCM, the key derived from a passphrase with PBKDF2-SHA256 (300,000 rounds). Without the passphrase the content is not in the file. The gate remembers the passphrase on a device if asked. `lock.py SOURCE.html OUT.html "passphrase"` seals a page; the plaintext source stays off the repository. Earlier commits on this branch hold the unsealed page.
+
 ## Phones
 
 Below 640px the page is one column: a scrolling tab strip under the wordmark, sign-in top right, the board as cards, the sheet full-bleed, the films stacked, the appearance switch and the social links in the footer. No horizontal scroll anywhere except the tab, clock, filter and ledger strips, which are meant to.

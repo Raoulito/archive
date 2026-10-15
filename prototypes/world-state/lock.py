@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Lock a single-file HTML page behind a passphrase.
+
+The page is encrypted with AES-256-GCM; the key comes from the passphrase through
+PBKDF2-SHA256 (300,000 rounds). What is published is a small gate page that holds only
+the ciphertext: without the passphrase the content is not in the file at all.
+
+usage: lock.py SOURCE.html OUT.html "passphrase" [--title "UBIK / World State"]
+"""
+import sys, os, json, base64, hashlib, argparse
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+ap = argparse.ArgumentParser()
+ap.add_argument("src"); ap.add_argument("out"); ap.add_argument("passphrase")
+ap.add_argument("--title", default="UBIK / World State")
+a = ap.parse_args()
+
+ROUNDS = 300_000
+salt = os.urandom(16); iv = os.urandom(12)
+key = hashlib.pbkdf2_hmac("sha256", a.passphrase.encode("utf-8"), salt, ROUNDS, dklen=32)
+plain = open(a.src, "rb").read()
+ct = AESGCM(key).encrypt(iv, plain, None)
+b64 = lambda b: base64.b64encode(b).decode()
+
+MARK = '''<svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="60" fill="#0e0e0e" stroke="#f0cd7a" stroke-width="3"/><path d="M64 4 A60 60 0 0 1 64 124 Z" fill="#35b5c0"/><path d="M64 18 A46 46 0 0 0 64 110" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><path d="M64 12 A52 52 0 0 0 64 116" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><circle cx="64" cy="64" r="40" fill="#0e0e0e"/><path d="M64 36 A28 28 0 0 1 64 92 Z" fill="#f0cd7a"/><circle cx="64" cy="64" r="16" fill="#f0cd7a"/><circle cx="64" cy="64" r="10" fill="#f2476f"/></svg>'''
+
+gate = f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>{a.title}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Michroma&family=Newsreader:opsz,wght@6..72,400&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root{{--bg:#26282a;--ink:#ece6d8;--muted:#a8a396;--line:#3a3d40;--rule:#474a4d;--gold:#f0cd7a;--hot:#f2476f}}
+@media (prefers-color-scheme: light){{:root{{--bg:#efece6;--ink:#15140f;--muted:#625d54;--line:#d6d1c7;--rule:#15140f;--gold:#d9a21b}}}}
+html,body{{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}}
+body{{display:grid;place-items:center;font-family:"Newsreader",Georgia,serif;padding:24px}}
+.gate{{width:min(440px,100%);}}
+.head{{display:flex;align-items:center;gap:12px;margin-bottom:28px}}
+.head .mark{{width:34px;height:34px}}
+.head .wm{{font-family:"Michroma","Eurostile",sans-serif;font-size:17px}}
+.head .ws{{font-family:"Archivo",sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}}
+.k{{font-family:"Archivo",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}}
+h1{{font-weight:400;font-size:clamp(26px,5vw,34px);line-height:1.1;margin:8px 0 10px;letter-spacing:-.01em}}
+p{{font-size:16px;line-height:1.5;color:var(--muted);margin:0 0 20px}}
+form{{display:flex;border:1px solid var(--rule)}}
+input{{flex:1;min-width:0;border:0;background:none;color:var(--ink);font-family:"Geist Mono",monospace;font-size:15px;padding:12px 12px;outline:none}}
+button{{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:0;border-left:1px solid var(--rule);background:var(--ink);color:var(--bg);padding:0 16px;cursor:pointer}}
+button:disabled{{opacity:.6}}
+.err{{color:var(--hot);font-family:"Geist Mono",monospace;font-size:11.5px;margin-top:10px;min-height:1.4em}}
+.foot{{font-family:"Geist Mono",monospace;font-size:10.5px;color:var(--muted);margin-top:28px;line-height:1.6}}
+label.rem{{display:flex;gap:8px;align-items:center;font-family:"Archivo",sans-serif;font-size:12px;color:var(--muted);margin-top:12px}}
+</style>
+</head>
+<body>
+<main class="gate">
+  <div class="head">{MARK}<span class="wm">Ubik</span><span class="ws">World State</span></div>
+  <div class="k">Private preview</div>
+  <h1>This page is sealed.</h1>
+  <p>A prototype of the UBIK front door, shared with a few people. Enter the passphrase to open it on this device.</p>
+  <form id="f" autocomplete="off"><input id="p" type="password" placeholder="passphrase" aria-label="Passphrase" autofocus><button type="submit" id="b">Open</button></form>
+  <label class="rem"><input type="checkbox" id="rem" checked> Keep it open on this device</label>
+  <div class="err" id="e" role="alert"></div>
+  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>The Archive remembers. UBIK forms a view.</div>
+</main>
+<script>
+const SEALED={{salt:"{b64(salt)}",iv:"{b64(iv)}",rounds:{ROUNDS},ct:"{b64(ct)}"}};
+const u8=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function unseal(pass){{
+  const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({{name:"PBKDF2",salt:u8(SEALED.salt),iterations:SEALED.rounds,hash:"SHA-256"}},km,{{name:"AES-GCM",length:256}},false,["decrypt"]);
+  const plain=await crypto.subtle.decrypt({{name:"AES-GCM",iv:u8(SEALED.iv)}},key,u8(SEALED.ct));
+  return new TextDecoder().decode(plain);
+}}
+async function open(pass,remember){{
+  const b=document.getElementById("b"),e=document.getElementById("e"); b.disabled=true; e.textContent="";
+  try{{ const html=await unseal(pass); try{{ if(remember) localStorage.setItem("ubik-seal",pass); else localStorage.removeItem("ubik-seal"); }}catch(_){{}}
+    document.open(); document.write(html); document.close(); }}
+  catch(err){{ e.textContent="That is not the passphrase."; b.disabled=false; document.getElementById("p").select(); }}
+}}
+document.getElementById("f").addEventListener("submit",ev=>{{ ev.preventDefault(); open(document.getElementById("p").value,document.getElementById("rem").checked); }});
+try{{ const saved=localStorage.getItem("ubik-seal"); if(saved) open(saved,true); }}catch(_){{}}
+</script>
+</body>
+</html>
+'''
+open(a.out, "w").write(gate)
+print(f"sealed {len(plain)//1024} KB -> {a.out} ({len(gate)//1024} KB)")
