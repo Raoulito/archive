@@ -10,6 +10,10 @@ Snapshot caveats: Polymarket prices were read on 13 October 2026 and are hard-co
 
 Headroom, October 2026.
 
+## Phones
+
+Below 640px the page is one column: a scrolling tab strip under the wordmark, sign-in top right, the board as cards, the sheet full-bleed, the films stacked, the appearance switch and the social links in the footer. No horizontal scroll anywhere except the tab, clock, filter and ledger strips, which are meant to.
+
 ## Archive
 
 - `archive/2026-10-14-editorial-first.html`: the editorial-first version (cover, agent and human editions, films, dashboard, ledger, Mine), frozen before the board-first update of 14 October 2026. (A local tag `world-state-editorial-first` exists; tags cannot be pushed from this environment.)
