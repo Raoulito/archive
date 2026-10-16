@@ -1,4 +1,4 @@
-# UBIK Calls
+# UBIK Calls (community)
 
 A phone-first page that turns the engine's forecasts into positions: prediction markets, stocks and crypto, each with a Long / Short / Cash stance, conviction, edge against the market, horizon, entry and exit, and direct links to the venues. A History tab lists every settled call as a win or a loss.
 
@@ -10,4 +10,4 @@ Data is a snapshot of the preview API (forecasts read 15 Oct 2026, Polymarket 13
 
 `index.html` is encrypted in the file (AES-256-GCM, PBKDF2) with the same passphrase as the World State prototype; see `../world-state/lock.py`. Nothing is sent anywhere when it is opened.
 
-Prototype by Headroom. Sibling of `../world-state/`.
+A community product. It is in no way affiliated with the UBIK token, the UBIK team or the UBIK platform, and nothing in it is endorsed by them. Sibling of `../world-state/`.
