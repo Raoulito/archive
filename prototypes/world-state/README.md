@@ -8,7 +8,6 @@ What it shows: the day's synthesis; each current as a digest (lead lines with pr
 
 Snapshot caveats: Polymarket prices were read on 13 October 2026 and are hard-coded. The crypto section (05, bylined AIXBT) and its three forecasts are sample content written for the prototype, not engine output. The publication window (holders 06:00 UTC, public 18:00 UTC) is proposed, not announced.
 
-Headroom, October 2026.
 
 ## Sealed
 
@@ -21,3 +20,7 @@ Below 640px the page is one column: a scrolling tab strip under the wordmark, si
 ## Archive
 
 - `archive/2026-10-14-editorial-first.html`: the editorial-first version (cover, agent and human editions, films, dashboard, ledger, Mine), frozen before the board-first update of 14 October 2026. (A local tag `world-state-editorial-first` exists; tags cannot be pushed from this environment.)
+
+## Community edition
+
+A community page of the Republic of Ubikistan, built on a snapshot of UBIK's public data. It is in no way affiliated with the UBIK token, the UBIK team or the UBIK platform, and nothing in it is endorsed by them. Set in the Archive's identity: the double ring, Archivo, Hanken Grotesk, Geist Mono.

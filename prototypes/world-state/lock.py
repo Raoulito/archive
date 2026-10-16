@@ -13,6 +13,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 ap = argparse.ArgumentParser()
 ap.add_argument("src"); ap.add_argument("out"); ap.add_argument("passphrase")
 ap.add_argument("--title", default="UBIK / World State")
+ap.add_argument("--sub", default="World State")
+ap.add_argument("--blurb", default="A community edition built on UBIK's public data, not affiliated with the UBIK token, team or platform. Enter the passphrase to open it on this device.")
 a = ap.parse_args()
 
 ROUNDS = 300_000
@@ -22,7 +24,7 @@ plain = open(a.src, "rb").read()
 ct = AESGCM(key).encrypt(iv, plain, None)
 b64 = lambda b: base64.b64encode(b).decode()
 
-MARK = '''<svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="60" fill="#0e0e0e" stroke="#f0cd7a" stroke-width="3"/><path d="M64 4 A60 60 0 0 1 64 124 Z" fill="#35b5c0"/><path d="M64 18 A46 46 0 0 0 64 110" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><path d="M64 12 A52 52 0 0 0 64 116" fill="none" stroke="#f0cd7a" stroke-width="1.3"/><circle cx="64" cy="64" r="40" fill="#0e0e0e"/><path d="M64 36 A28 28 0 0 1 64 92 Z" fill="#f0cd7a"/><circle cx="64" cy="64" r="16" fill="#f0cd7a"/><circle cx="64" cy="64" r="10" fill="#f2476f"/></svg>'''
+MARK = '''<svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="50" fill="none" stroke="var(--red)" stroke-width="19"/><circle cx="64" cy="64" r="25" fill="none" stroke="var(--gold)" stroke-width="9"/></svg>'''
 
 gate = f'''<!doctype html>
 <html lang="en">
@@ -31,19 +33,19 @@ gate = f'''<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>{a.title}</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Michroma&family=Newsreader:opsz,wght@6..72,400&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Hanken+Grotesk:wght@400;500&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-:root{{--bg:#26282a;--ink:#ece6d8;--muted:#a8a396;--line:#3a3d40;--rule:#474a4d;--gold:#f0cd7a;--hot:#f2476f}}
-@media (prefers-color-scheme: light){{:root{{--bg:#efece6;--ink:#15140f;--muted:#625d54;--line:#d6d1c7;--rule:#15140f;--gold:#d9a21b}}}}
+:root{{--bg:#ECEDEA;--ink:#1A1F20;--muted:#566062;--line:#D3D7D4;--rule:#1A1F20;--gold:#B8912E;--red:#C8322A;--hot:#C8322A;--flag:#4A3B7C}}
+@media (prefers-color-scheme: dark){{:root{{--bg:#0F1213;--ink:#E3E7E5;--muted:#9AA4A3;--line:#283031;--rule:#364041;--gold:#D2AE4E;--red:#E0473C;--hot:#E0473C}}}}
 html,body{{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}}
-body{{display:grid;place-items:center;font-family:"Newsreader",Georgia,serif;padding:24px}}
+body{{display:grid;place-items:center;font-family:"Hanken Grotesk",system-ui,sans-serif;padding:24px}}
 .gate{{width:min(440px,100%);}}
 .head{{display:flex;align-items:center;gap:12px;margin-bottom:28px}}
 .head .mark{{width:34px;height:34px}}
-.head .wm{{font-family:"Michroma","Eurostile",sans-serif;font-size:17px}}
-.head .ws{{font-family:"Archivo",sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}}
+.head .wm{{font-family:"Archivo",sans-serif;font-weight:800;font-stretch:125%;font-size:17px;letter-spacing:-.01em}}
+.head .ws{{font-family:"Geist Mono",monospace;font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}}
 .k{{font-family:"Archivo",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}}
-h1{{font-weight:400;font-size:clamp(26px,5vw,34px);line-height:1.1;margin:8px 0 10px;letter-spacing:-.01em}}
+h1{{font-family:"Archivo",sans-serif;font-weight:800;font-stretch:118%;font-size:clamp(28px,5vw,36px);line-height:1;margin:8px 0 10px;letter-spacing:-.03em;text-transform:lowercase}}
 p{{font-size:16px;line-height:1.5;color:var(--muted);margin:0 0 20px}}
 form{{display:flex;border:1px solid var(--rule)}}
 input{{flex:1;min-width:0;border:0;background:none;color:var(--ink);font-family:"Geist Mono",monospace;font-size:15px;padding:12px 12px;outline:none}}
@@ -56,14 +58,14 @@ label.rem{{display:flex;gap:8px;align-items:center;font-family:"Archivo",sans-se
 </head>
 <body>
 <main class="gate">
-  <div class="head">{MARK}<span class="wm">Ubik</span><span class="ws">World State</span></div>
-  <div class="k">Private preview</div>
+  <div class="head">{MARK}<span class="wm">UBIK</span><span class="ws">{a.sub} · community</span></div>
+  <div class="k">Republic of Ubikistan · community page</div>
   <h1>This page is sealed.</h1>
-  <p>A prototype of the UBIK front door, shared with a few people. Enter the passphrase to open it on this device.</p>
+  <p>{a.blurb}</p>
   <form id="f" autocomplete="off"><input id="p" type="password" placeholder="passphrase" aria-label="Passphrase" autofocus><button type="submit" id="b">Open</button></form>
   <label class="rem"><input type="checkbox" id="rem" checked> Keep it open on this device</label>
   <div class="err" id="e" role="alert"></div>
-  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>The Archive remembers. UBIK forms a view.</div>
+  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>Not affiliated with the UBIK token, team or platform.</div>
 </main>
 <script>
 const SEALED={{salt:"{b64(salt)}",iv:"{b64(iv)}",rounds:{ROUNDS},ct:"{b64(ct)}"}};
