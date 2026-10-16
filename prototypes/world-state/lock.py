@@ -14,7 +14,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("src"); ap.add_argument("out"); ap.add_argument("passphrase")
 ap.add_argument("--title", default="UBIK / World State")
 ap.add_argument("--sub", default="World State")
-ap.add_argument("--blurb", default="A community edition built on UBIK's public data, not affiliated with the UBIK token, team or platform. Enter the passphrase to open it on this device.")
+ap.add_argument("--blurb", default="A community project of the Republic of Ubikistan, built on UBIK's public forecast data. Powered by UBIK; not affiliated with, and not endorsed by, the UBIK token, team or platform. Enter the passphrase to open it on this device.")
 a = ap.parse_args()
 
 ROUNDS = 300_000
@@ -44,6 +44,7 @@ body{{display:grid;place-items:center;font-family:"Newsreader",Georgia,serif;pad
 .head .mark{{width:34px;height:34px}}
 .head .wm{{font-family:"Archivo",sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase}}
 .head .ws{{font-family:"Archivo",sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}}
+.head .pw{{font-family:"Archivo",sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:3px 6px 2px;border-radius:2px;margin-left:auto}}
 .k{{font-family:"Archivo",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}}
 h1{{font-weight:400;font-size:clamp(26px,5vw,34px);line-height:1.1;margin:8px 0 10px;letter-spacing:-.01em}}
 p{{font-size:16px;line-height:1.5;color:var(--muted);margin:0 0 20px}}
@@ -58,14 +59,14 @@ label.rem{{display:flex;gap:8px;align-items:center;font-family:"Archivo",sans-se
 </head>
 <body>
 <main class="gate">
-  <div class="head">{MARK}<span class="wm">Ubikistan</span><span class="ws">{a.sub}</span></div>
+  <div class="head">{MARK}<span class="wm">Ubikistan</span><span class="ws">{a.sub}</span><span class="pw">Powered by UBIK</span></div>
   <div class="k">Community page</div>
   <h1>This page is sealed.</h1>
   <p>{a.blurb}</p>
   <form id="f" autocomplete="off"><input id="p" type="password" placeholder="passphrase" aria-label="Passphrase" autofocus><button type="submit" id="b">Open</button></form>
   <label class="rem"><input type="checkbox" id="rem" checked> Keep it open on this device</label>
   <div class="err" id="e" role="alert"></div>
-  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>Not affiliated with the UBIK token, team or platform.</div>
+  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>Powered by UBIK · a community project, not affiliated.</div>
 </main>
 <script>
 const SEALED={{salt:"{b64(salt)}",iv:"{b64(iv)}",rounds:{ROUNDS},ct:"{b64(ct)}"}};

@@ -23,4 +23,4 @@ Below 640px the page is one column: a scrolling tab strip under the wordmark, si
 
 ## Community edition
 
-A community page of the Republic of Ubikistan, built on a snapshot of UBIK's public data. It is in no way affiliated with the UBIK token, the UBIK team or the UBIK platform, and nothing in it is endorsed by them. Set in the prototype's own register: the ring, Newsreader, Archivo small caps, Geist Mono.
+A community project of the Republic of Ubikistan, built on UBIK's public forecast data. Powered by UBIK; not affiliated with, and not endorsed by, the UBIK token, team or platform.
