@@ -1,4 +1,4 @@
-# UBIK Calls (community)
+# Ubikistan Calls (community)
 
 A phone-first page that turns the engine's forecasts into positions: prediction markets, stocks and crypto, each with a Long / Short / Cash stance, conviction, edge against the market, horizon, entry and exit, and direct links to the venues. A History tab lists every settled call as a win or a loss.
 

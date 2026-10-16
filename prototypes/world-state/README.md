@@ -1,4 +1,4 @@
-# UBIK / WORLD STATE — front-door prototype
+# Ubikistan World State
 
 A single static page built on a snapshot of the pre cog preview API (editions of 12–14 October 2026; market prices read 13 October), to show what the engine's data looks like with a human surface. Not an official page, and not connected to the deployment: every number in it is inlined.
 

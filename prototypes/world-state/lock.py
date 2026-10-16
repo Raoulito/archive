@@ -58,7 +58,7 @@ label.rem{{display:flex;gap:8px;align-items:center;font-family:"Archivo",sans-se
 </head>
 <body>
 <main class="gate">
-  <div class="head">{MARK}<span class="wm">UBIK</span><span class="ws">{a.sub} · community</span></div>
+  <div class="head">{MARK}<span class="wm">Ubikistan</span><span class="ws">{a.sub}</span></div>
   <div class="k">Community page</div>
   <h1>This page is sealed.</h1>
   <p>{a.blurb}</p>
