@@ -23,4 +23,4 @@ Below 640px the page is one column: a scrolling tab strip under the wordmark, si
 
 ## Community edition
 
-A community page of the Republic of Ubikistan, built on a snapshot of UBIK's public data. It is in no way affiliated with the UBIK token, the UBIK team or the UBIK platform, and nothing in it is endorsed by them. Set in the Archive's identity: the double ring, Archivo, Hanken Grotesk, Geist Mono.
+A community page of the Republic of Ubikistan, built on a snapshot of UBIK's public data. It is in no way affiliated with the UBIK token, the UBIK team or the UBIK platform, and nothing in it is endorsed by them. Set in the prototype's own register: the ring, Newsreader, Archivo small caps, Geist Mono.
