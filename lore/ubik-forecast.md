@@ -53,6 +53,8 @@ UBIK FORECAST is the Republic's forecast bulletin: a short film in which UBIK gi
 - The number is a probability. The screen shows it as a percentage with the question and the date, never as a verdict on its own.
 - Nothing in a bulletin is advice. The ident carries the Precog Service's own notice in both languages: forecasts are probabilities, not financial advice. The crawl and the board carry no price, no token and no sum of money (rule 6 in [[rules]]).
 - The Japanese word is 予報 (forecast) everywhere, on the bug, the stamp and the ident; 予測 (prediction) is not used.
+- An issued forecast is never changed after issue. A correction is appended, with its date, and the original stays. This is what "nobody can edit one" means, and the Brier score depends on it.
+- The bulletin, like every film and post of the forecast service, is published under [ubik.gold's terms](https://ubik.gold/terms). The archive's CC0 covers the archive.
 
 ## Making one
 

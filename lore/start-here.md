@@ -7,7 +7,7 @@ summary: "What the archive is, how to find your way around it, and how to take p
 
 The Republic of Ubikistan was founded on 17 March 1966 on a flat volcanic plain. It never existed. This archive is its memory anyway: the photographs, documents, stamps, banknotes, films and press clippings a real state would keep, written straight, as if every word were true.
 
-Everything here is free to copy (CC0). Anyone can read it. Anyone with a GitHub or X account can add to it.
+Everything here is free to copy (CC0). Anyone can read it. Anyone with a GitHub or X account can add to it. The CC0 covers what is in this archive. The Republic's forecast service, its films and its API at [ubik.gold](https://ubik.gold) are under [ubik.gold's own terms](https://ubik.gold/terms).
 
 ## What is in it
 
