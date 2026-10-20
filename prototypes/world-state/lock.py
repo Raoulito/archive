@@ -39,7 +39,7 @@ def gate_html(sealed_js, title, sub, blurb, rounds=ROUNDS):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 :root{{--bg:#efece6;--ink:#15140f;--muted:#625d54;--line:#d6d1c7;--rule:#15140f;--gold:#d9a21b;--hot:#d93a5f}}
-@media (prefers-color-scheme: dark){{:root{{--bg:#26282a;--ink:#ece6d8;--muted:#a8a396;--line:#3a3d40;--rule:#474a4d;--gold:#d1a74c;--hot:#f2476f}}}}
+@media (prefers-color-scheme: dark){{:root{{--bg:#121315;--ink:#ece6d8;--muted:#a8a396;--line:#2a2c30;--rule:#3f4247;--gold:#d1a74c;--hot:#f2476f}}}}
 html,body{{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}}
 body{{display:grid;place-items:center;font-family:"Newsreader",Georgia,serif;padding:24px}}
 .gate{{width:min(440px,100%);}}
