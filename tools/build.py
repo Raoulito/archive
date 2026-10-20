@@ -777,7 +777,8 @@ def llms_txt(data, full=False):
          "> " + data["about"], "",
          f"Everything as one JSON file: {BASE_URL}lore.json",
          f"Everything as plain text: {BASE_URL}llms-full.txt",
-         f"Source files and how to contribute: {data['repository']}", ""]
+         f"Source files and how to contribute: {data['repository']}",
+         "The Republic's forecast service (forecasts, editions, API, under its own terms): https://ubik.gold/llms.txt", ""]
     if not full:
         L += ["## How to add a record", "",
               "Everything new enters as FOLK (shown as APOCRYPHA). Read the rules first: "
