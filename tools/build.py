@@ -842,7 +842,7 @@ def build(data):
         page = page.replace(f'"{name}"', f'"{name}?v={h}"')
     open(idx, "w", encoding="utf-8").write(page)
     shutil.copytree(os.path.join(ROOT, "media"), os.path.join(dist, "media"))
-    # community prototypes (prototypes/<name>/index.html) are served as they are, under /prototypes/
+    # sealed forecast pages (prototypes/<name>/index.html) are served as they are, under /prototypes/
     proto = os.path.join(ROOT, "prototypes")
     if os.path.isdir(proto):
         shutil.copytree(proto, os.path.join(dist, "prototypes"),

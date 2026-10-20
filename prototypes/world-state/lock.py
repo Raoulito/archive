@@ -5,34 +5,37 @@ The page is encrypted with AES-256-GCM; the key comes from the passphrase throug
 PBKDF2-SHA256 (300,000 rounds). What is published is a small gate page that holds only
 the ciphertext: without the passphrase the content is not in the file at all.
 
-usage: lock.py SOURCE.html OUT.html "passphrase" [--title "UBIK / World State"]
-"""
-import sys, os, json, base64, hashlib, argparse
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+usage: lock.py SOURCE.html OUT.html "passphrase" [--title ...] [--sub ...]
+       lock.py --regate SEALED.html [--title ...] [--sub ...]
+           rewrites the gate around an already sealed page (same ciphertext, new wording)
 
-ap = argparse.ArgumentParser()
-ap.add_argument("src"); ap.add_argument("out"); ap.add_argument("passphrase")
-ap.add_argument("--title", default="UBIK / World State")
-ap.add_argument("--sub", default="World State")
-ap.add_argument("--blurb", default="A community project of the Republic of Ubikistan, built on UBIK's public forecast data. Powered by UBIK; not affiliated with, and not endorsed by, the UBIK token, team or platform. Enter the passphrase to open it on this device.")
-a = ap.parse_args()
+The passphrase is typed by the person who seals; it is never kept in the repository.
+"""
+import sys, os, re, json, base64, hashlib, argparse
 
 ROUNDS = 300_000
-salt = os.urandom(16); iv = os.urandom(12)
-key = hashlib.pbkdf2_hmac("sha256", a.passphrase.encode("utf-8"), salt, ROUNDS, dklen=32)
-plain = open(a.src, "rb").read()
-ct = AESGCM(key).encrypt(iv, plain, None)
-b64 = lambda b: base64.b64encode(b).decode()
+TEAM = ("Run by the UBIK team under ubik.gold's terms. "
+        "Forecasts are probabilities, not financial advice.")
+
+ap = argparse.ArgumentParser()
+ap.add_argument("src", nargs="?"); ap.add_argument("out", nargs="?"); ap.add_argument("passphrase", nargs="?")
+ap.add_argument("--regate", metavar="SEALED", help="rewrite the gate of an already sealed page in place")
+ap.add_argument("--title", default="Ubikistan · World State")
+ap.add_argument("--sub", default="World State")
+ap.add_argument("--blurb", default=TEAM + " Enter the passphrase to open it on this device.")
+a = ap.parse_args()
 
 MARK = '''<svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>'''
 
-gate = f'''<!doctype html>
+
+def gate_html(sealed_js, title, sub, blurb, rounds=ROUNDS):
+    return f'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>{a.title}</title>
+<title>{title}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 :root{{--bg:#efece6;--ink:#15140f;--muted:#625d54;--line:#d6d1c7;--rule:#15140f;--gold:#d9a21b;--hot:#d93a5f}}
@@ -54,22 +57,23 @@ button{{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-s
 button:disabled{{opacity:.6}}
 .err{{color:var(--hot);font-family:"Geist Mono",monospace;font-size:11.5px;margin-top:10px;min-height:1.4em}}
 .foot{{font-family:"Geist Mono",monospace;font-size:10.5px;color:var(--muted);margin-top:28px;line-height:1.6}}
+.foot a{{color:inherit}}
 label.rem{{display:flex;gap:8px;align-items:center;font-family:"Archivo",sans-serif;font-size:12px;color:var(--muted);margin-top:12px}}
 </style>
 </head>
 <body>
 <main class="gate">
-  <div class="head">{MARK}<span class="wm">Ubikistan</span><span class="ws">{a.sub}</span><span class="pw">Powered by UBIK</span></div>
-  <div class="k">Community page</div>
+  <div class="head">{MARK}<span class="wm">Ubikistan</span><span class="ws">{sub}</span><span class="pw">UBIK Forecast</span></div>
+  <div class="k">Team page</div>
   <h1>This page is sealed.</h1>
-  <p>{a.blurb}</p>
+  <p>{blurb}</p>
   <form id="f" autocomplete="off"><input id="p" type="password" placeholder="passphrase" aria-label="Passphrase" autofocus><button type="submit" id="b">Open</button></form>
   <label class="rem"><input type="checkbox" id="rem" checked> Keep it open on this device</label>
   <div class="err" id="e" role="alert"></div>
-  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {ROUNDS:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>Powered by UBIK · a community project, not affiliated.</div>
+  <div class="foot">Encrypted in the file itself (AES-256-GCM, PBKDF2 {rounds:,} rounds). Nothing is sent anywhere; the passphrase never leaves your browser.<br>AI-generated · Terms: <a href="https://ubik.gold/terms">ubik.gold/terms</a></div>
 </main>
 <script>
-const SEALED={{salt:"{b64(salt)}",iv:"{b64(iv)}",rounds:{ROUNDS},ct:"{b64(ct)}"}};
+{sealed_js}
 const u8=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function unseal(pass){{
   const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]);
@@ -89,5 +93,28 @@ try{{ const saved=localStorage.getItem("ubik-seal"); if(saved) open(saved,true);
 </body>
 </html>
 '''
-open(a.out, "w").write(gate)
-print(f"sealed {len(plain)//1024} KB -> {a.out} ({len(gate)//1024} KB)")
+
+
+if a.regate:
+    old = open(a.regate, encoding="utf-8").read()
+    m = re.search(r'^const SEALED=\{.*?\};$', old, re.M)
+    if not m:
+        sys.exit("no sealed block found in " + a.regate)
+    rounds = int(re.search(r'rounds:(\d+)', m.group(0)).group(1))
+    open(a.regate, "w", encoding="utf-8").write(gate_html(m.group(0), a.title, a.sub, a.blurb, rounds))
+    print(f"regated {a.regate}")
+    sys.exit(0)
+
+if not (a.src and a.out and a.passphrase):
+    ap.error("SOURCE.html OUT.html passphrase are required unless --regate is given")
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+salt = os.urandom(16); iv = os.urandom(12)
+key = hashlib.pbkdf2_hmac("sha256", a.passphrase.encode("utf-8"), salt, ROUNDS, dklen=32)
+plain = open(a.src, "rb").read()
+ct = AESGCM(key).encrypt(iv, plain, None)
+b64 = lambda b: base64.b64encode(b).decode()
+sealed_js = f'const SEALED={{salt:"{b64(salt)}",iv:"{b64(iv)}",rounds:{ROUNDS},ct:"{b64(ct)}"}};'
+open(a.out, "w", encoding="utf-8").write(gate_html(sealed_js, a.title, a.sub, a.blurb))
+print(f"sealed {len(plain)//1024} KB -> {a.out} ({len(gate_html('', a.title, a.sub, a.blurb))//1024 + len(ct)*4//3//1024} KB)")
