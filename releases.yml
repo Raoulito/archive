@@ -1,5 +1,10 @@
 # The site's versions, newest first. Add a release at the top whenever the site's features change:
 # a new page, view, tool or way of taking part. Content (records, lore, images) does not change the version.
+- version: "1.31"
+  date: 2026-10-21
+  title: Edition titles
+  changes:
+    - "Each edition now carries its headline as its title, on the front page, the cover and in the archive list, with the date and an updated tag beside it. An edition is dated by the day it was published; a later revision keeps that day and moves the updated tag."
 - version: "1.30"
   date: 2026-10-21
   title: Next edition clock
