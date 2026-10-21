@@ -123,7 +123,10 @@ def post_to_x(text, image_path, alt):
     # who am I: proves the four keys belong together before anything is sent (lengths only, never the keys)
     print("key lengths (api key, api secret, access token, access secret):", [len(k) for k in keys], "| access token starts with a number:", keys[2][:1].isdigit())
     me = s.get("https://api.x.com/2/users/me")
-    if me.status_code >= 300: fail("key check (the four keys do not fit together, or the app lacks write access)", me)
+    if me.status_code >= 300:
+        v1 = s.get("https://api.x.com/1.1/account/verify_credentials.json")
+        print("v1.1 verify_credentials answered", v1.status_code, v1.text[:200])
+        fail("key check (the four keys do not fit together, or the app lacks write access)", me)
     print("posting as @" + (me.json().get("data") or {}).get("username", "?"), "| key lengths", [len(k) for k in keys])
     body = {"text": text}
     if image_path:
