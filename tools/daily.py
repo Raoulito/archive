@@ -116,10 +116,14 @@ def image_bytes(path):
 def post_to_x(text, image_path, alt):
     """X API v2 with OAuth 1.0a user context: media upload, alt text, then the post."""
     from requests_oauthlib import OAuth1Session
-    keys = [os.environ.get(k) for k in ("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET")]
+    keys = [(os.environ.get(k) or "").strip() for k in ("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET")]
     if not all(keys): sys.exit("X credentials missing")
     s = OAuth1Session(keys[0], client_secret=keys[1], resource_owner_key=keys[2], resource_owner_secret=keys[3])
     def fail(what, r): sys.exit(f"X refused the {what}: HTTP {r.status_code} {r.text[:400]}")
+    # who am I: proves the four keys belong together before anything is sent
+    me = s.get("https://api.x.com/2/users/me")
+    if me.status_code >= 300: fail("key check (the four keys do not fit together, or the app lacks write access)", me)
+    print("posting as @" + (me.json().get("data") or {}).get("username", "?"), "| key lengths", [len(k) for k in keys])
     body = {"text": text}
     if image_path:
         up = s.post("https://api.x.com/2/media/upload", data={"media_category": "tweet_image"},
