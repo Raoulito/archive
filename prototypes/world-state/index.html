@@ -2546,7 +2546,7 @@ function renderHistory(){
   document.querySelectorAll("#pane-history .hrow").forEach(b=>b.addEventListener("click",()=>selectEdition(b.dataset.d)));
 }
 const showDash=()=>go("dash"), showEdition=()=>go("edition");
-document.querySelectorAll(".tabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.view,true,a.dataset.sub||(a.dataset.view==="ledger"?"forecasts":undefined)); }));
+document.querySelectorAll(".tabs a").forEach(a=>a.addEventListener("click",e=>{ if(a.dataset.ext) return; e.preventDefault(); go(a.dataset.view,true,a.dataset.sub||(a.dataset.view==="ledger"?"forecasts":undefined)); }));
 document.querySelector(".mast .home").addEventListener("click",e=>{ e.preventDefault(); showCover(true); });
 document.querySelectorAll(".subtabs a").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); showPane(a.dataset.pane); }));
 document.querySelectorAll("[data-goto]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); go(a.dataset.goto,true); }));
