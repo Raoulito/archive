@@ -1461,6 +1461,10 @@ a.pw{text-decoration:none}
 .legal a.disc{font-weight:700}
 
 .gate{margin-right:10px}
+.mast .stamp.next{margin-left:14px;color:var(--ring-text)}
+.mast .stamp.next.overdue{color:var(--gold)}
+.mast .stamp.next .due{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px;animation:duepulse 1.6s ease-in-out infinite}
+@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.25}}
 #attest{border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:24px;max-width:520px;width:calc(100% - 32px)}
 #attest::backdrop{background:rgba(10,10,12,.7)}
 #attest .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted)}
@@ -1491,7 +1495,7 @@ a.pw{text-decoration:none}
         <a href="https://ubikistan.github.io/archive/" target="_blank" rel="noopener">archive</a><span class="dot">·</span>
         <a href="https://x.com/ubikworldstate" target="_blank" rel="noopener" title="Ubikistan World State on X">x</a></span>
       </nav>
-      <span class="stamp" id="stamp">EDITION ${EDITION_DAY} · UPDATED 08:29 EDT</span>
+      <span class="stamp" id="stamp">EDITION ${EDITION_DAY} · UPDATED 08:29 EDT</span><span class="stamp next" id="nextclock"></span>
       <span class="gate" id="gate"></span><span class="who" id="who"></span>
     </div>
     <div class="clocks" aria-label="World clocks" id="clocks"></div>
@@ -1697,6 +1701,18 @@ async function loadMarkets(){
   for(const [q,m] of Object.entries(MKT_MAP)){ const r=(body.markets||{})[m.pm]; if(r&&r.yes!=null&&!r.closed){ got[q]={venue:m.venue, p:m.invert?+(1-r.yes).toFixed(3):r.yes, c:m.c, adj:!!m.adj, t:r.read.slice(0,10), read:r.read.slice(0,10), vol:"", url:r.slug?"https://polymarket.com/market/"+r.slug:null}; } }
   MKT=got;
 }
+// ---- the next edition: ubik.gold publishes once a day at about the same hour, so the estimate is this edition's hour, a day on ----
+let FIRST_AT="", NEXT_RECHECK=null, nextTimer=null, lastRecheck=0;
+function nextEditionAt(){ if(!FIRST_AT) return null; const t=new Date(FIRST_AT).getTime(); if(isNaN(t)) return null; const now=Date.now(); let next=t+86400000; const overdue=next<=now; while(next+86400000<=now) next+=86400000; return {at:new Date(next), overdue}; }
+function renderNextClock(){
+  const el=document.getElementById("nextclock"); if(!el) return; const n=nextEditionAt(); if(!n){ el.textContent=""; el.title=""; return; }
+  const hm=n.at.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false}); const ms=n.at.getTime()-Date.now();
+  if(n.overdue){ el.innerHTML=`<i class="due"></i>NEXT EDITION DUE · USUALLY ~${hm}`; el.classList.add("overdue"); }
+  else { const m=Math.max(1,Math.round(ms/60000)), h=Math.floor(m/60), mm=m%60; el.innerHTML=`NEXT EDITION ~${hm} · IN ${h?h+"H ":""}${mm}M`; el.classList.remove("overdue"); }
+  el.title=`Estimated from this edition's publication time (${new Date(FIRST_AT).toLocaleString()}), a day on. ubik.gold sets the real hour.`;
+  if(n.overdue&&NEXT_RECHECK&&Date.now()-lastRecheck>10*60000){ lastRecheck=Date.now(); Promise.resolve().then(NEXT_RECHECK).catch(()=>{}); }
+}
+function startNextClock(){ renderNextClock(); if(nextTimer) clearInterval(nextTimer); nextTimer=setInterval(renderNextClock,30000); }
 // ---- live data from ubik.gold, through the desk ----
 // The page carries no holder content. It renders the public snapshot inlined below at once, then asks
 // the desk for the current edition (public, or with the holder's own key the holder view), and for the
@@ -1741,7 +1757,7 @@ function transform(raw){
   const inEd=new Set((syn.forecasts||[]).map(f=>f.question_id));
   const date=(meta.revised_at||meta.updated_at||new Date().toISOString()).slice(0,10);
   const hist=f=>{ const h=(f.history||[]).map(e=>Array.isArray(e)?{at:e[0],probability:e[1],why:e[2]}:e); return h.length?h:[{at:f.updated_at||meta.revised_at||date,probability:f.probability,why:null}]; };
-  const out={F:[],TS:{},RESOLVED_AT:{},GEO:{},CURRENTS:[],DATE:date,LONG:longDate(date),UPDATED:meta.revised_at||meta.updated_at||"",LOCKED:meta.locked||""};
+  const out={F:[],TS:{},RESOLVED_AT:{},GEO:{},CURRENTS:[],DATE:date,LONG:longDate(date),UPDATED:meta.revised_at||meta.updated_at||"",FIRST:meta.updated_at||meta.revised_at||"",LOCKED:meta.locked||""};
   for(const f of Object.values(all).sort((a,b)=>hist(b)[0].at.localeCompare(hist(a)[0].at))){
     const h=hist(f), id=f.question_id, status=["open","yes","no"].includes(f.status)?f.status:"open";
     out.TS[id]=h.map(e=>[e.at,e.probability]);
@@ -1821,6 +1837,7 @@ function applyEdition(raw, showing){
   set("edate",`The world on ${EDITION_LONG}`); set("elede",LEDE); set("cover-h",`The world on ${EDITION_LONG}`); set("agdate",`AGENT EDITION · ${EDITION_DAY} · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM`); set("agtitle",`The world on ${EDITION_LONG}, as data.`);
   const counts=document.getElementById("counts"); if(counts) counts.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${moved}</b> changes of mind today</span><span><b>${AGENT_ED.sources}</b> sources</span><span class="sep"></span><span id="score"></span>`;
   const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION ${EDITION_DAY} · ${showing==="current"?(LIVE?"LIVE":"SNAPSHOT"):"FROM THE ARCHIVE"}`;
+  if(showing==="current"){ FIRST_AT=t.FIRST||""; startNextClock(); }
   renderResolved(); renderAll(); renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
   const cs=document.getElementById("cover-score"); if(cs) cs.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span>${res.length?`<span>Brier <b>${(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3)}</b></span>`:""}<span><b>${AGENT_ED.sources}</b> sources</span>`;
   const back=document.getElementById("archivebar"); if(back){ back.classList.toggle("hidden",showing==="current"); back.querySelector("b").textContent=`Edition of ${EDITION_LONG}, from the archive`; }
@@ -2645,6 +2662,7 @@ document.getElementById("tbody").addEventListener("click",e=>{ const tr=e.target
 const FORECASTS_URL=/\/prototypes\//.test(location.pathname)?"../forecasts/":"https://claude.ai/artifact/QAJwbSBkVCMsCirDS1QM1h";
 document.querySelectorAll('[data-ext="forecasts"]').forEach(a=>{a.href=FORECASTS_URL;a.target="_blank";a.rel="noopener";});
 
+NEXT_RECHECK=()=>{ if(SHOWING==="current") return loadCurrent().then(loadEditions); };
 // boot: the inlined public snapshot first, then the desk
 loadCurrent().then(loadEditions).catch(()=>{ LIVE=false; const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION ${EDITION_DAY} · SNAPSHOT · THE DESK DID NOT ANSWER`; loadEditions().catch(()=>{}); });
 
