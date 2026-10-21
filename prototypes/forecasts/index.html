@@ -230,48 +230,55 @@ a.pw{text-decoration:none}
 .degenfab #degennote.hidden{display:none}
 .degenfab #degenon{font:inherit;color:var(--gold);background:none;border:1px solid var(--gold);padding:2px 8px;margin-left:6px;cursor:pointer}
 /* degen mode: the same page under a red neon aura */
-/* degen mode: the page goes monochrome, and red and green are the only colours left. They mean one thing, direction. */
-body.degen{--neon:#ff3b5c;--green:#2fe07a;--neon-soft:rgba(255,59,92,.14);--green-soft:rgba(47,224,122,.14);--gold:#a9a9b0;--gold-ink:#c9c9d0;--hot:#c9c9d0;--cyan:#c9c9d0;--line:#26262b;--rule:#3a3a42;--muted:#8a8a92;--bg:#0a0a0b;--surface:#101013;--ink:#f2f2f4}
-body.degen{background:var(--bg)}
-body.degen header{border-bottom:1px solid var(--rule);box-shadow:none}
-body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--ink);filter:none}
-body.degen .mast .sub::after{content:" · degen";color:var(--muted)}
-body.degen .pw,body.degen .tabright .pw{border-color:var(--rule);color:var(--muted);box-shadow:none}
-body.degen .pw.proto{border-color:var(--neon);color:var(--neon)}
-body.degen .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);text-shadow:none}
-body.degen .chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
-body.degen footer{border-top-color:var(--rule)}
-/* summary tiles: the number carries the colour, the box does not */
-body.degen .sum>div{border-color:var(--line);box-shadow:none}
-body.degen .sum .long .v{color:var(--green);text-shadow:0 0 18px var(--green-soft)}
-body.degen .sum .short .v{color:var(--neon);text-shadow:0 0 18px var(--neon-soft)}
-body.degen .sum .cash .v{color:var(--muted)}
-/* cards: a 2px edge, an outlined stance tag, the confidence figure. Nothing else lights up. */
-body.degen .card{border-color:var(--line);box-shadow:none;border-left-width:2px}
-body.degen .card.long{border-left-color:var(--green)}
-body.degen .card.short{border-left-color:var(--neon)}
-body.degen .card.cash{border-left-color:var(--rule)}
-body.degen .pos .tag{background:none;box-shadow:none;border:1px solid var(--rule);color:var(--muted)}
-body.degen .pos .tag.long{border-color:var(--green);color:var(--green)}
-body.degen .pos .tag.short{border-color:var(--neon);color:var(--neon)}
-body.degen .card.long .cv .v{color:var(--green);text-shadow:0 0 14px var(--green-soft)}
-body.degen .card.short .cv .v{color:var(--neon);text-shadow:0 0 14px var(--neon-soft)}
-body.degen .card h2,body.degen h1,body.degen .mast .wm{text-shadow:none}
-body.degen .gauge .u{background:var(--ink)}
-body.degen .gauge .edge{background:var(--rule);box-shadow:none}
-body.degen .card.long .gauge .edge{background:var(--green)}
-body.degen .card.short .gauge .edge{background:var(--neon)}
-/* legs: direction in colour, names in ink, buttons outlined; the one in the direction's colour is the one that acts */
+/* degen mode: the page at night in purple light (the World State's neon), and three functional colours: green long, red short, yellow neutral. */
+body.degen{--n:192,132,252;--purple:#c084fc;--purple-ink:#d8b4fe;--neon:#ff3b5c;--neon-soft:rgba(255,59,92,.35);--green:#3ddc97;--green-soft:rgba(61,220,151,.35);--yellow:#ffd166;--yellow-soft:rgba(255,209,102,.35);
+  --bg:#0a0812;--surface:#140f22;--ink:#e9edf5;--muted:#9a93b3;--line:#241c3a;--rule:#c084fc;--gold:#c084fc;--gold-ink:#d8b4fe;--hot:#d8b4fe;--cyan:#d8b4fe}
+body.degen{background:radial-gradient(900px 420px at 50% -10%,rgba(var(--n),.16),transparent 60%),var(--bg)}
+body.degen header{border-bottom:1px solid var(--purple);box-shadow:0 1px 0 rgba(var(--n),.25),0 8px 30px -14px rgba(var(--n),.7)}
+body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--purple);filter:drop-shadow(0 0 6px rgba(var(--n),.9)) drop-shadow(0 0 18px rgba(var(--n),.4))}
+body.degen .mast .wm{text-shadow:0 0 14px rgba(var(--n),.45)}
+body.degen .wm-mark,:root:not([data-theme="light"]) body.degen .wm-mark{opacity:1}
+body.degen .wm-mark svg circle{stroke:rgba(var(--n),.32)}
+body.degen .mast .sub::after{content:" · degen";color:var(--purple);text-shadow:0 0 10px rgba(var(--n),.8)}
+body.degen .pw,body.degen .tabright .pw{border-color:rgba(var(--n),.5);color:var(--purple-ink);box-shadow:0 0 10px -2px rgba(var(--n),.6)}
+body.degen .pw.proto{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px -2px var(--neon-soft)}
+body.degen .tabs button[aria-selected="true"]{color:var(--purple-ink);border-bottom-color:var(--purple);text-shadow:0 0 10px rgba(var(--n),.8)}
+body.degen .chips button[aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 14px -2px rgba(var(--n),.8)}
+body.degen h1,body.degen .card h2{text-shadow:0 0 18px rgba(var(--n),.25)}
+body.degen footer{border-top-color:#2f2150}
+/* summary tiles: the number carries the colour and its light; the box stays purple-dark */
+body.degen .sum>div{border-color:#2f2150;box-shadow:inset 0 0 30px -20px rgba(var(--n),.6)}
+body.degen .sum .long .v{color:var(--green);text-shadow:0 0 10px var(--green-soft),0 0 28px var(--green-soft)}
+body.degen .sum .short .v{color:var(--neon);text-shadow:0 0 10px var(--neon-soft),0 0 28px var(--neon-soft)}
+body.degen .sum .cash .v{color:var(--yellow);text-shadow:0 0 10px var(--yellow-soft),0 0 28px var(--yellow-soft)}
+/* cards: a 2px lit edge, an outlined stance tag, the confidence figure. The chrome stays purple. */
+body.degen .card{border-color:#2f2150;box-shadow:0 0 30px -22px rgba(var(--n),.8);border-left-width:2px}
+body.degen .card.long{border-left-color:var(--green);box-shadow:-6px 0 24px -16px var(--green-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .card.short{border-left-color:var(--neon);box-shadow:-6px 0 24px -16px var(--neon-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .card.cash{border-left-color:var(--yellow);box-shadow:-6px 0 24px -16px var(--yellow-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .pos .tag{background:none;border:1px solid var(--line);color:var(--muted);box-shadow:none}
+body.degen .pos .tag.long{border-color:var(--green);color:var(--green);box-shadow:0 0 12px -2px var(--green-soft),inset 0 0 12px -6px var(--green-soft)}
+body.degen .pos .tag.short{border-color:var(--neon);color:var(--neon);box-shadow:0 0 12px -2px var(--neon-soft),inset 0 0 12px -6px var(--neon-soft)}
+body.degen .pos .tag.cash{border-color:var(--yellow);color:var(--yellow);box-shadow:0 0 12px -2px var(--yellow-soft),inset 0 0 12px -6px var(--yellow-soft)}
+body.degen .card.long .cv .v{color:var(--green);text-shadow:0 0 10px var(--green-soft),0 0 24px var(--green-soft)}
+body.degen .card.short .cv .v{color:var(--neon);text-shadow:0 0 10px var(--neon-soft),0 0 24px var(--neon-soft)}
+body.degen .card.cash .cv .v{color:var(--yellow);text-shadow:0 0 10px var(--yellow-soft),0 0 24px var(--yellow-soft)}
+body.degen .gauge .u{background:var(--purple);box-shadow:0 0 8px rgba(var(--n),.7)}
+body.degen .gauge .edge{background:var(--purple);box-shadow:0 0 8px rgba(var(--n),.9)}
+body.degen .card.long .gauge .edge{background:var(--green);box-shadow:0 0 10px var(--green-soft)}
+body.degen .card.short .gauge .edge{background:var(--neon);box-shadow:0 0 10px var(--neon-soft)}
+body.degen .card.cash .gauge .edge{background:var(--yellow);box-shadow:0 0 10px var(--yellow-soft)}
+/* legs: direction in colour, names in ink, buttons outlined and lit; the one in the direction's colour is the one that acts */
 body.degen .instr .ir .d{font-weight:600}
-body.degen .instr .ir .d.long,body.degen .instr .ir .d.yes{color:var(--green)}
-body.degen .instr .ir .d.short,body.degen .instr .ir .d.no{color:var(--neon)}
-body.degen .instr .ir a.ch{border:1px solid var(--rule);color:var(--muted);background:none;box-shadow:none}
-body.degen .instr .ir a.ch:hover{color:var(--ink);border-color:var(--ink)}
-body.degen .card.long .instr .ir a.ch.vn{border-color:var(--green);color:var(--green);background:none;box-shadow:none}
-body.degen .card.short .instr .ir a.ch.vn{border-color:var(--neon);color:var(--neon);background:none;box-shadow:none}
-body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04120a}
-body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407}
-body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.8));animation:degenpulse 3s ease-in-out infinite}
+body.degen .instr .ir .d.long,body.degen .instr .ir .d.yes{color:var(--green);text-shadow:0 0 8px var(--green-soft)}
+body.degen .instr .ir .d.short,body.degen .instr .ir .d.no{color:var(--neon);text-shadow:0 0 8px var(--neon-soft)}
+body.degen .instr .ir a.ch{border:1px solid rgba(var(--n),.5);color:var(--purple-ink);background:none;box-shadow:0 0 10px -3px rgba(var(--n),.6)}
+body.degen .instr .ir a.ch:hover{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:0 0 14px -2px rgba(var(--n),.9)}
+body.degen .card.long .instr .ir a.ch.vn{border-color:var(--green);color:var(--green);box-shadow:0 0 10px -3px var(--green-soft)}
+body.degen .card.short .instr .ir a.ch.vn{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px -3px var(--neon-soft)}
+body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04120a;border-color:var(--green);box-shadow:0 0 16px -2px var(--green-soft)}
+body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407;border-color:var(--neon);box-shadow:0 0 16px -2px var(--neon-soft)}
+body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.9)) drop-shadow(0 0 14px rgba(var(--n),.6));animation:degenpulse 3s ease-in-out infinite}
 @keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
 /* the account panel: sign-in and the holder key, one place on every page */
 .gate{display:inline-flex;align-items:center}
@@ -734,7 +741,7 @@ function render(){
   document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+BUCKETS.map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
   const L=DEGEN?rows.filter(o=>o.m.s==="long").length:rows.filter(o=>o.p>=.6).length,S=DEGEN?rows.filter(o=>o.m.s==="short").length:rows.filter(o=>o.p<=.4).length,C=DEGEN?rows.filter(o=>o.m.s==="cash").length:rows.filter(o=>o.p>.4&&o.p<.6).length;
   const next=rows.slice().sort((a,b)=>a.d-b.d)[0];
-  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
+  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div class="cash"><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
   document.getElementById("h1").innerHTML=`${cat==="all"?"The forecasts":CAT[cat]} for <em>${new Date(TODAY+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long"})}</em>.`;
   document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
   location.hash=`cat=${cat}&hz=${hzn}`;
