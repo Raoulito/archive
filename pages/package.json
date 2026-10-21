@@ -10,7 +10,7 @@
     "build": "npm run assemble && vite build",
     "preview": "vite preview",
     "check": "node tools/check.mjs",
-    "deploy": "npm run build && node tools/check.mjs && sh tools/deploy.sh"
+    "deploy": "npm run build && node tools/check.mjs && bash tools/deploy.sh"
   },
   "engines": {
     "node": ">=20"

@@ -34,7 +34,8 @@ page = page[:j] + SNAP + instr + open("markets.js", encoding="utf-8").read() + o
 if not page.lstrip().lower().startswith("<!doctype"):
     page = '<!doctype html>\n<html lang="en">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<meta name="desk" content="%VITE_DESK%">\n' + page
 page = page.replace('<span class="stamp" id="stamp"></span>', '<span class="stamp" id="stamp"></span><span class="stamp next" id="nextclock" data-short></span>', 1)
-page = page.replace('<a class="pw wslink" data-ext="world-state" href="#">World State ↗</a>', '<a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span>', 1)
+if 'id="gate"' not in page:
+    page = page.replace('<a class="pw wslink" data-ext="world-state" href="#">World State ↗</a>', '<a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span>', 1)
 page = page.replace('<main class="wrap">', '''<section id="holdergate" class="holdergate hidden" aria-labelledby="hg-h"><div class="wrap">
   <div class="k">FORECASTS · <span class="gstate"></span></div>
   <h1 id="hg-h">For holders.</h1>

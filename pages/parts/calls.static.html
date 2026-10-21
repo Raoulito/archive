@@ -519,7 +519,7 @@ const MARK=`<svg viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64
 // the ring as a gauge: conviction fills the identity's ring clockwise from the top, the eye sits in the middle
 function ring(v,cls){ const r=15, C=2*Math.PI*r, f=Math.max(0,Math.min(1,v)); return `<svg class="ring ${cls}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" class="rb"/><circle cx="20" cy="20" r="${r}" class="rf" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 20 20)"/></svg>`; }
 // ---- render ----
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function spark(f){
   const h=f.hist, w=120, hh=28, n=h.length;
   if(n<2) return `<svg viewBox="0 0 ${w} ${hh}"><circle cx="${w-4}" cy="${hh-4-h[0][1]*(hh-8)}" r="2.2" fill="var(--gold)"/></svg>`;
@@ -642,7 +642,7 @@ try{const t=localStorage.getItem("ubik-calls-theme");if(t)document.documentEleme
 document.getElementById("wmmark").innerHTML=MARK;document.getElementById("fmark").innerHTML=MARK;
 render();moves();calendar();record();stamp();
 
-const WORLD_STATE_URL=/\/prototypes\//.test(location.pathname)?"../world-state/":"https://claude.ai/artifact/NDBEoDb44JFb3cCBces7AK";
+const WORLD_STATE_URL="../world-state/";
 document.querySelectorAll('[data-ext="world-state"]').forEach(a=>{a.href=WORLD_STATE_URL;a.target="_blank";a.rel="noopener";});
 </script>
 
