@@ -1437,7 +1437,8 @@ a.pw{text-decoration:none}
 #keydlg .kerr{color:var(--hot);font-family:var(--mono);font-size:11.5px;min-height:1.4em;margin:0 0 8px}
 #keydlg .row{display:flex;gap:8px}
 #keydlg .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
-#keydlg .row button.kcancel{background:none;color:var(--ink)}
+#keydlg .row button.kcancel,#keydlg .row button.kforget{background:none;color:var(--ink)}
+#keydlg .row button.kforget{margin-left:auto;color:var(--muted)}
 footer a.disc{font-weight:700}
 .legal{font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
 .legal a{color:inherit}
@@ -1614,7 +1615,7 @@ footer a.disc{font-weight:700}
     <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
     <input type="password" autocomplete="off" placeholder="paste the key" aria-label="ubik.gold key">
     <p class="kerr" role="alert"></p>
-    <div class="row"><button type="submit">Open</button><button type="button" class="kcancel">Cancel</button></div>
+    <div class="row"><button type="submit">Open</button><button type="button" class="kcancel">Cancel</button><button type="button" class="kforget">Forget key</button></div>
   </form>
 </dialog>
 <dialog id="signin" aria-labelledby="signin-h">
@@ -1818,7 +1819,7 @@ function renderGate(){
   const el=document.getElementById("gate"); if(!el) return;
   const k=keyOf();
   const word={holder:"HOLDER · OPEN",locked:"KEY HOLDS UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED YET",none:"PUBLIC VIEW"}[k?STANDING:"none"]||"PUBLIC VIEW";
-  el.innerHTML=`<span class="gstate ${k?STANDING:"none"}">${word}</span><button type="button" id="keybtn">${k?"Change key":"Holder? Enter your ubik.gold key"}</button>${k?`<button type="button" id="keyout">Forget key</button>`:""}`;
+  el.innerHTML=`<span class="gstate ${k?STANDING:"none"}">${word}</span><button type="button" id="keybtn">${k?"Key":"Holder? Enter your ubik.gold key"}</button>`;
   document.getElementById("keybtn").addEventListener("click",openKey);
   const out=document.getElementById("keyout"); if(out) out.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; loadCurrent().catch(()=>renderGate()); });
   document.querySelectorAll(".lockednote").forEach(n=>n.remove());
@@ -1835,6 +1836,7 @@ function openKey(){
   d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; }
     try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
+  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); });
 })();
 
 const THEMES = {iran:"Iran", gulf:"Gulf & oil", ukraine:"Ukraine", india:"India", ai:"AI", climate:"El Niño", americas:"Americas", markets:"Markets & Fed", europe:"Europe", asia:"Asia", crypto:"Crypto"};

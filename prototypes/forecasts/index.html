@@ -32,7 +32,11 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px so
 .mast .stamp{font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .mast .tog{flex:none}
 .mast .tog{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--muted)}
-.tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line)}
+.tabrow{display:flex;align-items:center;border-top:1px solid var(--line);gap:12px}
+.tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.tabright{display:inline-flex;align-items:center;gap:8px;flex:none}
+.tabright .pw{font-family:var(--ui);font-weight:700;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-ink,var(--gold));border:1px solid var(--gold);padding:3px 6px 2px;border-radius:2px;white-space:nowrap;text-decoration:none}
+@media (max-width:720px){.tabrow{flex-wrap:wrap}.tabright{padding:6px 0 8px}}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:none;padding:10px 12px 9px;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
@@ -233,7 +237,8 @@ a.pw{text-decoration:none}
 #keydlg .kerr{color:var(--hot);font-family:var(--mono);font-size:11.5px;min-height:1.4em;margin:0 0 8px}
 #keydlg .row{display:flex;gap:8px}
 #keydlg .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
-#keydlg .row button.kcancel{background:none;color:var(--ink)}
+#keydlg .row button.kcancel,#keydlg .row button.kforget{background:none;color:var(--ink)}
+#keydlg .row button.kforget{margin-left:auto;color:var(--muted)}
 footer a.disc{font-weight:700}
 .legal{font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
 .legal a{color:inherit}
@@ -267,12 +272,12 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
   <div class="wrap">
     <div class="mast">
       <svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>
-      <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Built on ubik.gold data</a><span class="pw proto">Prototype</span><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span>
+      <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Built on ubik.gold data</a><span class="pw proto">Prototype</span>
       <span class="sp"></span>
       <span class="stamp" id="stamp"></span>
       <button class="tog" id="tog" aria-label="Switch light and dark"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 1.5v11A5.5 5.5 0 0 0 7 1.5Z" fill="currentColor"/></svg></button>
     </div>
-    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <div class="tabrow"><nav class="tabs" role="tablist" id="tabs"></nav><span class="tabright"><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span><span class="gate" id="gate"></span></span></div>
   </div>
 </header>
 
@@ -303,7 +308,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
     <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
     <input type="password" autocomplete="off" placeholder="paste the key" aria-label="ubik.gold key">
     <p class="kerr" role="alert"></p>
-    <div class="row"><button type="submit">Open</button><button type="button" class="kcancel">Cancel</button></div>
+    <div class="row"><button type="submit">Open</button><button type="button" class="kcancel">Cancel</button><button type="button" class="kforget">Forget key</button></div>
   </form>
 </dialog>
 <dialog id="attest" aria-labelledby="attest-h">
@@ -464,13 +469,14 @@ function holderGate(state){
 function renderGate(){
   const el=document.getElementById("gate"); if(!el) return; const k=keyOf();
   const word={holder:"HOLDER · OPEN",locked:"KEY HOLDS UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED YET",none:"HOLDERS ONLY"}[k?STANDING:"none"]||"HOLDERS ONLY";
-  el.innerHTML=`<span class="gstate ${k?STANDING:"none"}">${word}</span><button type="button" id="keybtn">${k?"Change key":"Enter your ubik.gold key"}</button>${k?`<button type="button" id="keyout">Forget key</button>`:""}`;
+  el.innerHTML=`<span class="gstate ${k?STANDING:"none"}">${word}</span><button type="button" id="keybtn">${k?"Key":"Enter your ubik.gold key"}</button>`;
   document.getElementById("keybtn").addEventListener("click",()=>{ const d=document.getElementById("keydlg"); d.querySelector("input").value=""; d.querySelector(".kerr").textContent=""; d.showModal(); });
   const out=document.getElementById("keyout"); if(out) out.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; loadCurrent().catch(renderGate); });
 }
 (function wireKey(){ const d=document.getElementById("keydlg"); if(!d) return;
   d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; } try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
-  d.querySelector(".kcancel").addEventListener("click",()=>d.close()); })();
+  d.querySelector(".kcancel").addEventListener("click",()=>d.close());
+  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); }); })();
 
 const CAT={m:"Markets",s:"Stocks",c:"Crypto"};
 // each call: id (UBIK record), cats, short question, instruments by case, catalysts, chatter (AIXBT topic ids), notes
