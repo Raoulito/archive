@@ -215,6 +215,7 @@ body.history .lede p,body.history .moves{display:none}
 .where .k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .where .names span{display:inline-block;border:1px solid var(--line);padding:2px 8px;margin:0 6px 4px 0;font-family:var(--ui)}
 .where small{display:block;color:var(--muted);font-family:var(--mono);font-size:10.5px}
+a.pw{text-decoration:none}
 
 /* shared across the forecast pages: the holder gate chip, the key dialog, the labels */
 .gate{display:inline-flex;align-items:center;gap:8px}
@@ -266,7 +267,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
   <div class="wrap">
     <div class="mast">
       <svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>
-      <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><span class="pw">Built on ubik.gold data</span><span class="pw proto">Prototype</span><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span>
+      <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Built on ubik.gold data</a><span class="pw proto">Prototype</span><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span>
       <span class="sp"></span>
       <span class="stamp" id="stamp"></span>
       <button class="tog" id="tog" aria-label="Switch light and dark"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 1.5v11A5.5 5.5 0 0 0 7 1.5Z" fill="currentColor"/></svg></button>
