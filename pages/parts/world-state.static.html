@@ -1476,7 +1476,7 @@ a.pw{text-decoration:none}
 
   <div class="shell">
     <div class="main">
-      <div id="edition">
+      <div id="edition-view">
         <section id="board" aria-label="The board"></section>
         <div class="edhead" id="edhead"><span class="num">THE EDITION · THE WORLD ON 20 OCTOBER 2026 · 5 CURRENTS · ABOUT 20 MINUTES</span><span class="mono">the reading behind the numbers above</span></div>
         <div id="dev"></div>
@@ -1499,7 +1499,7 @@ a.pw{text-decoration:none}
           <h2 class="t">The record UBIK is judged by.</h2>
           <nav class="subtabs" aria-label="Ledger sections"><a href="#ledger/forecasts" data-pane="forecasts" aria-current="page">Forecasts</a><a href="#ledger/record" data-pane="record">Record</a><a href="#ledger/history" data-pane="history">History</a><a href="#ledger/mine" data-pane="mine">Mine <span class="cnt" id="minecnt"></span></a></nav>
           <div id="pane-forecasts" class="pane">
-          <section id="ledger">
+          <section id="ledger-view">
         
         <div class="ledger"><table>
           <thead><tr><th>Issued</th><th>Question</th><th>Theme</th><th>First</th><th>Now</th><th>History</th><th>Resolves</th><th>Status</th></tr></thead>
@@ -1851,7 +1851,7 @@ function focusMode(on){ document.querySelector(".state").classList.toggle("hidde
 function selectSection(theme){
   const c=CURRENTS.find(x=>x.theme===theme); if(!c) return;
   selected="sec:"+theme;
-  const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
+  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
   const prose=c.body.map(p=>`<p>${p}</p>`).join("");
   dos.innerHTML=`<div class="dossier"><section class="ed-sec full" data-t="${c.theme}">
     <button type="button" class="back" id="back">← BACK TO THE EDITION</button>
@@ -1973,7 +1973,7 @@ function openShare(f){
 
 function select(id){
   selected = selected===id ? null : id;
-  const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
+  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
   if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
   for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
   const f=byId[id]; const c=currentOf(id);
@@ -2033,7 +2033,7 @@ function select(id){
 }
 function selectEdition(d){
   selected = selected==="ed:"+d ? null : "ed:"+d;
-  const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
+  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
   if(d==="2026-10-12"){ selected=null; dos.classList.add("hidden"); go("edition",true); return; }
   if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
   const e=EDITIONS.find(x=>x.d===d); const fs=F.filter(f=>issued(f)===d);
@@ -2346,7 +2346,7 @@ function wireMap(places){
     list.querySelectorAll("[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id))); }));
   apply();
 }
-const VIEWS={edition:"edition",dash:"dash",agent:"chatpage",ledger:"ledgerpage",films:"filmspage"};
+const VIEWS={edition:"edition-view",dash:"dash",agent:"chatpage",ledger:"ledgerpage",films:"filmspage"};
 const HASH={edition:"#edition",dash:"#dashboard",agent:"#agent",ledger:"#ledger",films:"#films"};
 let view="edition", pane="forecasts";
 function go(v, scroll, sub){
@@ -2563,6 +2563,7 @@ function renderChips(){
   const av=document.getElementById("chatav2"); if(av&&!av.src) av.src=FRAMES.portrait;
 }
 try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
+try{ history.scrollRestoration="manual"; }catch(e){}
 if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
 
 
