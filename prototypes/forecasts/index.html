@@ -220,26 +220,40 @@ body.history .lede p,body.history .moves{display:none}
 .where .names span{display:inline-block;border:1px solid var(--line);padding:2px 8px;margin:0 6px 4px 0;font-family:var(--ui)}
 .where small{display:block;color:var(--muted);font-family:var(--mono);font-size:10.5px}
 a.pw{text-decoration:none}
-
-/* shared across the forecast pages: the holder gate chip, the key dialog, the labels */
-.gate{display:inline-flex;align-items:center;gap:8px}
-.gate .gstate{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:4px 8px;border-radius:2px;white-space:nowrap;line-height:1.2}
-.gate .gstate.holder{color:var(--good,#6fb8a3);border-color:currentColor}
-.gate .gstate.locked,.gate .gstate.invalid{color:var(--hot);border-color:currentColor}
-.gate button,.lockednote .keylink{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ring-text,var(--gold));background:none;border:1px solid var(--ring,var(--gold));padding:4px 10px;border-radius:2px;cursor:pointer;white-space:nowrap}
-#keydlg{border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:22px;max-width:440px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#acct-user{display:none}
+/* the account panel: sign-in and the holder key, one place on every page */
+.gate{display:inline-flex;align-items:center}
+.gate .acctbtn{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ink);background:none;border:1px solid var(--rule);padding:5px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.gate .acctbtn i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.gate .acctbtn i.holder{background:var(--good,#6fb8a3)}
+.gate .acctbtn i.locked,.gate .acctbtn i.invalid{background:var(--hot)}
+.gate .acctbtn small{font-family:var(--mono);font-size:10px;color:var(--muted)}
+#keydlg.account{border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:0;max-width:460px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 #keydlg::backdrop{background:rgba(10,10,12,.45)}
-#keydlg .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-#keydlg h2{font-family:var(--serif,var(--body));font-weight:400;font-size:24px;margin:6px 0 8px;letter-spacing:-.01em}
-#keydlg p{font-family:var(--body);font-size:14.5px;line-height:1.5;color:var(--muted);margin:0 0 6px}
-#keydlg p a{color:inherit}
-#keydlg input{width:100%;box-sizing:border-box;font-family:var(--mono);font-size:14px;padding:10px 12px;border:1px solid var(--rule);background:none;color:var(--ink);margin:8px 0 4px;display:block}
-#keydlg .kerr{color:var(--hot);font-family:var(--mono);font-size:11.5px;min-height:1.4em;margin:0 0 8px}
-#keydlg .row{display:flex;gap:8px}
-#keydlg .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
-#keydlg .row button.kcancel,#keydlg .row button.kforget{background:none;color:var(--ink)}
-#keydlg .row button.kforget{margin-left:auto;color:var(--muted)}
-footer a.disc{font-weight:700}
+.acct{padding:20px 22px 22px}
+.acct .ahead{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+.acct .ahead h2{flex:1;font-family:var(--serif,var(--body));font-weight:400;font-size:24px;margin:0;letter-spacing:-.01em}
+.acct .ahead .k{position:absolute;left:-9999px}
+.acct .close{font:inherit;font-size:20px;line-height:1;border:0;background:none;color:var(--muted);cursor:pointer;padding:0 2px}
+.acct .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.acct .asec{padding:14px 0 4px;border-top:1px solid var(--line);margin-top:10px}
+.acct p{font-family:var(--body);font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0}
+.acct p a{color:inherit}
+.acct .small{font-family:var(--mono);font-size:10.5px;line-height:1.5}
+.acct .arow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 2px}
+.acct .arow button,.acct .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
+.acct .arow button.secondary,.acct .row button.kforget{background:none;color:var(--ink)}
+.acct .row button.kforget{margin-left:auto;color:var(--muted)}
+.acct .arow .me{font-family:var(--ui);font-size:13px}
+.acct .arow .me small{font-family:var(--mono);color:var(--muted);margin-left:6px;font-size:10.5px}
+.acct .gstate{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:2px}
+.acct .gstate.holder{color:var(--good,#6fb8a3);border-color:currentColor}
+.acct .gstate.locked,.acct .gstate.invalid{color:var(--hot);border-color:currentColor}
+.acct input{width:100%;box-sizing:border-box;font-family:var(--mono);font-size:14px;padding:10px 12px;border:1px solid var(--rule);background:none;color:var(--ink);margin:8px 0 4px;display:block}
+.acct .kerr{color:var(--hot);font-family:var(--mono);font-size:11.5px;min-height:1.4em;margin:0 0 8px}
+.acct .row{display:flex;gap:8px;align-items:center}
+.lockednote .keylink{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ring-text,var(--gold));background:none;border:1px solid var(--ring,var(--gold));padding:4px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;margin-left:6px}
+.lockednote{margin:14px 0 4px;padding:12px 14px;border:1px dashed var(--ring,var(--gold));font-family:var(--body);font-size:14px;line-height:1.5;color:var(--muted)}
 .legal{font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
 .legal a{color:inherit}
 .legal a.disc{font-weight:700}
@@ -301,15 +315,24 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
   <section class="cal" id="cal"></section>
   <section class="rec" id="rec"></section>
 </main>
-<dialog id="keydlg" aria-labelledby="key-h">
-  <form class="keyform">
-    <div class="k">HOLDERS · YOUR UBIK.GOLD KEY</div>
-    <h2 id="key-h">Open the holder parts here.</h2>
-    <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
-    <input type="password" autocomplete="off" placeholder="paste the key" aria-label="ubik.gold key">
-    <p class="kerr" role="alert"></p>
-    <div class="row"><button type="submit">Open</button><button type="button" class="kcancel">Cancel</button><button type="button" class="kforget">Forget key</button></div>
-  </form>
+<dialog id="keydlg" class="account" aria-labelledby="acct-h">
+  <div class="acct">
+    <div class="ahead"><div class="k">ACCOUNT</div><h2 id="acct-h">Your account.</h2><button type="button" class="kcancel close" aria-label="Close">×</button></div>
+    <section class="asec" id="acct-user">
+      <div class="k">SIGN IN</div>
+      <div class="arow" id="acct-userrow"></div>
+      <p class="small">Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.</p>
+    </section>
+    <section class="asec">
+      <div class="k">HOLDER KEY <span class="gstate" id="acct-standing"></span></div>
+      <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
+      <form class="keyform">
+        <input type="password" autocomplete="off" placeholder="paste the key" aria-label="ubik.gold key">
+        <p class="kerr" role="alert"></p>
+        <div class="row"><button type="submit">Open</button><button type="button" class="kforget">Forget key</button></div>
+      </form>
+    </section>
+  </div>
 </dialog>
 <dialog id="attest" aria-labelledby="attest-h">
   <form class="attest" method="dialog">
@@ -467,11 +490,12 @@ function holderGate(state){
   const f=g.querySelector(".forget"); if(f) f.addEventListener("click",()=>{ try{ localStorage.removeItem("ubik-key"); }catch(e){} holderGate("none"); });
 })();
 function renderGate(){
-  const el=document.getElementById("gate"); if(!el) return; const k=keyOf();
-  const word={holder:"HOLDER · OPEN",locked:"KEY HOLDS UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED YET",none:"HOLDERS ONLY"}[k?STANDING:"none"]||"HOLDERS ONLY";
-  el.innerHTML=`<span class="gstate ${k?STANDING:"none"}">${word}</span><button type="button" id="keybtn">${k?"Key":"Enter your ubik.gold key"}</button>`;
+  const el=document.getElementById("gate"); if(!el) return; const k=keyOf(); const st=k?STANDING:"none";
+  const word={holder:"HOLDER",locked:"UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED",none:"HOLDERS ONLY"}[st]||"HOLDERS ONLY";
+  el.innerHTML=`<button type="button" class="acctbtn" id="keybtn"><i class="${st}"></i>Account<small>${word}</small></button>`;
   document.getElementById("keybtn").addEventListener("click",()=>{ const d=document.getElementById("keydlg"); d.querySelector("input").value=""; d.querySelector(".kerr").textContent=""; d.showModal(); });
-  const out=document.getElementById("keyout"); if(out) out.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; loadCurrent().catch(renderGate); });
+  const ac=document.getElementById("acct-standing"); if(ac){ ac.className="gstate "+st; ac.textContent={holder:"holder · open",locked:"key holds under "+THRESHOLD,invalid:"key not recognised",unknown:"key not checked yet",none:"no key"}[st]||"no key"; }
+  const kf=document.querySelector("#keydlg .kforget"); if(kf) kf.style.display=k?"":"none";
 }
 (function wireKey(){ const d=document.getElementById("keydlg"); if(!d) return;
   d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; } try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
