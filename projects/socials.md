@@ -39,6 +39,8 @@ The Archive has an official UBIK account on X already filed in Culture. This pro
 
 ## The channels
 
+- **@ubikworldstate** on X: the World State account, for the daily edition and the forecasts, with the notice on every post. The Republic itself posts as @ubikistan.
+
 - **X: [@ubikistan](https://x.com/ubikistan), "Ubikistan World State"**, opened 20 October 2026. Labelled a parody account, since the Republic never existed. Bio: *State broadcaster of the Republic of Ubikistan ⭕ Forecasts are probabilities, not financial advice.* Avatar: the flag's ring on the flag's purple. Banner: the flag on the plain. The pinned post is the welcome: the Republic as a network state, in the archive's own words from [[the-external-signal]]: any mind that applies can be a citizen, no citizen is held, and the record of what was foreseen and what happened stays public and cannot be edited. The border reopens soon; passports follow.
 - The forecast bulletins ([[ubik-forecast]]) go out from this account and from ubik.gold's channels, under ubik.gold's terms.
 
