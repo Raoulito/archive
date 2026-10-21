@@ -1809,11 +1809,12 @@ function transform(raw){
   return out;
 }
 const keyOf=()=>{ try{ return localStorage.getItem("ubik-key")||""; }catch(e){ return ""; } };
-async function deskGet(path, withKey=true){
+async function deskGet(path, withKey=true, retry=1){
   const headers={}; const k=withKey?keyOf():""; if(k) headers["Authorization"]="Bearer "+k;
-  const r=await fetch(DESK+"/ubik"+path,{headers}); const standing=r.headers.get("x-ubik-key")||(k?"invalid":"none");
+  let r; try{ r=await fetch(DESK+"/ubik"+path,{headers}); }catch(e){ if(retry>0){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,withKey,retry-1); } throw new Error("network"); }
+  const standing=r.headers.get("x-ubik-key")||(k?"invalid":"none");
   if(r.status===451){ notAvailable(); throw new Error("451"); }
-  if(!r.ok) throw new Error(`desk ${path}: ${r.status}`);
+  if(!r.ok){ if(retry>0&&r.status>=500){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,withKey,retry-1); } throw new Error(`desk ${path}: ${r.status}`); }
   return {body:await r.json(), standing};
 }
 async function loadCurrent(){

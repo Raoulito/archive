@@ -877,7 +877,9 @@ async function ubik(req, url, cors) {
   const headers = { "Accept": "application/json, text/plain", "User-Agent": "ubikistan-archive-desk" };
   const auth = req.headers.get("Authorization") || "";
   if (/^Bearer [A-Za-z0-9._~-]{16,128}$/.test(auth)) headers["Authorization"] = auth;
-  const r = await fetch(UBIK + path + url.search, { headers });
+  let r;
+  try { r = await fetch(UBIK + path + url.search, { headers, signal: AbortSignal.timeout(20000) }); }
+  catch (e) { return json(502, { error: "ubik.gold did not answer the desk: " + String(e && e.message || e).slice(0, 120) }); }
   const out = new Headers({ ...cors, "Access-Control-Expose-Headers": "x-ubik-key, retry-after", "Cache-Control": "no-store" });
   out.set("Content-Type", r.headers.get("content-type") || "application/json");
   for (const h of ["x-ubik-key", "retry-after"]) if (r.headers.get(h)) out.set(h, r.headers.get(h));
