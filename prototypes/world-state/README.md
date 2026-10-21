@@ -32,3 +32,8 @@ Below 640px the page is one column: a scrolling tab strip under the wordmark, si
 A non-commercial, community-run initiative, built on content published by ubik.gold under its terms. Not financial advice; for entertainment and education only; AI-generated; not for persons under 18 or in the United States. The full text is at `../disclaimer/`.
 
 The words the pages use (forecast, issued, resolves, scored; never prediction, call, bet or odds) are set out in `lore/ubik-forecast.md`.
+
+
+## Built, since 21 October 2026
+
+This file is a build output. The sources are in `pages/` at the root of the repository; `npm run build` there writes this folder. Edit the sources, not this file.

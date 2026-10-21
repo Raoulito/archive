@@ -1,0 +1,21 @@
+{
+  "name": "ubikistan-pages",
+  "private": true,
+  "version": "1.31.0",
+  "description": "The Ubikistan World State and Forecasts pages: assembled from parts, built with Vite, deployed over SSH.",
+  "type": "module",
+  "scripts": {
+    "assemble": "python3 tools/assemble.py",
+    "dev": "npm run assemble && vite",
+    "build": "npm run assemble && vite build",
+    "preview": "vite preview",
+    "check": "node tools/check.mjs",
+    "deploy": "npm run build && node tools/check.mjs && sh tools/deploy.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "vite": "^6.4.5"
+  }
+}

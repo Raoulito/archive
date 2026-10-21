@@ -1,0 +1,26 @@
+# ubikistan.org serving the built pages, with an optional same-origin proxy for the desk.
+#
+# Default: the pages call the desk directly (VITE_DESK empty). Then only the CSP line matters.
+# Same-origin: build with VITE_DESK=/api and add the handle block. Note what it changes: the desk then
+# sees the server's address, not the reader's, so its "not in the United States" refusal applies to the
+# server's country, not the visitor's. The page's own 18+/not-US attestation still runs.
+
+ubikistan.org {
+    root * /var/www/ubikistan.org
+    encode gzip
+    file_server
+
+    header {
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://ubikistan-guest-desk.ubikistan-archive.workers.dev; frame-src 'self' https://archive.org; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        Referrer-Policy strict-origin-when-cross-origin
+        Permissions-Policy "geolocation=(), microphone=(), camera=(), usb=(), payment=()"
+    }
+
+    # Same-origin proxy (only with VITE_DESK=/api):
+    # handle_path /api/* {
+    #     reverse_proxy https://ubikistan-guest-desk.ubikistan-archive.workers.dev {
+    #         header_up Host ubikistan-guest-desk.ubikistan-archive.workers.dev
+    #         header_up Origin https://ubikistan.org
+    #     }
+    # }
+}

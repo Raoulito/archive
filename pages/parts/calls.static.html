@@ -1,0 +1,648 @@
+<title>Ubikistan Forecasts</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="The UBIK engine's daily forecasts read across contract markets, stocks and crypto, with probabilities, gaps, horizons, entries and exits. Run by the UBIK team under ubik.gold's terms. Forecasts are probabilities, not financial advice.">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --bg:#efece6;--surface:#f6f4ef;--ink:#15140f;--muted:#625d54;--line:#d6d1c7;--rule:#15140f;
+  --gold:#d9a21b;--gold-ink:#8a6710;--cyan:#2a8f98;--hot:#d93a5f;--green:#2f8a5b;
+  --ui:"Archivo",system-ui,sans-serif;--wordmark:"Archivo","Helvetica Neue",Arial,sans-serif;--display:"Newsreader",Georgia,serif;--mono:"Geist Mono",ui-monospace,monospace;
+  --r:4px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121315;--surface:#1a1b1e;--ink:#ece6d8;--muted:#a8a396;--line:#2a2c30;--rule:#3f4247;--gold:#d1a74c;--gold-ink:#d1a74c;--cyan:#35b5c0;--hot:#f2476f;--green:#6fb8a3}}
+:root[data-theme="dark"]{--bg:#121315;--surface:#1a1b1e;--ink:#ece6d8;--muted:#a8a396;--line:#2a2c30;--rule:#3f4247;--gold:#d1a74c;--gold-ink:#d1a74c;--cyan:#35b5c0;--hot:#f2476f;--green:#6fb8a3}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.wrap{width:min(100%,760px);margin:0 auto;padding:0 16px}
+/* masthead */
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.mast{display:flex;align-items:center;gap:10px;height:52px}
+.mast .mark{width:30px;height:30px;flex:none}
+.mast .wm{font-family:var(--wordmark);font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;line-height:1}
+.mast .lock{display:flex;align-items:baseline;gap:10px}
+.mast .sub{white-space:nowrap;font-family:var(--wordmark);line-height:1;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-left:2px}
+.mast .sp{flex:1;min-width:6px}
+.mast .stamp{font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.mast .tog{flex:none}
+.mast .tog{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--muted)}
+.tabrow{display:flex;align-items:center;border-top:1px solid var(--line);gap:12px}
+.tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.tabright{display:inline-flex;align-items:center;gap:8px;flex:none}
+.tabright .pw{font-family:var(--ui);font-weight:700;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-ink,var(--gold));border:1px solid var(--gold);padding:3px 6px 2px;border-radius:2px;white-space:nowrap;text-decoration:none}
+@media (max-width:720px){.tabrow{flex-wrap:wrap}.tabright{padding:6px 0 8px}}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;padding:10px 12px 9px;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tabs .n{font-family:var(--mono);font-weight:500;font-size:10px;margin-left:5px;color:var(--muted)}
+/* lede */
+.lede{padding:18px 0 6px}
+.lede h1{font-family:var(--display);font-weight:400;font-size:clamp(26px,6vw,36px);line-height:1.08;letter-spacing:-.01em;margin:0 0 8px}
+.lede h1 em{font-style:italic;color:var(--gold-ink)}
+.lede p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
+.lede p b{color:var(--ink);font-weight:600}
+/* summary strip */
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:14px 0 10px}
+.sum div{background:var(--surface);padding:9px 10px}
+.sum .k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.sum .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1;margin-top:4px}
+.sum .v small{font-size:11px;color:var(--muted)}
+.sum .long .v{color:var(--cyan)}.sum .short .v{color:var(--hot)}
+/* chips */
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 0 10px}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.chips button[aria-pressed="true"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+.chips .lab{align-self:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+/* moves strip */
+.moves{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:6px;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.moves::-webkit-scrollbar{display:none}
+.moves span{flex:none;white-space:nowrap}
+.moves b{color:var(--ink);font-weight:500}
+.moves .up{color:var(--cyan)}.moves .dn{color:var(--hot)}
+/* cards */
+.list{display:flex;flex-direction:column;gap:10px;padding:6px 0 20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 12px 10px;border-left:4px solid var(--line)}
+.card.long{border-left-color:var(--cyan)}.card.short{border-left-color:var(--hot)}
+.card .top{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.card .top .sp{flex:1}
+.card .top .hz{font-family:var(--mono);letter-spacing:0;text-transform:none;font-weight:500;font-size:11px}
+.pos{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
+.pos .tag{flex:none;font-family:var(--ui);font-weight:800;font-size:12px;line-height:1;letter-spacing:.16em;text-transform:uppercase;padding:7px 9px 6px;border-radius:3px;color:var(--bg);background:var(--ink)}
+.pos .tag.long{background:var(--cyan)}.pos .tag.short{background:var(--hot)}.pos .tag.cash{background:none;color:var(--muted);border:1px solid var(--rule);padding:6px 8px 5px}
+.pos .asset{font-family:var(--display);font-weight:400;font-size:clamp(27px,7.2vw,36px);line-height:1;letter-spacing:-.012em;color:var(--ink);min-width:0}
+.pos.cash .asset{color:var(--muted);font-size:clamp(19px,5.2vw,24px);line-height:1.15}
+.sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin:6px 0 0}
+.stats{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:0;margin:10px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats>div{padding:8px 6px 7px 0;min-width:0}
+.stats>div+div{padding-left:9px;border-left:1px solid var(--line)}
+.stats .k{font-size:9px;letter-spacing:.1em;white-space:nowrap;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stats .v{font-family:var(--mono);font-weight:600;font-size:clamp(24px,6.6vw,30px);line-height:1;margin-top:3px;letter-spacing:-.02em}
+.stats .v small{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:2px}
+.stats .v.pos{color:var(--cyan)}.stats .v.neg{color:var(--hot)}.stats .v.dim{color:var(--muted)}
+.card h2{font-family:var(--display);font-weight:400;font-size:16.5px;line-height:1.3;margin:10px 0 0;color:var(--ink)}
+.instr{display:flex;flex-direction:column;gap:0;margin-top:10px;border-top:1px solid var(--line)}
+.ir{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);min-width:0}
+.ir .d{flex:none;width:44px;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.ir .d.long{color:var(--cyan)}.ir .d.short{color:var(--hot)}.ir .d.flat,.ir .d.fade{color:var(--muted)}
+.ir .nm{font-family:var(--display);font-size:17px;line-height:1;flex:none}
+.ir .lk{flex:1;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+.ir .lk a{font-family:var(--mono);font-size:10.5px;text-decoration:none;color:var(--ink);padding:3px 7px;border:1px solid var(--rule);border-radius:3px;white-space:nowrap}
+.ir .lk a.ch{color:var(--muted);border-color:var(--line)}
+.trade{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:11px 12px;border-radius:3px;text-decoration:none;font-family:var(--ui);font-weight:800;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);background:var(--ink)}
+.trade.long{background:var(--cyan)}.trade.short{background:var(--hot)}
+.trade.cash{background:none;color:var(--ink);border:1px solid var(--rule)}
+.trade.sec{margin-top:6px;color:var(--muted);border-color:var(--line);font-weight:600}
+.trade .ar{font-family:var(--mono);font-size:15px}
+.instr .none{font-size:12px;color:var(--muted)}
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12.5px;line-height:1.35}
+.plan .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:block}
+.plan b{font-family:var(--mono);font-weight:600}
+.plan .entry .k{color:var(--cyan)}.plan .exit .k{color:var(--hot)}
+.venue{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+.venue a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.venue .soft{color:var(--hot)}
+.venue .tag{font-family:var(--ui);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:9.5px;padding:2px 6px;border:1px solid;border-radius:var(--r)}
+.venue .tag.long{color:var(--cyan)}.venue .tag.short{color:var(--hot)}.venue .tag.cash{color:var(--muted);border-color:var(--line)}
+.chat{margin-top:8px;font-size:12px;color:var(--muted)}
+.chat .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-right:6px}
+.chat span.t{font-family:var(--mono);font-size:10.5px;color:var(--gold-ink)}
+details.more{margin-top:8px}
+details.more summary{list-style:none;cursor:pointer;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:"+";font-family:var(--mono);font-size:13px}
+details.more[open] summary::after{content:"−"}
+.more .body{margin-top:8px;font-family:var(--display);font-size:15px;line-height:1.45}
+.more .body p{margin:0 0 8px}
+.more .k{font-family:var(--ui);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin:8px 0 2px}
+.more .rule{font-size:13.5px;color:var(--muted)}
+.hist{display:flex;align-items:center;gap:10px;margin-top:4px}
+.hist svg{width:120px;height:28px;flex:none}
+.hist .steps{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
+.hist .steps b{color:var(--ink);font-weight:500}
+.more .lnk{font-family:var(--mono);font-size:11px;margin-top:6px;display:block}
+.legend{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.legend b{color:var(--ink);font-weight:600}.legend .u b{color:var(--gold-ink)}
+/* calendar */
+section.cal{border-top:1px solid var(--rule);padding:14px 0 8px}
+section.cal h3,section.rec h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin:0 0 8px;color:var(--muted)}
+.cal ol{list-style:none;margin:0;padding:0}
+.cal li{display:grid;grid-template-columns:76px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.cal li .d{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.5}
+.cal li .d b{display:block;color:var(--ink);font-weight:600}
+.cal li .what{line-height:1.35}
+.cal li .what small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+.cal li .what .tg{font-family:var(--mono);font-size:10px;color:var(--gold-ink);margin-left:6px}
+.rec{border-top:1px solid var(--line);padding:14px 0 8px;font-size:13.5px;color:var(--muted)}
+.rec b{color:var(--ink);font-family:var(--mono);font-weight:600}
+footer{border-top:1px solid var(--rule);margin-top:10px;padding:14px 0 30px;font-size:12px;color:var(--muted);line-height:1.55}
+footer p{margin:0 0 8px}
+footer .mono{font-family:var(--mono);font-size:11px}
+.empty{padding:30px 0;color:var(--muted);text-align:center;font-family:var(--display);font-size:17px}
+@media (min-width:640px){
+  .lede h1{margin-top:6px}
+  .card{padding:14px 16px 12px}
+  .card h2{font-size:18px}
+  .pos .asset{font-size:34px}
+  .stats .v{font-size:30px}
+}
+@media (max-width:380px){.sum .v{font-size:22px}}
+@media (max-width:430px){.mast .stamp{display:none}}
+
+/* identity */
+.ic{vertical-align:-2px;margin-right:5px;flex:none}
+.tabs button .ic{margin-right:6px;vertical-align:-2.5px}
+.card .top .cats{display:flex;gap:10px}
+.card .top .cats span{display:inline-flex;align-items:center}
+.card .top .hz{display:inline-flex;align-items:center}
+.pos .tag{display:inline-flex;align-items:center;gap:5px}
+.pos .tag .ic{margin:0;width:12px;height:12px}
+.stats .k{display:flex;align-items:center}
+.stats .k .ic{width:11px;height:11px;margin-right:4px;opacity:.8}
+.stats .cv{display:flex;align-items:center;gap:8px}
+.ring{width:36px;height:36px;flex:none}
+.ring .rb{fill:none;stroke:var(--line);stroke-width:6}
+.ring .rf{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:butt}
+.ring.long .rf{stroke:var(--cyan)}.ring.short .rf{stroke:var(--hot)}.ring.cash .rf{stroke:var(--muted)}
+.ring .rc{display:none}
+.ring .re{display:none}
+.lede{position:relative;overflow:hidden}
+.wm-mark{position:absolute;right:-70px;top:-26px;width:180px;height:180px;opacity:.1;pointer-events:none}
+.wm-mark svg{width:100%;height:100%}
+:root[data-theme="dark"] .wm-mark{opacity:.2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wm-mark{opacity:.2}}
+.lede h1,.lede p{position:relative}
+section.cal h3,section.rec h3{display:flex;align-items:center}
+.flogo{display:flex;align-items:center;gap:0;margin:6px 0 14px}
+.flogo .fm{width:24px;height:24px;display:block}
+.flogo .fm svg{width:100%;height:100%}
+.flogo .fw{font-family:var(--wordmark);font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-left:10px;color:var(--ink)}
+@media (min-width:640px){.wm-mark{right:-30px;top:-50px;width:230px;height:230px}.stats{grid-template-columns:1.3fr 1fr 1fr}}
+
+.card.hc.win{border-left-color:var(--cyan)}.card.hc.loss{border-left-color:var(--hot)}
+.card .ev{font-family:var(--display);font-size:15px;line-height:1.4;margin:10px 0 0;color:var(--ink)}
+.hnote{font-size:12.5px;color:var(--muted);line-height:1.5;margin:6px 0 0}
+.hlink{display:block;margin-top:8px;color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--gold);width:max-content}
+
+.odds{margin-top:10px}
+.oh{display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted);align-items:center}
+.oh b{color:var(--ink);font-weight:600;font-size:13px}
+.oh .u b{color:var(--gold-ink)}
+.oh em{font-style:normal;color:var(--hot);font-size:10px}
+.oh .dim{opacity:.7}
+.sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.sw.u{background:var(--gold)}.sw.m{background:var(--ink)}.sw.k{background:var(--muted)}
+.gauge{position:relative;height:8px;background:var(--line);border-radius:4px;margin:8px 0 4px;overflow:visible}
+.gauge i{position:absolute;top:-4px;width:2px;height:16px;background:var(--ink);border-radius:1px}
+.gauge i.u{background:var(--gold);width:3px}
+.gauge i.m{background:var(--ink)}
+.gauge i.k{background:var(--muted)}
+.gauge i.half{left:50%;top:-2px;height:12px;width:1px;background:var(--rule);opacity:.35}
+.gauge .edge{position:absolute;top:0;height:8px;background:var(--gold);opacity:.5;border-radius:4px}
+.gauge .edge.long{background:var(--cyan)}.gauge .edge.short{background:var(--hot)}.gauge .edge.cash{background:var(--muted);opacity:.35}
+.ol{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.ol b{color:var(--ink);font-weight:600}
+.hc .asset{font-size:clamp(20px,5.4vw,26px);line-height:1.12}
+body.history .lede p,body.history .moves{display:none}
+
+.mast .pw{font-family:var(--ui);font-weight:700;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-ink);border:1px solid var(--gold);padding:3px 6px 2px;margin-left:8px;border-radius:2px;white-space:nowrap;flex:none}
+@media (max-width:430px){.mast .sub{display:none}}
+.pw.wslink{text-decoration:none}
+.pw.proto,#cover .coverhead .pw.proto,header .pw.proto,.mast .pw.proto{color:#e8405f !important;border-color:#e8405f !important;background:rgba(232,64,95,.08)}
+.where{margin:10px 0 4px;font-size:13px}
+.where .k{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.where .names span{display:inline-block;border:1px solid var(--line);padding:2px 8px;margin:0 6px 4px 0;font-family:var(--ui)}
+.where small{display:block;color:var(--muted);font-family:var(--mono);font-size:10.5px}
+a.pw{text-decoration:none}
+#acct-user{display:none}
+.degenfab{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;align-items:flex-end;gap:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .4s,transform .4s}
+.degenfab.show{opacity:1;transform:none;pointer-events:auto}
+.degenfab #degenbtn{font:inherit;font-size:18px;line-height:1;background:none;border:0;cursor:pointer;padding:6px;opacity:.55;filter:grayscale(1);animation:degenblink 2.6s ease-in-out infinite}
+.degenfab #degenbtn:hover,.degenfab #degenbtn[aria-pressed="true"]{opacity:1;filter:none;animation:none}
+@keyframes degenblink{0%,100%{opacity:.25}50%{opacity:.8}}
+.degenfab #degennote{display:block;max-width:300px;font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--muted);background:var(--surface);border:1px solid var(--rule);padding:10px 12px;border-radius:3px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.degenfab #degennote.hidden{display:none}
+.degenfab #degenon{font:inherit;color:var(--gold);background:none;border:1px solid var(--gold);padding:2px 8px;margin-left:6px;cursor:pointer}
+/* degen mode: the same page under a red neon aura */
+/* degen mode: the page at night in purple light (the World State's neon), and three functional colours: green long, red short, yellow neutral. */
+body.degen{--n:192,132,252;--purple:#c084fc;--purple-ink:#d8b4fe;--neon:#ff3b5c;--neon-soft:rgba(255,59,92,.35);--green:#3ddc97;--green-soft:rgba(61,220,151,.35);--yellow:#ffd166;--yellow-soft:rgba(255,209,102,.35);
+  --bg:#0a0812;--surface:#140f22;--ink:#e9edf5;--muted:#9a93b3;--line:#241c3a;--rule:#c084fc;--gold:#c084fc;--gold-ink:#d8b4fe;--hot:#d8b4fe;--cyan:#d8b4fe}
+body.degen{background:radial-gradient(900px 420px at 50% -10%,rgba(var(--n),.16),transparent 60%),var(--bg)}
+body.degen header{border-bottom:1px solid var(--purple);box-shadow:0 1px 0 rgba(var(--n),.25),0 8px 30px -14px rgba(var(--n),.7)}
+body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--purple);filter:drop-shadow(0 0 6px rgba(var(--n),.9)) drop-shadow(0 0 18px rgba(var(--n),.4))}
+body.degen .mast .wm{text-shadow:0 0 14px rgba(var(--n),.45)}
+body.degen .wm-mark,:root:not([data-theme="light"]) body.degen .wm-mark{opacity:1}
+body.degen .wm-mark svg circle{stroke:rgba(var(--n),.32)}
+body.degen .mast .sub::after{content:" · degen";color:var(--purple);text-shadow:0 0 10px rgba(var(--n),.8)}
+body.degen .pw,body.degen .tabright .pw{border-color:rgba(var(--n),.5);color:var(--purple-ink);box-shadow:0 0 10px -2px rgba(var(--n),.6)}
+body.degen .pw.proto{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px -2px var(--neon-soft)}
+body.degen .tabs button[aria-selected="true"]{color:var(--purple-ink);border-bottom-color:var(--purple);text-shadow:0 0 10px rgba(var(--n),.8)}
+body.degen .chips button[aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 0 14px -2px rgba(var(--n),.8)}
+body.degen h1,body.degen .card h2{text-shadow:0 0 18px rgba(var(--n),.25)}
+body.degen footer{border-top-color:#2f2150}
+/* summary tiles: the number carries the colour and its light; the box stays purple-dark */
+body.degen .sum>div{border-color:#2f2150;box-shadow:inset 0 0 30px -20px rgba(var(--n),.6)}
+body.degen .sum .long .v{color:var(--green);text-shadow:0 0 10px var(--green-soft),0 0 28px var(--green-soft)}
+body.degen .sum .short .v{color:var(--neon);text-shadow:0 0 10px var(--neon-soft),0 0 28px var(--neon-soft)}
+body.degen .sum .cash .v{color:var(--yellow);text-shadow:0 0 10px var(--yellow-soft),0 0 28px var(--yellow-soft)}
+/* cards: a 2px lit edge, an outlined stance tag, the confidence figure. The chrome stays purple. */
+body.degen .card{border-color:#2f2150;box-shadow:0 0 30px -22px rgba(var(--n),.8);border-left-width:2px}
+body.degen .card.long{border-left-color:var(--green);box-shadow:-6px 0 24px -16px var(--green-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .card.short{border-left-color:var(--neon);box-shadow:-6px 0 24px -16px var(--neon-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .card.cash{border-left-color:var(--yellow);box-shadow:-6px 0 24px -16px var(--yellow-soft),0 0 30px -22px rgba(var(--n),.8)}
+body.degen .pos .tag{background:none;border:1px solid var(--line);color:var(--muted);box-shadow:none}
+body.degen .pos .tag.long{border-color:var(--green);color:var(--green);box-shadow:0 0 12px -2px var(--green-soft),inset 0 0 12px -6px var(--green-soft)}
+body.degen .pos .tag.short{border-color:var(--neon);color:var(--neon);box-shadow:0 0 12px -2px var(--neon-soft),inset 0 0 12px -6px var(--neon-soft)}
+body.degen .pos .tag.cash{border-color:var(--yellow);color:var(--yellow);box-shadow:0 0 12px -2px var(--yellow-soft),inset 0 0 12px -6px var(--yellow-soft)}
+body.degen .card.long .cv .v{color:var(--green);text-shadow:0 0 10px var(--green-soft),0 0 24px var(--green-soft)}
+body.degen .card.short .cv .v{color:var(--neon);text-shadow:0 0 10px var(--neon-soft),0 0 24px var(--neon-soft)}
+body.degen .card.cash .cv .v{color:var(--yellow);text-shadow:0 0 10px var(--yellow-soft),0 0 24px var(--yellow-soft)}
+body.degen .gauge .u{background:var(--purple);box-shadow:0 0 8px rgba(var(--n),.7)}
+body.degen .gauge .edge{background:var(--purple);box-shadow:0 0 8px rgba(var(--n),.9)}
+body.degen .card.long .gauge .edge{background:var(--green);box-shadow:0 0 10px var(--green-soft)}
+body.degen .card.short .gauge .edge{background:var(--neon);box-shadow:0 0 10px var(--neon-soft)}
+body.degen .card.cash .gauge .edge{background:var(--yellow);box-shadow:0 0 10px var(--yellow-soft)}
+/* legs: direction in colour, names in ink, buttons outlined and lit; the one in the direction's colour is the one that acts */
+body.degen .instr .ir .d{font-weight:600}
+body.degen .instr .ir .d.long,body.degen .instr .ir .d.yes{color:var(--green);text-shadow:0 0 8px var(--green-soft)}
+body.degen .instr .ir .d.short,body.degen .instr .ir .d.no{color:var(--neon);text-shadow:0 0 8px var(--neon-soft)}
+body.degen .instr .ir a.ch{border:1px solid rgba(var(--n),.5);color:var(--purple-ink);background:none;box-shadow:0 0 10px -3px rgba(var(--n),.6)}
+body.degen .instr .ir a.ch:hover{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:0 0 14px -2px rgba(var(--n),.9)}
+body.degen .card.long .instr .ir a.ch.vn{border-color:var(--green);color:var(--green);box-shadow:0 0 10px -3px var(--green-soft)}
+body.degen .card.short .instr .ir a.ch.vn{border-color:var(--neon);color:var(--neon);box-shadow:0 0 10px -3px var(--neon-soft)}
+body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04120a;border-color:var(--green);box-shadow:0 0 16px -2px var(--green-soft)}
+body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407;border-color:var(--neon);box-shadow:0 0 16px -2px var(--neon-soft)}
+body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.9)) drop-shadow(0 0 14px rgba(var(--n),.6));animation:degenpulse 3s ease-in-out infinite}
+@keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="mast">
+      <svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>
+      <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Powered by ubik.gold</a><span class="pw proto">Prototype</span>
+      <span class="sp"></span>
+      <span class="stamp" id="stamp"></span>
+      <button class="tog" id="tog" aria-label="Switch light and dark"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 1.5v11A5.5 5.5 0 0 0 7 1.5Z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="tabrow"><nav class="tabs" role="tablist" id="tabs"></nav><span class="tabright"><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span></span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="lede">
+    <div class="wm-mark" id="wmmark" aria-hidden="true"></div>
+    <h1 id="h1"></h1>
+    <p><b>Each open question</b> with the engine's probability, the market where a contract exists, what settles it and when, and the names it touches. A reading of the forecasts, not advice. Forecasts are probabilities, not financial advice.</p>
+  </div>
+  <div class="sum" id="sum"></div>
+  <div class="chips" id="chips"></div>
+  <div class="moves" id="moves"></div>
+  <div class="list" id="list"></div>
+  <section class="cal" id="cal"></section>
+  <section class="rec" id="rec"></section>
+</main>
+<footer>
+  <div class="wrap">
+    <p><b>How to read it.</b> Above 60% the engine leans yes, below 40% it leans no, between it calls the question open. The gap is the engine's probability minus the market's where a contract exists. Names are where the question shows up, listed for reference; nothing here is a position, a recommendation or a suggestion of what to do.</p>
+    <p>Not advice, no price targets. Forecasts are probabilities, not financial advice. Market prices are a snapshot, read on the date shown.</p>
+    <p class="mono" id="foot"></p>
+    <div class="degenfab" id="degenfab" aria-label="Degen mode"><span id="degennote" class="hidden">For entertainment only. Positions are a mechanical reading of each forecast (above 60% the YES leg, below 40% the NO leg, else cash), with chart, venue and contract links. Nothing here is a recommendation or advice; venues may not be available or lawful where you are; the disclaimer applies in full. By turning this on you confirm you understand that. <button type="button" id="degenon">Turn on</button></span><button type="button" id="degenbtn" aria-pressed="false" title="degen mode">⭕</button></div>
+    <div class="flogo"><span class="fm" id="fmark"></span><span class="fw">Ubikistan Forecasts</span></div>
+    <p class="mono">Run by the UBIK team under <a href="https://ubik.gold/terms" target="_blank" rel="noopener">ubik.gold's terms</a>, with UBIK's public forecast data. AI-generated. Forecasts are probabilities, not financial advice.</p>
+  </div>
+</footer>
+
+<script>
+const F = [
+ {"id": "q_20261020_04", "theme": "europe", "q": "Will Saturday's protests in France draw less than half last week's crowd?", "hist": [["2026-10-20", 0.8]], "due": "2026-10-31", "status": "open", "rule": "Yes if the Interior Ministry's nationwide count of protesters in France for Saturday, Oct. 24, 2026, is below 275,000, which is half its count of 550,000 for Oct. 17. No if it is 275,000 or more. Use the latest full-day national figure the ministry publishes by 23:59 Paris time on Oct. 31, 2026; if it publishes only an intraday figure, use the latest one published by then. Ignore later revisions and any count by unions, organizers or independent counters. If the ministry publishes a national figure for Oct. 24, that figure settles the question whatever else happens. If it publishes none by the deadline: void if the national protest day was moved from Oct. 24 to a later date; otherwise Yes, including when the calls are withdrawn or banned or the protests are too scattered for a national count.", "why": "Unions stay out, curfews deter marchers, and second days usually shrink."},
+ {"id": "q_20261020_01", "theme": "gulf", "q": "Will Saudi Arabia's private businesses shrink this month?", "hist": [["2026-10-20", 0.15]], "due": "2026-11-05", "status": "open", "rule": "Yes if the headline seasonally adjusted Riyad Bank Saudi Arabia PMI for October 2026, as first published by S&P Global, is below 50.0. No if it is 50.0 or higher. Later revisions are ignored. If S&P Global has not published the October 2026 reading by the end of Nov. 5, 2026, the question is void.", "why": "The survey must fall over five points from 55.3; only broad shocks did that."},
+ {"id": "q_20261020_02", "theme": "ukraine", "q": "Will Trump and Putin meet in person by next month's China summit?", "hist": [["2026-10-20", 0.52]], "due": "2026-11-23", "status": "open", "rule": "Yes if, between Oct. 20 and Nov. 20, 2026, Donald Trump and Vladimir Putin hold an in-person meeting or talks anywhere, including at the APEC leaders' summit in Shenzhen on Nov. 18-19. The meeting may be one-on-one or together with Xi Jinping or others in a three-way format. It counts if the White House or the Kremlin describes it as a meeting or talks between the two leaders, or if both Reuters and AP report that the two held a meeting or talks. It must be held apart from sessions, meals or photos open to all APEC leaders: a conversation during those does not count, whatever either side calls it. A handshake, greeting or brief exchange counts only if the White House or the Kremlin calls it a meeting or talks. Phone and video calls do not count. Reports published by Nov. 23 about a meeting held by Nov. 20 count. No if no qualifying meeting held by Nov. 20 is reported by Nov. 23, including if either leader skips the summit or leaves without one. Void if the APEC leaders' summit in Shenzhen is called off or postponed past Nov. 20 and no qualifying meeting has been held by then.", "why": "Both leaders will attend and say they are willing, but nothing is agreed."},
+ {"id": "q_20261020_03", "theme": "iran", "q": "Will America or Israel bomb Iran again before Thanksgiving?", "hist": [["2026-10-20", 0.55]], "due": "2026-11-28", "status": "open", "rule": "Yes if, between 2026-10-20T09:00Z and 2026-11-25T23:59Z, US or Israeli forces carry out at least one air, missile or drone strike on a target on Iranian territory: the mainland, Iranian-held islands, or ships moored at an Iranian port or base. A strike launched at such a target counts whether or not Iranian defences intercept it. The strike must be acknowledged by one of the named governments or reported as a US or Israeli strike by at least two of the named outlets, in their own reporting or citing US or Israeli officials; Iranian accusations alone do not count, nor do reports the outlets have retracted by the end of 2026-11-28. Not counted: blockade enforcement or other action against vessels at sea, including inside Iran's territorial waters; interception of Iranian missiles, drones or boats; strikes on Iranian-backed groups or Iranian assets outside Iran; cyberattacks; and sabotage or killings inside Iran that neither government acknowledges and the named outlets do not report as a US or Israeli strike. A strike before Nov. 3 counts the same as one after it. Acknowledgements and reports published up to the end of 2026-11-28 count for strikes within the window. If no qualifying strike in the window has been acknowledged or reported by the end of 2026-11-28, the question resolves No.", "why": "Strong pressure after Nov. 3, but only about three weeks before Thanksgiving."},
+ {"id": "q_20261019_04", "theme": "europe", "q": "Will Moody's keep France's credit rating where it is on Friday?", "hist": [["2026-10-19", 0.63]], "due": "2026-10-24", "status": "open", "rule": "Yes if Moody's leaves France's long-term issuer rating at Aa3 in every announcement on France published by the end of Oct. 24, 2026 UTC, whatever it does to the outlook or review status, including when it publishes no rating action on France at its scheduled Oct. 23, 2026 review. No if, by the end of Oct. 24, 2026 UTC, Moody's announces any change to that rating, such as a cut to A1 or below, even if the change is later reversed. Void only if, by the end of Oct. 24, 2026 UTC, Moody's formally announces that it has moved the Oct. 23 review past Oct. 24, 2026 and has not changed the rating.", "why": "Moody's test is the December budget, which the riots do not settle by Friday."},
+ {"id": "q_20261019_01", "theme": "ukraine", "q": "Will Russia keep banning its oil refineries from selling diesel abroad?", "hist": [["2026-10-19", 0.82]], "due": "2026-11-04", "status": "open", "rule": "Yes if, by 23:59 Moscow time on Nov. 1, 2026, the Russian government has adopted a decision extending past Oct. 31, 2026, to any later date, the temporary ban on exports of diesel fuel (with or without marine fuel and gasoil) by producers, so that the ban is in force on Nov. 1, as shown in a decree or an official announcement of the decision published by 23:59 Moscow time on Nov. 4, 2026. An extension still counts as yes if it keeps or widens exceptions: government-approved contracts, the volumes agreed with the U.S., intergovernmental agreements or supplies to Eurasian Economic Union states. A replacement regime that still forbids producers to export diesel without case-by-case government permission or a quota also counts as yes. Only the status on Nov. 1 counts: a later lifting does not change a yes. No if the producer ban lapses on Oct. 31 or is lifted earlier, so that on Nov. 1 producers may export diesel without case-by-case government approval; if the decision is adopted only after Nov. 1, even if it reimposes the ban; or if no decree or official announcement of an extension adopted by Nov. 1 is published by Nov. 4. Statements that an extension is being considered do not count. The separate ban on diesel exports by traders and small refineries, in force to Jan. 31, 2027, and the gasoline and jet fuel bans do not count either way.", "why": "Drone strikes keep Russian refining short, and Moscow has renewed the ban each month."},
+ {"id": "q_20261019_03", "theme": "markets", "q": "Will new US savings bonds pay at least 1.3% above inflation?", "hist": [["2026-10-19", 0.88]], "due": "2026-11-09", "status": "open", "rule": "Yes if the announced fixed rate for Series I savings bonds issued from Nov. 1, 2026 through Apr. 30, 2027 is 1.30% or higher, up from 0.90% now. No if it is below 1.30%. Only the fixed rate counts. The inflation part, already set at 4.08% by the September report, and the total rate do not decide the question. The announcement is expected Oct. 30 or Nov. 2, 2026, because Nov. 1 is a Sunday; in 2025 it came on Oct. 31 when Nov. 1 fell on a Saturday. If Treasury corrects the announced rate by the end of Nov. 9, 2026, the corrected rate counts. If Treasury stops issuing Series I bonds and sets no rate for this period, the question is void. Otherwise, if Treasury has published no new fixed rate by the end of Nov. 9, 2026, the answer is No.", "why": "Real yields averaged about 2% since May, which points to at least 1.30%."},
+ {"id": "q_20261019_02", "theme": "europe", "q": "Will French diesel stay nearly as expensive despite the government's cut?", "hist": [["2026-10-19", 0.51]], "due": "2026-11-16", "status": "open", "rule": "Yes if the national average diesel price for Nov. 6, 2026 is 2.28 euros a litre or higher. That would be a fall of 5 cents or less from the 2.33 euros in the ministry note dated Oct. 9, 2026, two days after the cut was announced: less than half the low end of the promised 12 to 18 cents, and below even TotalEnergies' smallest pledge of 8 cents. No if it is below 2.28 euros. The first published figure counts; later revisions are ignored. If, by Nov. 6, the government has moved the start of discounted pump prices past Nov. 6 or cancelled the release, the answer is void when the price is 2.28 euros or higher and No when it is below.", "why": "Rising wholesale diesel may cancel the cut just as it reaches the pumps."},
+ {"id": "q_20261019_05", "theme": "asia", "q": "Will Taiwan's dollar keep falling despite its central bank's warning?", "hist": [["2026-10-19", 0.38]], "due": "2026-11-09", "status": "yes", "resolved": "2026-10-20", "brier": 0.3844, "rule": "Yes if the central bank's published official closing rate for any Taipei trading day from Oct. 20 through Nov. 2, 2026 inclusive is weaker than NT$32.500 per US dollar, meaning a number above 32.500. No if every official close for those days is 32.500 or stronger (32.500 itself counts as No). Each day's close as first published counts; later revisions do not change the result. Intraday highs and lows, offshore non-deliverable forward rates and bank counter rates do not count. Days the Taipei market is closed, including typhoon closures, are skipped, and a day with no published close is treated as closed. Closes must be published by Nov. 9, 2026 to count. Void only if the Taipei market publishes no official close for any day in the window. Reference: the Oct. 19 close was 32.445 after an intraday low of 32.55.", "evidence": "The U.S. dollar rose against the Taiwan dollar Tuesday, gaining NT$0.172 to close at NT$32.617. (focustaiwan.tw)", "why": "The central bank defends 32.50 at the close, against record foreign outflows."},
+ {"id": "q_20261018_05", "theme": "europe", "q": "Will France's November strike draw fewer marchers than Saturday's protests?", "hist": [["2026-10-18", 0.58], ["2026-10-18", 0.68]], "due": "2026-11-12", "status": "open", "rule": "YES if the Interior Ministry's nationwide demonstrator count for the Nov. 5, 2026 inter-union day, published by the end of Nov. 12, 2026 (Paris time), is below 550,000, the ministry's count for Oct. 17, 2026. NO if it is 550,000 or more, or if the ministry publishes no nationwide figure for the day by then. If the ministry publishes more than one nationwide figure for the day, use the latest published by Nov. 12. Union, organizer or independent counts and Paris-only or other partial figures do not count. The threshold stays 550,000 even if the ministry later revises its Oct. 17 figure. If the day is moved to another date no later than Nov. 6, 2026, use the ministry's count for that date. VOID only if the day is cancelled or moved to a date after Nov. 6, 2026.", "why": "The school holiday and a weekday strike cut turnout; full union backing adds marchers.", "change": "A deadly, violent Oct. 17 is likely to keep moderate marchers home on a weekday."},
+ {"id": "q_20261018_01", "theme": "gulf", "q": "Will Iraq keep pumping about as much oil as in September?", "hist": [["2026-10-18", 0.55]], "due": "2026-11-11", "status": "open", "rule": "Yes if Iraq's crude production for October 2026 in that table is at least 95% of Iraq's September 2026 figure as printed in the same table (that is, a fall of no more than 5% from September, using the September figure as revised in that edition). No if it is below 95%. Only the secondary-sources table in that edition counts, not Iraq's own reported figure (direct communication), any later OPEC revision, or any other agency's estimate. If OPEC has not published the November 2026 edition by Nov. 11, 2026, or that edition's table gives no October 2026 figure for Iraq, the question is void.", "why": "Iran lets approved Iraqi tankers pass, but Iraq has little storage if that stops."},
+ {"id": "q_20261018_04", "theme": "americas", "q": "Will Brazil keep paying diesel importers extra past mid-November?", "hist": [["2026-10-18", 0.65]], "due": "2026-11-19", "status": "open", "rule": "Yes if, between Oct. 18 and Nov. 16, 2026, the Diário Oficial da União (any edition, including an extra edition) publishes a Ministry of Finance ordinance, or any other federal act such as a decree or medida provisória, that extends the additional subsidy for imported road diesel A created by Portaria MF 3.082 of Oct. 13, 2026 (R$1.40 a litre, valid 30 days from publication, about Nov. 12), or sets any new subsidy paid only on imported road diesel A, in either case in force on at least one day after Nov. 12, 2026. Any amount above zero counts, whether the top-up is renewed alone or folded into a combined rate that is higher for imported than for domestically produced road diesel. Only publication in the Diário Oficial counts; an announcement without it does not. The result is read on Nov. 19, 2026 from the Diário Oficial archive. No if no such act was published by Nov. 16, 2026, including when only the general subsidy paid to all producers and importers continues, or when the government ends the top-up early. Void if, before Nov. 12, 2026, the subsidy scheme of MP 1.391/2026 is rejected or suspended by Congress or a court.", "why": "November cargoes are unbooked, and only the import top-up makes them pay."},
+ {"id": "q_20261018_02", "theme": "ukraine", "q": "Will America let Hungary keep buying Russian oil for six more months?", "hist": [["2026-10-18", 0.51]], "due": "2026-11-26", "status": "open", "rule": "Yes if, by Nov. 23, 2026, the US Treasury has issued an authorisation for MOL, through a renewal or amendment of its licence or through a general licence, to keep buying crude from Lukoil or Litasco delivered through the Druzhba pipeline until at least May 21, 2027, without conditions that require MOL to cut those purchases, and has not revoked it by Nov. 23; or has lifted the US sanctions on Lukoil by Nov. 23 so that no licence is needed. A promise or agreement in principle that has not been issued does not count. The end date in the licence decides; only when no end date is published or reported does a renewal reported by MOL, the Hungarian government or one of the named outlets as lasting six months or more count as yes. Where reports of the terms conflict, the US Treasury's own terms prevail. Reports published by Nov. 26, 2026 count; if none by then reports such an authorisation, the answer is no. Otherwise no, including a lapse on Nov. 21, 2026 or extensions issued by Nov. 23 that run only to dates before May 21, 2027, such as a short stopgap.", "why": "Washington puts fuel supply first now, but often renews Lukoil licences in short steps."},
+ {"id": "q_20261018_03", "theme": "asia", "q": "Will Korea's central bank hold off on raising rates in November?", "hist": [["2026-10-18", 0.52]], "due": "2026-11-26", "status": "open", "rule": "No if the Bank of Korea announces any rise in its base rate between Oct. 23 and Nov. 26, 2026, whether at its November meeting or at an unscheduled meeting. Otherwise Yes once the November decision is announced, whether it holds or cuts. The rate as announced on the decision day counts; later reversals do not change the result. If no November meeting has been held by Nov. 26, 2026 because it was moved later or called off, and no rise was announced in the window, the question is void.", "why": "The crash cooled leveraged buying, but housing and guidance still point to a rise."},
+ {"id": "q_20261017_04", "theme": "asia", "q": "Will Indonesia's central bank hold off raising interest rates on Wednesday?", "hist": [["2026-10-17", 0.63]], "due": "2026-10-21", "status": "open", "rule": "NO if Bank Indonesia announces an increase in the BI-Rate at any meeting, scheduled or unscheduled, between Oct. 17 and Oct. 21, 2026, even if it is later reversed. Otherwise YES if the BI-Rate announced after the Board of Governors meeting ending Oct. 21, 2026 is 5.75% or lower. Changes to the deposit or lending facility rates alone do not count. If the scheduled decision is not published by Oct. 21, 2026 and no increase has been announced in the meantime, the question is void.", "why": "Forced index selling is months away, and the rupiah fell under 1%."},
+ {"id": "q_20261017_03", "theme": "ukraine", "q": "Will Ukraine's central bank raise interest rates again this month?", "hist": [["2026-10-17", 0.47]], "due": "2026-10-29", "status": "open", "rule": "Yes if the NBU Board's monetary policy decision announced on Oct. 29, 2026, or any key policy rate decision announced between the cutoff and Oct. 29, 2026, sets the key policy rate above 16.0% a year. The announced decision counts even if the new rate takes effect after Oct. 29 or is later reversed. No if every such decision keeps the rate at 16.0% or lowers it. Other tools, such as reserve requirements, the interest rate corridor or currency rules, do not count. If the scheduled meeting is postponed past Oct. 29, 2026 and no rate decision is announced by then, the question is void.", "why": "Inflation hit 10%, but most rate-setters called 16% enough in September."},
+ {"id": "q_20261017_01", "theme": "americas", "q": "Will Brazil keep paying its diesel subsidy in full after the vote?", "hist": [["2026-10-17", 0.75]], "due": "2026-10-31", "status": "open", "rule": "Yes if the federal economic subsidy for road-use diesel A is in force at R$2.12 per liter or more on every day from Oct. 27 through Oct. 28, 2026, under Portaria MF 2.946/2026 or acts published in Diario Oficial da Uniao editions dated Oct. 17 through Oct. 28, 2026 (Brasilia time): a Ministry of Finance act, or a law or new provisional measure, and no act published by then sets a rate below R$2.12 for any day of the new period. A renewal published by Oct. 28 that applies back to the day after Portaria MF 2.946/2026 ends counts, as does an extension of that portaria at an unchanged rate. No if no such act appears in an edition dated by Oct. 28, including when a renewal is only announced, or if acts published by then leave the subsidy below R$2.12 per liter or out of force on any day from Oct. 27, or set a lower rate for any later day of the new period. Acts published after Oct. 28 do not change the result. The rate is the general subsidy paid to producers and importers (now R$1.12 plus R$1.00); the additional import-only subsidy under Portarias MF 2.813 and 3.082/2026 does not count toward it, nor do tax cuts, measures on petrol, ethanol or cooking gas, or Petrobras's own price changes.", "why": "World diesel stays costly, and the Finance Minister can renew the subsidy alone."},
+ {"id": "q_20261017_02", "theme": "ai", "q": "Will renting AI chips cost more in a month than now?", "hist": [["2026-10-17", 0.61]], "due": "2026-11-21", "status": "open", "rule": "Yes if the Neo-Cloud index value for Friday, Nov. 13, 2026, as first published and read to the cent, is above 6.01 dollars per GPU-hour, its value for Oct. 16, 2026. No if it is 6.01 dollars or lower. Later revisions do not count. If no value for Nov. 13 is published by Nov. 21, use the value for the latest earlier day from Nov. 6 on that is published by then. Void if no value for any day from Nov. 6 to Nov. 13 is published by Nov. 21, or if Silicon Data changes its method in a way it says breaks comparison with Oct. 16.", "why": "Rents rose in the crash week, but the index fell back after past peaks."},
+ {"id": "q_20261001_01", "theme": "ukraine", "q": "Between Oct. 2 and Oct. 31, 2026, a new Russian attack will again force emergency power cuts in the city of Kyiv, as announced by Ukrenergo or DTEK.", "hist": [["2026-10-01", 0.76]], "due": "2026-10-31", "status": "yes", "resolved": "2026-10-08", "brier": 0.0576, "rule": "Yes if, between 2026-10-02 00:00 and 2026-10-31 23:59 Kyiv time, (a) Ukrenergo or DTEK Kyiv Electric Networks announces emergency power outages (avariini or ekstreni vidkliuchennia) that apply in the city of Kyiv as a result of a Russian attack carried out on or after Oct. 2, or (b) an official of Ukrenergo, DTEK, the Kyiv City Military Administration or the Energy Ministry states that a Russian attack carried out on or after Oct. 2 left at least 100,000 consumers or households in the city of Kyiv without power. Pre-announced hourly outage schedules for households and power-limitation schedules for businesses do not count on their own; nor do cuts confined to Kyiv region outside the city, or outages that only continue from the Sept. 30 strike. No otherwise.", "evidence": "Emergency power outages have been introduced in Kyiv and Kyiv Oblast following Russian attacks on the orders of Ukrenergo, Ukraine's national energy company. (www.pravda.com.ua)"},
+];
+
+const TS={"q_20261020_04":[["2026-10-20T05:00:22-04:00",0.8]],"q_20261020_01":[["2026-10-20T05:00:22-04:00",0.15]],"q_20261020_02":[["2026-10-20T05:00:22-04:00",0.52]],"q_20261020_03":[["2026-10-20T05:00:22-04:00",0.55]],"q_20261019_04":[["2026-10-19T05:00:18-04:00",0.63]],"q_20261019_01":[["2026-10-19T05:00:18-04:00",0.82]],"q_20261019_03":[["2026-10-19T05:00:18-04:00",0.88]],"q_20261019_02":[["2026-10-19T05:00:18-04:00",0.51]],"q_20261019_05":[["2026-10-19T05:00:18-04:00",0.38]],"q_20261018_05":[["2026-10-18T05:00:11-04:00",0.58],["2026-10-18T11:08:53-04:00",0.68]],"q_20261018_01":[["2026-10-18T05:00:11-04:00",0.55]],"q_20261018_04":[["2026-10-18T05:00:11-04:00",0.65]],"q_20261018_02":[["2026-10-18T05:00:11-04:00",0.51]],"q_20261018_03":[["2026-10-18T05:00:11-04:00",0.52]],"q_20261017_04":[["2026-10-17T06:00:24-04:00",0.63]],"q_20261017_03":[["2026-10-17T06:00:24-04:00",0.47]],"q_20261017_01":[["2026-10-17T06:00:24-04:00",0.75]],"q_20261017_02":[["2026-10-17T06:00:24-04:00",0.61]],"q_20261001_01":[["2026-10-01T07:12:10-04:00",0.76]]};
+
+const GEO = {
+ "q_20261001_01":[50.45,30.52,"Kyiv"],"q_20261009_02":[50.45,30.52,"Kyiv"],"q_20261011_01":[50.45,30.52,"Kyiv"],"q_20261008_02":[50.45,30.52,"Kyiv"],
+ "q_20260928_03":[55.75,37.62,"Moscow"],
+ "q_20261011_02":[28.61,77.21,"New Delhi"],"q_20261011_03":[28.61,77.21,"New Delhi"],
+ "q_20261012_04":[20.14,74.23,"Lasalgaon"],
+ "q_20261012_01":[19.08,72.88,"Mumbai"],"q_20261011_04":[19.08,72.88,"Mumbai"],"q_20261010_01":[19.08,72.88,"Mumbai"],
+ "q_20261012_03":[50.85,4.35,"Brussels"],"q_20261005_05":[50.85,4.35,"Brussels"],
+ "q_20261012_02":[52.52,13.40,"Berlin"],
+ "q_20261010_02":[-15.79,-47.88,"Brasília"],"q_20260928_04":[-15.79,-47.88,"Brasília"],
+ "q_20261005_04":[38.90,-77.04,"Washington"],"q_20260928_01":[38.90,-77.04,"Washington"],"q_20261009_04":[38.90,-77.04,"Washington"],"q_20261008_03":[38.90,-77.04,"Washington"],"q_20261012_07":[38.90,-77.04,"Washington"],
+ "q_20260928_02":[37.77,-122.42,"San Francisco"],"q_20261001_02":[37.39,-122.08,"Mountain View"],"q_20261009_03":[30.27,-97.74,"Austin"],
+ "q_20261009_01":[26.57,56.25,"Strait of Hormuz"],"q_20261005_03":[26.57,56.25,"Strait of Hormuz"],"q_20261008_01":[35.69,51.39,"Tehran"],
+ "q_20261001_03":[37.57,126.98,"Seoul"],
+ "q_20261012_05":[40.71,-74.01,"New York"],"q_20261012_06":[40.71,-74.01,"New York"],
+};
+
+// ---- UBIK forecasts: the engine's forecasts mapped to positions. Snapshot: forecasts read 20 Oct 2026; Polymarket read 13 Oct; Kalshi via AIXBT report 14 Oct; AIXBT topics 16 Oct 07:45 UTC. ----
+const READ={forecasts:"2026-10-20",poly:"2026-10-13",kalshi:"2026-10-14",aixbt:"2026-10-16T07:45Z"};
+const GF=s=>`https://www.google.com/finance/quote/${s}`, TV=s=>`https://www.tradingview.com/symbols/${s}/`;
+const PM=q=>`https://polymarket.com/search?q=${encodeURIComponent(q)}`;
+const CAT={m:"Markets",s:"Stocks",c:"Crypto"};
+// each call: id (UBIK record), cats, short question, instruments by case, catalysts, chatter (AIXBT topic ids), notes
+const CALLS=[
+ {id:"q_20261020_04", asset:"French protests", cats:["s"], short:"Saturday's French protest under half last week's",
+  yes:[["EWQ",GF("EWQ:NYSEARCA"),"long"]], no:[["EWQ",GF("EWQ:NYSEARCA"),"short"]],
+  catalyst:["2026-10-24", "Second Yellow Vest protest day"], chatter:[],
+  note:"A smaller crowd reads as the revolt fading; the France ETF is the blunt instrument. Curfews and no union call are the reasons for 80%."},
+ {id:"q_20261020_01", asset:"Saudi business survey", cats:["s"], short:"Saudi private businesses shrink in October",
+  yes:[["KSA",GF("KSA:NYSEARCA"),"short"]], no:[["KSA",GF("KSA:NYSEARCA"),"long"]],
+  catalyst:["2026-11-04", "S&P Global Saudi PMI for October"], chatter:[],
+  note:"The survey starts from a high level; UBIK sees the first reading staying above 50, so the NO leg is the position."},
+ {id:"q_20261020_02", asset:"Trump–Putin meeting", cats:["m"], short:"Trump and Putin meet in person by the Shenzhen summit",
+  yes:[], no:[],
+  catalyst:["2026-11-19", "Shenzhen summit ends"], chatter:[],
+  note:"Close to even; cash. A listed contract on the meeting would be the place to look, none checked yet."},
+ {id:"q_20261020_03", asset:"Iran strike", cats:["m", "s"], short:"US or Israel bomb Iran before Thanksgiving",
+  yes:[["XLE",GF("XLE:NYSEARCA"),"long"],["Brent",TV("TVC-UKOIL"),"long"]], no:[["XLE",GF("XLE:NYSEARCA"),"short"]],
+  catalyst:["2026-11-03", "US midterms; Trump's no-attack promise runs to this date"], chatter:[],
+  note:"55% is inside the cash band. The two elections set the window: after Nov. 3 and after Israel's Oct. 27 vote."},
+ {id:"q_20261019_04", asset:"France rating", cats:["s"], short:"Moody's keeps France at Aa3 on Friday",
+  yes:[["EWQ",GF("EWQ:NYSEARCA"),"long"]], no:[["EWQ",GF("EWQ:NYSEARCA"),"short"]],
+  catalyst:["2026-10-23", "Moody's review of France"], chatter:[],
+  note:"The test is the budget, decided in December; a riot is not a fallen government. Only a cut counts."},
+ {id:"q_20261019_01", asset:"Russian diesel ban", cats:["s"], short:"Russia keeps its ban on refinery diesel exports",
+  yes:[["Diesel crack",TV("NYMEX-HO1!"),"long"]], no:[["Diesel crack",TV("NYMEX-HO1!"),"short"]],
+  catalyst:["2026-10-31", "Current restriction expires unless extended"], chatter:[],
+  note:"82% that Moscow extends; tighter export supply keeps the diesel crack bid."},
+ {id:"q_20261019_03", asset:"US I-bond rate", cats:["m"], short:"New I-bonds pay at least 1.3% above inflation",
+  yes:[], no:[],
+  catalyst:["2026-11-02", "Treasury sets the November I-bond rate"], chatter:[],
+  note:"A rate announcement, not a tradeable gap; listed for the record."},
+ {id:"q_20261019_02", asset:"French diesel price", cats:["s"], short:"French pump diesel stays near its level despite the cut",
+  yes:[], no:[],
+  catalyst:["2026-11-16", "Resolution date"], chatter:[],
+  note:"51%: cash."},
+ {id:"q_20261018_05", asset:"French strike", cats:["s"], short:"Nov. 5 strike draws fewer marchers than Oct. 17",
+  yes:[["EWQ",GF("EWQ:NYSEARCA"),"long"]], no:[["EWQ",GF("EWQ:NYSEARCA"),"short"]],
+  catalyst:["2026-11-05", "National strike against the budget cuts"], chatter:[],
+  note:"Raised from 58% to 68% as the unions kept their distance from the Saturday crowds."},
+ {id:"q_20261018_01", asset:"Iraq output", cats:["s"], short:"Iraq keeps pumping about as much as in September",
+  yes:[], no:[],
+  catalyst:["2026-11-11", "OPEC secondary-source figures for October"], chatter:[],
+  note:"55%: cash. Hormuz is the swing factor, not Iraqi fields."},
+ {id:"q_20261018_04", asset:"Brazil diesel aid", cats:["s"], short:"Brazil keeps paying diesel importers extra past mid-November",
+  yes:[["EWZ",GF("EWZ:NYSEARCA"),"long"]], no:[["Petrobras",GF("PBR:NYSE"),"long"]],
+  catalyst:["2026-11-19", "Resolution date"], chatter:[],
+  note:"The subsidy keeps pump prices down and the political peace; a YES is mildly good for Brazilian equities, a NO better for Petrobras' margins."},
+ {id:"q_20261018_02", asset:"Hungary waiver", cats:["s"], short:"US lets Hungary keep buying Russian oil for six months",
+  yes:[["MOL",GF("MOL:BUD"),"long"]], no:[["MOL",GF("MOL:BUD"),"short"]],
+  catalyst:["2026-11-26", "Resolution date"], chatter:[],
+  note:"51%: cash until the waiver decision shows."},
+ {id:"q_20261018_03", asset:"Korea rates", cats:["m"], short:"Bank of Korea holds in November",
+  yes:[], no:[],
+  catalyst:["2026-11-26", "Bank of Korea decision"], chatter:[],
+  note:"52%: cash."},
+ {id:"q_20261017_04", asset:"Indonesia rates", cats:["m"], short:"Bank Indonesia holds on Wednesday",
+  yes:[], no:[],
+  catalyst:["2026-10-21", "Bank Indonesia decision"], chatter:[],
+  note:"63% to hold; a one-day event, listed for the record."},
+ {id:"q_20261017_03", asset:"Ukraine rates", cats:["m"], short:"Ukraine's central bank raises again this month",
+  yes:[], no:[],
+  catalyst:["2026-10-29", "NBU decision"], chatter:[],
+  note:"47%: cash."},
+ {id:"q_20261017_01", asset:"Brazil diesel subsidy", cats:["s"], short:"Brazil keeps the full diesel subsidy after the vote",
+  yes:[["EWZ",GF("EWZ:NYSEARCA"),"long"]], no:[["Petrobras",GF("PBR:NYSE"),"long"]],
+  catalyst:["2026-10-25", "Brazil runoff"], chatter:[],
+  note:"75% that the subsidy survives the vote; same pair as the importer question."},
+ {id:"q_20261017_02", asset:"AI chip rent", cats:["s", "c"], short:"Renting AI chips costs more in a month",
+  yes:[["Nvidia",GF("NVDA:NASDAQ"),"long"],["CoreWeave",GF("CRWV:NASDAQ"),"long"]], no:[["CoreWeave",GF("CRWV:NASDAQ"),"short"]],
+  catalyst:["2026-11-21", "Resolution date"], chatter:[],
+  note:"61% that rental prices rise while foreign money leaves the chip stocks; scarcity of compute against a sell-off in its makers."},
+];
+// forecasts with no market expression, kept for the record count only
+const NON_MARKET=["q_20261020_02", "q_20261019_03", "q_20261019_02", "q_20261018_01", "q_20261018_03", "q_20261017_04", "q_20261017_03"];
+// calendar events that are not UBIK questions but sit in the same windows
+const EXTRA_CAL=[["2026-10-21", "Meta reports and shows whether its AI spending plans for next year still rise"], ["2026-10-24", "The Yellow Vests hold a second national protest day in France"], ["2026-10-26", "Egypt's parliament votes on letting Sisi send troops to defend Saudi Arabia"], ["2026-10-27", "Israel holds its election"], ["2026-11-03", "US midterm elections; Trump's promise of no attack on Iran runs to this date"], ["2026-11-03", "S&P Global publishes Saudi Arabia's October business survey"], ["2026-11-05", "France's five main unions hold a national strike against the budget cuts"], ["2026-11-18", "The Shenzhen summit, where Putin proposes a meeting with Trump and Xi"]];
+// AIXBT topics, 16 Oct 07:45 UTC (list_topics, public)
+const TOPICS={
+ "topic_2f7c7ce06ecac1e4c884":{n:"Bitcoin ETFs take in $5M after a $261M outflow",t:84,mix:"Media 37 · Shiller 19 · Automated 10"},
+ "topic_95db55d2b16c627a6d8c":{n:"KOSPI falls 7.57% as Bitcoin dips below $81,000",t:2,mix:"Media 32 · Automated 14 · Quant 12 · Macro 8"},
+ "topic_c2daea8acd0223ba8468":{n:"Saylor says the bull market is beginning",t:22,mix:"Media 32 · Exchange 14 · Quant 14"},
+ "topic_4640c94fcf87ffdb2a53":{n:"MSCI could remove Strategy from its indexes (final list 11 Nov)",t:2,mix:"Media 39 · Automated 13 · Quant 12"},
+};
+
+// where to actually take the position. RH = Robinhood (US-listed only), HL = Hyperliquid, CB = Coinbase; exchanges for futures; ADRs where a European or Asian name has one.
+const RH=t=>["Robinhood",`https://robinhood.com/us/en/stocks/${t}/`];
+const VENUES={
+ "EWQ":[RH("EWQ")],"KSA":[RH("KSA")],"XLE":[RH("XLE")],"EWZ":[RH("EWZ")],"Nvidia":[RH("NVDA")],"CoreWeave":[RH("CRWV")],"Petrobras":[RH("PBR")],
+ "Brent":[["ICE Brent","https://www.ice.com/products/219/Brent-Crude-Futures"],["BNO ETF",RH("BNO")[1]]],
+ "Diesel crack":[["CME heating oil","https://www.cmegroup.com/markets/energy/refined-products/heating-oil.html"],["ICE gasoil","https://www.ice.com/products/34361119/Low-Sulphur-Gasoil-Futures"]],
+ "MOL":[["Budapest MOL","https://www.google.com/finance/quote/MOL:BUD"]],
+};
+
+const TODAY=new Date().toISOString().slice(0,10);
+const F_BY=Object.fromEntries(F.map(f=>[f.id,f]));
+const P=f=>f.hist[f.hist.length-1][1];
+const pc=p=>Math.round(p*100);
+const d2=iso=>{const d=new Date(iso+"T12:00:00Z");return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})};
+const days=iso=>Math.round((new Date(iso+"T12:00:00Z")-new Date(TODAY+"T12:00:00Z"))/864e5);
+const hzs=d=>d<=0?"now":d<=45?`${d}d`:d<=120?`${Math.round(d/7)}w`:`${Math.round(d/30)}mo`;
+const hz=d=>d<=0?"today":d===1?"1 day":d<=45?`${d} days`:d<=120?`${Math.round(d/7)} wks`:`${Math.round(d/30)} mo`;
+const bucket=d=>d<=7?"week":d<=31?"month":d<=days("2026-12-31")?"year":"next";
+const BUCKETS=[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next","2027"]];
+const conf=p=>{const a=Math.abs(p-.5);return a>=.3?"high":a>=.15?"medium":"low"};
+const EDGE=0.05;
+
+// ---- position logic ----
+function mktStance(p,m){ // p = UBIK, m = market YES price
+  const e=p-m;
+  if(e>=EDGE) return {s:"long",label:"Buy YES",e,ev:p/m-1,at:m,side:"YES"};
+  if(e<=-EDGE) return {s:"short",label:"Buy NO",e,ev:(1-p)/(1-m)-1,at:1-m,side:"NO"};
+  return {s:"cash",label:"Cash",e,ev:0};
+}
+function legStance(c,p){
+  const leg=p>=.6?"yes":p<=.4?"no":null;
+  const instr=leg?c[leg]:[];
+  const d=instr.length?instr[0][2]:null;
+  const s=d==="long"?"long":d==="short"?"short":"cash";
+  const label=s==="cash"?"Cash":(s==="short"?"Short":"Long")+" "+instr[0][0];
+  return {s,leg,label,instr,why:!leg?"no edge":instr.length?(s==="cash"?"no direction":"expression"):"no instrument"};
+}
+function build(c){
+  const f=F_BY[c.id], p=P(f), d=days(c.catalyst[0]);
+  const o={...c,f,p,d,b:bucket(d),conf:conf(p)};
+  if(c.market&&!c.market.adj){
+    o.m=mktStance(p,c.market.p); o.kind="m";
+    if(c.market2){ const m2=mktStance(p,c.market2.p); if(Math.abs(m2.e)>Math.abs(o.m.e)){ o.market=c.market2; o.market2=c.market; o.m2=o.m; o.m=m2; } else o.m2=m2; }
+  }
+  else { o.m=legStance(c,p); o.kind="i"; }
+  return o;
+}
+const rank=o=>o.m.s==="cash"?1:0;
+const ALL=CALLS.map(build).sort((a,b)=>rank(a)-rank(b)||(rank(a)===0?Math.abs(b.p-.5)-Math.abs(a.p-.5)||a.d-b.d:a.d-b.d));
+
+// ---- state ----
+let cat=(location.hash.match(/cat=(\w+)/)||[])[1]||"all", hzn=(location.hash.match(/hz=(\w+)/)||[])[1]||"all";
+const shown=()=>ALL.filter(o=>(cat==="all"||o.cats.includes(cat))&&(hzn==="all"||o.b===hzn));
+
+// ---- identity: icons and the ring ----
+const SVG=(b,vb="0 0 16 16")=>`<svg class="ic" viewBox="${vb}" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${b}</svg>`;
+const IC={
+  m:SVG('<circle cx="8" cy="8" r="5.5" stroke-width="2.4"/>'),
+  s:SVG('<path d="M2.5 13.5V8M6.2 13.5V4.5M9.8 13.5V7M13.5 13.5V2.5"/>'),
+  c:SVG('<path d="M8 1.8 13.4 4.9v6.2L8 14.2 2.6 11.1V4.9Z"/><path d="M8 5.2v5.6M5.6 6.6l4.8 2.8M5.6 9.4l4.8-2.8"/>'),
+  long:SVG('<path d="M3 12 13 4M7 4h6v6"/>'),
+  short:SVG('<path d="M3 4l10 8M7 12h6V6"/>'),
+  cash:SVG('<circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/>'),
+  clock:SVG('<circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.4 1.6"/>'),
+  cal:SVG('<rect x="2.5" y="3.5" width="11" height="10" rx="1"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/>'),
+  move:SVG('<path d="M2 11 6 7l3 3 5-6M10 4h4v4"/>'),
+  edge:SVG('<path d="M2 8h12M5 5l-3 3 3 3M11 5l3 3-3 3"/>'),
+  ev:SVG('<circle cx="8" cy="8" r="6"/><path d="M8 4.5v7M6 6.3h3a1.3 1.3 0 0 1 0 2.6H7a1.3 1.3 0 0 0 0 2.6h3"/>'),
+  rec:SVG('<circle cx="8" cy="8" r="6"/><path d="M5.5 8.2 7.3 10 10.8 6"/>'),
+  eye:SVG('<circle cx="8" cy="8" r="5.5" stroke-width="2.4"/>'),
+};
+const MARK=`<svg viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>`;
+// the ring as a gauge: conviction fills the identity's ring clockwise from the top, the eye sits in the middle
+function ring(v,cls){ const r=15, C=2*Math.PI*r, f=Math.max(0,Math.min(1,v)); return `<svg class="ring ${cls}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" class="rb"/><circle cx="20" cy="20" r="${r}" class="rf" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 20 20)"/></svg>`; }
+// ---- render ----
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function spark(f){
+  const h=f.hist, w=120, hh=28, n=h.length;
+  if(n<2) return `<svg viewBox="0 0 ${w} ${hh}"><circle cx="${w-4}" cy="${hh-4-h[0][1]*(hh-8)}" r="2.2" fill="var(--gold)"/></svg>`;
+  const pts=h.map((e,i)=>`${4+i*(w-8)/(n-1)},${hh-4-e[1]*(hh-8)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${hh}"><line x1="4" y1="${hh/2}" x2="${w-4}" y2="${hh/2}" stroke="var(--line)" stroke-dasharray="2 3"/><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${w-4}" cy="${hh-4-h[n-1][1]*(hh-8)}" r="2.4" fill="var(--gold)"/></svg>`;
+}
+function stepsOf(f){
+  const h=f.hist; const out=[]; h.forEach((e,i)=>{ if(i===0) out.push(`${d2(e[0])} issued at <b>${pc(e[1])}%</b>`); else if(e[1]!==h[i-1][1]) out.push(`${d2(e[0])} ${e[1]>h[i-1][1]?"raised":"lowered"} to <b>${pc(e[1])}%</b>`); });
+  return out.slice(-4).join("<br>");
+}
+function chips(list){ if(!DEGEN||!list.length) return ""; return `<div class="instr">${list.map(([n,u,d])=>{const v=VENUES[n]||[];return `<div class="ir"><span class="d ${d}">${d}</span><span class="nm">${esc(n)}</span><span class="lk"><a href="${u}" target="_blank" rel="noopener" class="ch">chart</a>${v.map(([l,h])=>`<a href="${h}" target="_blank" rel="noopener" class="ch vn">${esc(l)}</a>`).join("")}</span></div>`}).join("")}</div>`; }
+function venueRow(mk){ return `<div class="venue"><span>${esc(mk.venue)}</span><span>${esc(mk.c)}</span><span>YES <b>${pc(mk.p)}¢</b> · ${d2(mk.read)}</span></div>`; }
+function card(o){
+  const f=o.f, p=o.p, st=o.m, isM=o.kind==="m";
+  const lean=p>=.6?"yes":p<=.4?"no":"open";
+  const leanWord={yes:"Leans YES",no:"Leans NO",open:"Open question"}[lean];
+  const conv=pc(Math.max(p,1-p));
+  const mv=pc(p)-pc(f.hist[0][1]);
+  const mk=o.market, adjm=mk&&mk.adj;
+  const sub=mk?(adjm?`${esc(mk.venue)} has a neighbouring contract at ${pc(mk.p)}%`:`${esc(mk.venue)} prices it at ${pc(mk.p)}%, read ${d2(mk.read)}`):`no listed contract checked`;
+  const second=`<div><div class="k">${IC.move}Move</div><div class="v ${mv===0?"dim":""}">${mv>0?"+":mv<0?"−":""}${Math.abs(mv)}<small>${mv===0?"flat":"pts"}</small></div></div>`;
+  const third=`<div><div class="k">${IC.clock}Settles</div><div class="v">${o.d<=0?"now":o.d<=45?o.d+"<small>d</small>":Math.round(o.d/7)+"<small>w</small>"}</div></div>`;
+  const stats=`<div class="stats"><div class="cv">${ring(conv/100,lean==="open"?"cash":lean==="yes"?"long":"short")}<div><div class="k">Confidence</div><div class="v ${lean==="yes"?"pos":lean==="no"?"neg":"dim"}">${conv}<small>%</small></div></div></div>${second}${third}</div>`;
+  const odds=`<div class="odds">
+    <div class="oh"><span class="u"><i class="sw u"></i>UBIK <b>${pc(p)}%</b></span>${mk?`<span class="mv"><i class="sw m"></i>${esc(mk.venue)} <b>${pc(mk.p)}%</b>${adjm?` <em>adjacent</em>`:""}</span>`:`<span class="mv dim">no listed market</span>`}</div>
+    <div class="gauge">${mk?`<span class="edge ${p>mk.p?"long":"short"}" style="left:${Math.min(p,mk.p)*100}%;width:${Math.abs(p-mk.p)*100}%"></span>`:`<span class="edge cash" style="left:${Math.min(p,.5)*100}%;width:${Math.abs(p-.5)*100}%"></span>`}<i class="half"></i><i class="u" style="left:calc(${p*100}% - 1.5px)"></i>${mk?`<i class="m" style="left:calc(${mk.p*100}% - 1.5px)"></i>`:""}</div>
+    <div class="ol"><span>0</span><span>${mk&&!adjm?`gap <b>${Math.round((p-mk.p)*100)>0?"+":""}${Math.round((p-mk.p)*100)} pts</b> against the market`:mk?`<b>${Math.round((p-mk.p)*100)} pts</b> vs a neighbouring contract`:`<b>${Math.abs(pc(p)-50)} pts</b> from the coin flip`}</span><span>100</span></div>
+  </div>`;
+  const names=[...new Set([...(o.yes||[]),...(o.no||[])].map(x=>x[0]))];
+  const legs=DEGEN?chips(isM?(p>=.5?o.yes:o.no):(st.instr||[])):"";
+  const where=DEGEN?(legs?`<div class="where"><span class="k">The leg this reading takes</span>${legs}<small>degen mode · a mechanical reading of the forecast, not advice</small></div>`:""):names.length?`<div class="where"><span class="k">Where this question shows up</span><span class="names">${names.map(n=>`<span>${esc(n)}</span>`).join("")}</span><small>named for reference, not as a position</small></div>`:"";
+  return `<article class="card ${lean==="open"?"cash":lean==="yes"?"long":"short"}" id="${o.id}">
+    <div class="top"><span class="cats">${o.cats.map(c=>`<span>${IC[c]}${CAT[c]}</span>`).join("")}</span><span class="sp"></span><span class="hz">${IC.clock}${hz(o.d)} · ${d2(o.catalyst[0])}</span></div>
+    ${DEGEN?`<div class="pos ${st.s}"><span class="tag ${st.s}">${IC[st.s]}${esc(st.label||(st.s==="cash"?"Cash":st.s))}</span><span class="asset">${esc(o.short)}</span></div>`:`<div class="pos ${lean==="open"?"cash":lean==="yes"?"long":"short"}"><span class="tag ${lean==="open"?"cash":lean==="yes"?"long":"short"}">${IC[lean==="open"?"cash":lean==="yes"?"long":"short"]}${leanWord}</span><span class="asset">${esc(o.short)}</span></div>`}
+    <div class="sub">${sub}</div>
+    ${stats}
+    ${odds}
+    <h2>${esc(f.q)}</h2>
+    ${DEGEN&&mk&&mk.url?`<div class="instr"><div class="ir"><span class="d ${p>mk.p?"long":"short"}">${p>mk.p?"yes":"no"}</span><span class="nm">${esc(mk.venue)} · ${esc(mk.c)}</span><span class="lk"><a href="${mk.url}" target="_blank" rel="noopener" class="ch vn">contract</a></span></div></div>`:""}
+    ${where}
+    <div class="plan"><div class="entry"><span class="k">What settles it</span><b>${d2(o.catalyst[0])}</b> ${esc(o.catalyst[1].split(" ·")[0])}</div><div class="exit"><span class="k">Resolves by</span><b>${d2(f.due)}</b></div></div>
+    <details class="more"><summary>Why, history, rule</summary><div class="body">
+      ${o.note?`<p style="margin-top:8px">${esc(o.note)}</p>`:""}
+      ${f.why?`<p>${esc(f.why)}</p>`:""}
+      <span class="k">History</span><div class="hist">${spark(f)}<div class="steps">${stepsOf(f)}</div></div>
+      ${f.rule?`<span class="k">Resolution rule</span><p class="rule">${esc(f.rule)}</p>`:""}
+      <a class="lnk" href="https://ubik.gold/forecasts/${o.id}" target="_blank" rel="noopener">UBIK record ${o.id} →</a>
+    </div></details>
+  </article>`;
+}
+const DONE=F.filter(f=>f.status!=="open").sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||""));
+const won=f=>(f.status==="yes")===(P(f)>=.5);
+function historyCard(f){
+  const p=P(f), p0=f.hist[0][1], side=p>=.5?"YES":"NO", w=won(f);
+  return `<article class="card hc ${w?"win":"loss"}" id="${f.id}">
+    <div class="top"><span class="cats"><span>${IC.rec}Resolved ${d2(f.resolved)}</span></span><span class="sp"></span><span class="hz">${IC.clock}issued ${d2(f.hist[0][0])}</span></div>
+    <div class="pos"><span class="tag ${w?"long":"short"}">${w?IC.long:IC.short}${w?"Win":"Loss"}</span><span class="asset">${esc(f.q.replace(/^Will /,"").replace(/\?$/,""))}</span></div>
+    <div class="sub">forecast ${side} · resolved ${f.status.toUpperCase()}</div>
+    <div class="stats"><div class="cv">${ring(p>=.5?p:1-p,w?"long":"short")}<div><div class="k">Conviction</div><div class="v ${w?"pos":"neg"}">${pc(p>=.5?p:1-p)}<small>%</small></div></div></div><div><div class="k">${IC.move}At issue</div><div class="v dim">${pc(p0)}<small>%</small></div></div><div><div class="k">${IC.ev}Brier</div><div class="v">${f.brier!=null?f.brier.toFixed(3):"—"}</div></div></div>
+    ${f.evidence?`<p class="ev">${esc(f.evidence)}</p>`:""}
+    <details class="more"><summary>Rule, history</summary><div class="body"><span class="k">History</span><div class="hist">${spark(f)}<div class="steps">${stepsOf(f)}</div></div>${f.rule?`<span class="k">Resolution rule</span><p class="rule">${esc(f.rule)}</p>`:""}<a class="lnk" href="https://ubik.gold/forecasts/${f.id}" target="_blank" rel="noopener">UBIK record ${f.id} →</a></div></details>
+  </article>`;
+}
+function renderHistory(){
+  const W=DONE.filter(won).length, L=DONE.length-W;
+  const br=DONE.length?(DONE.reduce((a,f)=>a+(f.brier||0),0)/DONE.length).toFixed(3):"—";
+  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">Won</div><div class="v">${W}</div></div><div class="short"><div class="k">Lost</div><div class="v">${L}</div></div><div><div class="k">Brier</div><div class="v">${br}</div></div><div><div class="k">Open</div><div class="v">${F.length-DONE.length}</div></div>`;
+  document.getElementById("chips").innerHTML="";
+  document.getElementById("h1").innerHTML=`<em>History.</em> Every forecast the engine has settled.`;
+  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${F.length-DONE.length} forecasts are still open and the next settles ${d2(F.filter(f=>f.status==="open").map(f=>f.due).sort()[0])}.</p>`;
+  location.hash=`cat=h`;
+}
+function render(){
+  document.body.classList.toggle("history",cat==="h");
+  if(cat==="h"){ tabsHTML(); renderHistory(); return; }
+  const rows=shown();
+  tabsHTML();
+  document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+BUCKETS.map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
+  const L=DEGEN?rows.filter(o=>o.m.s==="long").length:rows.filter(o=>o.p>=.6).length,S=DEGEN?rows.filter(o=>o.m.s==="short").length:rows.filter(o=>o.p<=.4).length,C=DEGEN?rows.filter(o=>o.m.s==="cash").length:rows.filter(o=>o.p>.4&&o.p<.6).length;
+  const next=rows.slice().sort((a,b)=>a.d-b.d)[0];
+  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div class="cash"><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
+  document.getElementById("h1").innerHTML=`${cat==="all"?"The forecasts":CAT[cat]} for <em>${new Date(TODAY+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long"})}</em>.`;
+  document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
+  location.hash=`cat=${cat}&hz=${hzn}`;
+}
+function tabsHTML(){
+  document.getElementById("tabs").innerHTML=[["all","All"],["m","Markets"],["s","Stocks"],["c","Crypto"],["h","History"]].map(([k,n])=>`<button role="tab" aria-selected="${cat===k}" data-cat="${k}">${k==="all"?IC.eye:k==="h"?IC.rec:IC[k]}${n}<span class="n">${k==="all"?ALL.length:k==="h"?DONE.length:ALL.filter(o=>o.cats.includes(k)).length}</span></button>`).join("");
+}
+function moves(){
+  const out=[];
+  for(const f of F){ const h=TS[f.id]||[]; h.forEach((e,i)=>{ if(i>0&&e[1]!==h[i-1][1]) out.push({t:e[0],f,from:h[i-1][1],to:e[1]}); }); }
+  out.sort((a,b)=>b.t.localeCompare(a.t));
+  const byId=Object.fromEntries(CALLS.map(c=>[c.id,c]));
+  document.getElementById("moves").innerHTML=`<span>Latest moves</span>`+out.slice(0,8).map(m=>`<span><b>${esc((byId[m.f.id]||{}).short||m.f.q.replace(/^Will /,"").replace(/\?$/,""))}</b> <span class="${m.to>m.from?"up":"dn"}">${pc(m.from)} → ${pc(m.to)}</span> ${d2(m.t.slice(0,10))}</span>`).join("");
+}
+function calendar(){
+  const ev=[];
+  for(const o of ALL){ ev.push({d:o.catalyst[0],w:o.catalyst[1],o}); }
+  for(const [d,w] of EXTRA_CAL) ev.push({d,w});
+  ev.sort((a,b)=>a.d.localeCompare(b.d));
+  const seen=new Set();
+  const rows=ev.filter(e=>days(e.d)>=-1&&days(e.d)<=60).filter(e=>{const k=e.d+(e.o?e.o.id:e.w);if(seen.has(k))return false;seen.add(k);return true;});
+  document.getElementById("cal").innerHTML=`<h3>${IC.cal}Catalysts, next 60 days</h3><ol>${rows.map(e=>`<li><div class="d"><b>${d2(e.d)}</b>${hz(days(e.d))}</div><div class="what">${e.o?`<a href="#${e.o.id}" style="text-decoration:none">${esc(e.o.short)}</a><span class="tg">${e.o.p>=.6?"leans yes":e.o.p<=.4?"leans no":"open"}</span><small>${esc(e.w)} · UBIK ${pc(e.o.p)}%</small>`:`${esc(e.w)}<small>not a UBIK question; in the window</small>`}</div></li>`).join("")}</ol>`;
+}
+function record(){
+  const done=F.filter(f=>f.status!=="open"), open=F.length-done.length;
+  const right=done.filter(f=>(f.status==="yes")===(P(f)>=.5)).length;
+  const br=done.length?(done.reduce((a,f)=>a+(f.brier||0),0)/done.length).toFixed(3):"—";
+  document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${ALL.length}</b> have a market or an instrument and are on this page; the other ${open-ALL.length} are reads with no expression. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
+}
+function stamp(){
+  const last=Object.values(TS).flat().map(e=>e[0]).sort().pop();
+  document.getElementById("stamp").textContent=`EDITION ${READ.forecasts}`; document.getElementById("stamp").title=`Read ${d2(TODAY)}`;
+  document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last.slice(0,16).replace("T"," ")} ET · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(b){e.preventDefault();cat=b.dataset.cat;render();window.scrollTo({top:0,behavior:"smooth"});}});
+document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest("[data-hz]");if(b){hzn=b.dataset.hz;render();}});
+document.getElementById("tog").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("ubik-calls-theme",r.dataset.theme)}catch(_){}});
+try{const t=localStorage.getItem("ubik-calls-theme");if(t)document.documentElement.dataset.theme=t;}catch(_){}
+document.getElementById("wmmark").innerHTML=MARK;document.getElementById("fmark").innerHTML=MARK;
+render();moves();calendar();record();stamp();
+
+const WORLD_STATE_URL=/\/prototypes\//.test(location.pathname)?"../world-state/":"https://claude.ai/artifact/NDBEoDb44JFb3cCBces7AK";
+document.querySelectorAll('[data-ext="world-state"]').forEach(a=>{a.href=WORLD_STATE_URL;a.target="_blank";a.rel="noopener";});
+</script>
+

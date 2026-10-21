@@ -1,0 +1,36 @@
+/* the account panel: sign-in and the holder key, one place on every page */
+.gate{display:inline-flex;align-items:center}
+.gate .acctbtn{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ink);background:none;border:1px solid var(--rule);padding:5px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.gate .acctbtn i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.gate .acctbtn i.holder{background:var(--good,#6fb8a3)}
+.gate .acctbtn i.locked,.gate .acctbtn i.invalid{background:var(--hot)}
+.gate .acctbtn small{font-family:var(--mono);font-size:10px;color:var(--muted)}
+#keydlg.account{border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:0;max-width:460px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#keydlg::backdrop{background:rgba(10,10,12,.45)}
+.acct{padding:20px 22px 22px}
+.acct .ahead{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+.acct .ahead h2{flex:1;font-family:var(--serif,var(--body));font-weight:400;font-size:24px;margin:0;letter-spacing:-.01em}
+.acct .ahead .k{position:absolute;left:-9999px}
+.acct .close{font:inherit;font-size:20px;line-height:1;border:0;background:none;color:var(--muted);cursor:pointer;padding:0 2px}
+.acct .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.acct .asec{padding:14px 0 4px;border-top:1px solid var(--line);margin-top:10px}
+.acct p{font-family:var(--body);font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0}
+.acct p a{color:inherit}
+.acct .small{font-family:var(--mono);font-size:10.5px;line-height:1.5}
+.acct .arow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 2px}
+.acct .arow button,.acct .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
+.acct .arow button.secondary,.acct .row button.kforget{background:none;color:var(--ink)}
+.acct .row button.kforget{margin-left:auto;color:var(--muted)}
+.acct .arow .me{font-family:var(--ui);font-size:13px}
+.acct .arow .me small{font-family:var(--mono);color:var(--muted);margin-left:6px;font-size:10.5px}
+.acct .gstate{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:2px}
+.acct .gstate.holder{color:var(--good,#6fb8a3);border-color:currentColor}
+.acct .gstate.locked,.acct .gstate.invalid{color:var(--hot);border-color:currentColor}
+.acct input{width:100%;box-sizing:border-box;font-family:var(--mono);font-size:14px;padding:10px 12px;border:1px solid var(--rule);background:none;color:var(--ink);margin:8px 0 4px;display:block}
+.acct .kerr{color:var(--hot);font-family:var(--mono);font-size:11.5px;min-height:1.4em;margin:0 0 8px}
+.acct .row{display:flex;gap:8px;align-items:center}
+.lockednote .keylink{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ring-text,var(--gold));background:none;border:1px solid var(--ring,var(--gold));padding:4px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;margin-left:6px}
+.lockednote{margin:14px 0 4px;padding:12px 14px;border:1px dashed var(--ring,var(--gold));font-family:var(--body);font-size:14px;line-height:1.5;color:var(--muted)}
+.legal{font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
+.legal a{color:inherit}
+.legal a.disc{font-weight:700}

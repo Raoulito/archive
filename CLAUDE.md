@@ -14,6 +14,8 @@ records/culture/          citizen work: films, images, merch, music, writing (AC
 media/                    images and small files, named after the record's code
 tools/build.py            checks, searches and builds everything
 site/                     the public search site (built into dist/, never edit dist/)
+pages/                    the World State and Forecasts pages: sources, Vite build and ssh deploy (see pages/README.md)
+prototypes/               the built pages, committed; served under /prototypes/ here and at the root of ubikistan.org
 ```
 
 Start with `lore/rules.md`, `lore/the-arc.md`, `lore/codes.md`, `lore/eras.md` and `lore/timeline.md`. Pages with `section: handbook` (rules, the-arc, editing) are the contributors' handbook, shown on the site under Handbook; the rest are in-world lore that a citizen of Ubikistan could read.

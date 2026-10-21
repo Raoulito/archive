@@ -13,3 +13,8 @@ Since the evening of 20 October 2026 the whole page opens only with a ubik.gold 
 Since 20 October 2026 the page reads the forecasts from ubik.gold through the archive's desk, as the World State page does (see `../world-state/README.md`); the mapping from question to instruments stays hand-written in the page (`INSTR`). A reader's ubik.gold key opens the holder parts; the page itself holds none.
 
 A non-commercial, community-run initiative, built on content published by ubik.gold under its terms. Not financial advice; for entertainment and education only; AI-generated; not for persons under 18 or in the United States. The full text is at `../disclaimer/`.
+
+
+## Built, since 21 October 2026
+
+This file is a build output. The sources are in `pages/` at the root of the repository; `npm run build` there writes this folder. Edit the sources, not this file.

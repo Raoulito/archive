@@ -1,0 +1,5 @@
+node_modules/
+src/world-state/
+src/forecasts/
+src/disclaimer/
+.env.local

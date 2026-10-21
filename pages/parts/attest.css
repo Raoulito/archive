@@ -1,0 +1,9 @@
+#attest{border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:24px;max-width:520px;width:calc(100% - 32px)}
+#attest::backdrop{background:rgba(10,10,12,.7)}
+#attest .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted)}
+#attest h2{font-weight:400;font-size:26px;margin:6px 0 8px}
+#attest p{font-size:14.5px;line-height:1.5;color:var(--muted)}
+#attest p a{color:inherit}
+#attest .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+#attest .row button{font:inherit;font-family:var(--ui);font-size:12px;letter-spacing:.04em;padding:9px 14px;border:1px solid var(--rule);background:var(--ink);color:var(--bg);cursor:pointer}
+#attest .row button.no{background:none;color:var(--ink)}
