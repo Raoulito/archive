@@ -1416,6 +1416,7 @@ footer .mtog,footer .msoc{display:none}
 .pw.proto,#cover .coverhead .pw.proto,header .pw.proto,.mast .pw.proto{color:#e8405f !important;border-color:#e8405f !important;background:rgba(232,64,95,.08)}
 .mast .home .mark{width:30px;height:30px;flex:none}
 #cover .coverhead{gap:10px}
+.num .soon{color:var(--hot);border:1px solid var(--hot);padding:2px 6px 1px;border-radius:2px;margin-left:4px}
 
 /* shared across the forecast pages: the holder gate chip, the key dialog, the labels */
 .gate{display:inline-flex;align-items:center;gap:8px}
@@ -1514,11 +1515,11 @@ footer a.disc{font-weight:700}
       <div id="dash" class="hidden"></div>
       <div id="filmspage" class="hidden">
         <div class="lp films">
-          <div class="num">FILMS · ONE PER EDITION · HOSTED ON THE INTERNET ARCHIVE</div>
+          <div class="num">FILMS · ONE PER EDITION · <span class="soon">COMING SOON</span></div>
           <h2 class="t">The record, as film.</h2>
           <p class="lede">Each edition is rendered once as a short film, from the day's thesis. The film is kept here with its edition and the forecasts it rests on; the copies cut for <a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">TikTok</a> are linked, not archived. The platform keeps what it made, and points to where it was posted.</p>
           <div class="filmgrid" id="filmgrid"></div>
-          <p class="note">In this snapshot no edition carries a <code>film</code> URL yet; the stills are the engine's lead frames where the API lists one. When a film is linked the tile plays it in place.</p>
+          <p class="note">Coming soon. The first bulletins are being cut; when an edition carries a film, its tile plays it here. The format is in the <a href="https://ubikistan.github.io/archive/#/lore/ubik-forecast" target="_blank" rel="noopener">handbook</a>.</p>
         </div>
       </div>
       <div id="ledgerpage" class="hidden">
@@ -2583,7 +2584,7 @@ function renderFilms(){
   const fcsOn=d=>F.filter(f=>f.hist.some(h=>h[0]===d)).length;
   g.innerHTML=EDITIONS.map((e,i)=>{ const lead=i===0; const has=!!e.film; const still=!!e.clip;
     return `<div class="ft${lead?" lead":""}" data-d="${e.d}">
-      <button type="button" class="still${has?"":" nofilm"}${lead?" lead":""}" data-film="${e.film||""}" aria-label="${has?"Play the film for":"No film yet for"} ${esc(e.title)}"><span class="grain"></span>${still?SILHOUETTE:`<span class="markbig">${MARK}</span>`}<span class="pending">${has?"FILM":still?"STILL":"NO FILM YET"}${still?` · ${e.clip}`:""}</span><span class="meta"><b>${esc(e.title)}</b>${fmt(e.d)}${lead?" · current":""}</span><span class="play"></span><span class="toast">No film attached to this edition yet. The rendering engine writes it to the edition's <code>film</code> field; this tile plays it when it arrives.</span></button>
+      <button type="button" class="still${has?"":" nofilm"}${lead?" lead":""}" data-film="${e.film||""}" aria-label="${has?"Play the film for":"No film yet for"} ${esc(e.title)}"><span class="grain"></span>${still?SILHOUETTE:`<span class="markbig">${MARK}</span>`}<span class="pending">${has?"FILM":still?"STILL":"COMING SOON"}${still?` · ${e.clip}`:""}</span><span class="meta"><b>${esc(e.title)}</b>${fmt(e.d)}${lead?" · current":""}</span><span class="play"></span><span class="toast">No film attached to this edition yet. The rendering engine writes it to the edition's <code>film</code> field; this tile plays it when it arrives.</span></button>
       <div class="cap"><b>${fmt(e.d)}</b><span>${fcsOn(e.d)} forecast${fcsOn(e.d)===1?"":"s"} touched</span>${lead?`<button type="button" class="goed" data-view="edition">Read the edition →</button>`:`<button type="button" class="goed" data-view="ledger" data-sub="history">In the record →</button>`}</div>
       <p class="sum">${esc(e.sum)}</p></div>`; }).join("");
   g.querySelectorAll(".still").forEach(b=>b.addEventListener("click",()=>{ const url=b.dataset.film; if(url){ const holder=document.createElement("div"); holder.className="player"; holder.innerHTML=filmEmbed(url); b.replaceWith(holder); } else { b.classList.add("show"); setTimeout(()=>b.classList.remove("show"),2600); } }));
