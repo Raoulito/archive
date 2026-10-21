@@ -120,7 +120,8 @@ def post_to_x(text, image_path, alt):
     if not all(keys): sys.exit("X credentials missing")
     s = OAuth1Session(keys[0], client_secret=keys[1], resource_owner_key=keys[2], resource_owner_secret=keys[3])
     def fail(what, r): sys.exit(f"X refused the {what}: HTTP {r.status_code} {r.text[:400]}")
-    # who am I: proves the four keys belong together before anything is sent
+    # who am I: proves the four keys belong together before anything is sent (lengths only, never the keys)
+    print("key lengths (api key, api secret, access token, access secret):", [len(k) for k in keys], "| access token starts with a number:", keys[2][:1].isdigit())
     me = s.get("https://api.x.com/2/users/me")
     if me.status_code >= 300: fail("key check (the four keys do not fit together, or the app lacks write access)", me)
     print("posting as @" + (me.json().get("data") or {}).get("username", "?"), "| key lengths", [len(k) for k in keys])
