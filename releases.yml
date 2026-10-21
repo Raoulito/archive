@@ -21,7 +21,7 @@
   title: "Forecast pages: readings, not positions"
   changes:
     - "The Forecasts page reads each question as leaning yes, leaning no or open, with the market where a contract exists and the names the question touches, for reference. No positions, entries, exits or venue links any more; no links to where a token or contract can be bought."
-    - "Disclaimer version 1.1: offers and restricted jurisdictions, how a holder's key is handled. The badge on the pages says Built on ubik.gold data. The version before this pass is kept as the branch forecast-pages-1.22."
+    - "Disclaimer version 1.1: offers and restricted jurisdictions, how a holder's key is handled. The badge on the pages says Powered by ubik.gold, linked to ubik.gold. The version before this pass is kept as the branch forecast-pages-1.22."
 - version: "1.22"
   date: 2026-10-20
   title: "Forecast pages live, holders' key, archive of editions"
