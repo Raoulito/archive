@@ -216,4 +216,4 @@ Every record and lore page has a remarks register (the Talk tab in code, shown a
 
 - Python 3.8+ and PyYAML (`pip install pyyaml`). Nothing else.
 - `lore.json` is the stable interface for other projects, including the Ubikistan website. Add fields if needed; do not rename or remove existing ones.
-- Keep the site dependency-free: plain HTML, CSS and JavaScript, fonts stored in `site/fonts/`.
+- Keep the site dependency-free: plain HTML, CSS and JavaScript, fonts stored in `site/fonts/`. The site, the World State and the Forecasts share one identity: the gold ring with the Ubikistan wordmark, Newsreader for titles, Source Serif 4 for reading, Archivo small caps for navigation and labels, Geist Mono for codes; the tokens live in `site/style.css` and `pages/parts/world-state.static.html`.
