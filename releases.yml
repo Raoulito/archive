@@ -5,7 +5,7 @@
   title: Degen mode, second cut
   changes:
     - "Degen mode is now a small circle in the bottom-right corner of the Forecasts page, which appears once you scroll down. One click shows the notice; Turn on opens it."
-    - "In degen mode long legs glow green and short legs red, and every leg has chart and venue buttons. Questions with a listed Polymarket contract get a contract button."
+    - "In degen mode the page goes monochrome and red and green are the only colours left: green for long, red for short, on the card edge, the stance tag, the confidence figure and the buttons. Every leg has chart and venue buttons; questions with a listed Polymarket contract get a contract button."
     - "The World State's channel links are grouped under their owners: ubik.gold (YouTube, Instagram, TikTok, llms.txt) and Ubikistan (archive, X)."
 - version: "1.28"
   date: 2026-10-21

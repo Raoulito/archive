@@ -230,38 +230,49 @@ a.pw{text-decoration:none}
 .degenfab #degennote.hidden{display:none}
 .degenfab #degenon{font:inherit;color:var(--gold);background:none;border:1px solid var(--gold);padding:2px 8px;margin-left:6px;cursor:pointer}
 /* degen mode: the same page under a red neon aura */
-body.degen{--neon:#ff2d55;--neon-soft:rgba(255,45,85,.22);--gold:#ff2d55;--gold-ink:#ff7a94;--hot:#ff2d55;--cyan:#ff5c7a;--line:#3a1420;--rule:#ff2d55;--muted:#c48a97;--bg:#0b0608;--surface:#140a0e;--ink:#ffe8ee}
-body.degen{background:radial-gradient(1100px 520px at 50% -8%,rgba(255,45,85,.22),transparent 62%),radial-gradient(800px 400px at 100% 100%,rgba(255,45,85,.12),transparent 60%),var(--bg)}
-body.degen header{border-bottom:1px solid rgba(255,45,85,.55);box-shadow:0 4px 40px rgba(255,45,85,.22)}
-body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--neon);filter:drop-shadow(0 0 8px rgba(255,45,85,.9))}
-body.degen .mast .wm,body.degen h1,body.degen .sum .v,body.degen .card h2{text-shadow:0 0 16px rgba(255,45,85,.75)}
-body.degen .mast .sub::after{content:" · degen";color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.9)}
-body.degen .card{border-color:rgba(255,45,85,.45);box-shadow:0 0 28px rgba(255,45,85,.22),inset 0 0 0 1px rgba(255,45,85,.25)}
-body.degen{--green:#39ff88}
-body.degen .card.long{border-left-color:var(--green);box-shadow:0 0 28px rgba(57,255,136,.18),inset 0 0 0 1px rgba(57,255,136,.22)}
+/* degen mode: the page goes monochrome, and red and green are the only colours left. They mean one thing, direction. */
+body.degen{--neon:#ff3b5c;--green:#2fe07a;--neon-soft:rgba(255,59,92,.14);--green-soft:rgba(47,224,122,.14);--gold:#a9a9b0;--gold-ink:#c9c9d0;--hot:#c9c9d0;--cyan:#c9c9d0;--line:#26262b;--rule:#3a3a42;--muted:#8a8a92;--bg:#0a0a0b;--surface:#101013;--ink:#f2f2f4}
+body.degen{background:var(--bg)}
+body.degen header{border-bottom:1px solid var(--rule);box-shadow:none}
+body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--ink);filter:none}
+body.degen .mast .sub::after{content:" · degen";color:var(--muted)}
+body.degen .pw,body.degen .tabright .pw{border-color:var(--rule);color:var(--muted);box-shadow:none}
+body.degen .pw.proto{border-color:var(--neon);color:var(--neon)}
+body.degen .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);text-shadow:none}
+body.degen .chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
+body.degen footer{border-top-color:var(--rule)}
+/* summary tiles: the number carries the colour, the box does not */
+body.degen .sum>div{border-color:var(--line);box-shadow:none}
+body.degen .sum .long .v{color:var(--green);text-shadow:0 0 18px var(--green-soft)}
+body.degen .sum .short .v{color:var(--neon);text-shadow:0 0 18px var(--neon-soft)}
+body.degen .sum .cash .v{color:var(--muted)}
+/* cards: a 2px edge, an outlined stance tag, the confidence figure. Nothing else lights up. */
+body.degen .card{border-color:var(--line);box-shadow:none;border-left-width:2px}
+body.degen .card.long{border-left-color:var(--green)}
 body.degen .card.short{border-left-color:var(--neon)}
-body.degen .tag{box-shadow:0 0 14px rgba(255,45,85,.7)}
-body.degen .tag.long{background:var(--green);color:#04120a;box-shadow:0 0 14px rgba(57,255,136,.8)}
-body.degen .tag.short{background:var(--neon);color:#0b0608}
-body.degen .tag.cash{box-shadow:none}
-body.degen .sum .long .v{color:var(--green);text-shadow:0 0 16px rgba(57,255,136,.8)}
-body.degen .sum .short .v{color:var(--neon)}
-body.degen .cv .v.pos,body.degen .card.long .instr .ir .d.long{color:var(--green);text-shadow:0 0 10px rgba(57,255,136,.7)}
-body.degen .instr .ir a.ch.vn{background:var(--neon);color:#0b0608;border-color:var(--neon);box-shadow:0 0 10px rgba(255,45,85,.6)}
-body.degen .card.long .instr .ir a.ch.vn{background:var(--green);color:#04120a;border-color:var(--green);box-shadow:0 0 10px rgba(57,255,136,.6)}
-body.degen .sum>div{border-color:rgba(255,45,85,.4);box-shadow:inset 0 0 24px rgba(255,45,85,.08)}
-body.degen .sum .long .v,body.degen .sum .short .v{color:var(--neon)}
-body.degen .gauge .edge{background:var(--neon);box-shadow:0 0 10px rgba(255,45,85,.9)}
-body.degen .gauge .u{background:var(--neon)}
-body.degen .pw,body.degen .tabright .pw{border-color:var(--neon);color:#ff7a94;box-shadow:0 0 10px rgba(255,45,85,.45)}
-body.degen .tabs button[aria-selected="true"]{color:var(--neon);border-bottom-color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.8)}
-body.degen .chips button[aria-pressed="true"]{background:var(--neon);color:#0b0608;box-shadow:0 0 12px rgba(255,45,85,.8)}
-body.degen .instr .ir .d.long{color:var(--green)}
-body.degen .instr .ir .d.short{color:var(--neon)}
-body.degen .instr .ir a.ch{border-color:var(--neon);color:#ff7a94}
-body.degen .degenfab #degenbtn[aria-pressed="true"]{text-shadow:0 0 12px rgba(255,45,85,.9);filter:drop-shadow(0 0 8px rgba(255,45,85,.9));animation:degenpulse 2.2s ease-in-out infinite}
-@keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.55}}
-body.degen footer{border-top-color:rgba(255,45,85,.4)}
+body.degen .card.cash{border-left-color:var(--rule)}
+body.degen .pos .tag{background:none;box-shadow:none;border:1px solid var(--rule);color:var(--muted)}
+body.degen .pos .tag.long{border-color:var(--green);color:var(--green)}
+body.degen .pos .tag.short{border-color:var(--neon);color:var(--neon)}
+body.degen .card.long .cv .v{color:var(--green);text-shadow:0 0 14px var(--green-soft)}
+body.degen .card.short .cv .v{color:var(--neon);text-shadow:0 0 14px var(--neon-soft)}
+body.degen .card h2,body.degen h1,body.degen .mast .wm{text-shadow:none}
+body.degen .gauge .u{background:var(--ink)}
+body.degen .gauge .edge{background:var(--rule);box-shadow:none}
+body.degen .card.long .gauge .edge{background:var(--green)}
+body.degen .card.short .gauge .edge{background:var(--neon)}
+/* legs: direction in colour, names in ink, buttons outlined; the one in the direction's colour is the one that acts */
+body.degen .instr .ir .d{font-weight:600}
+body.degen .instr .ir .d.long,body.degen .instr .ir .d.yes{color:var(--green)}
+body.degen .instr .ir .d.short,body.degen .instr .ir .d.no{color:var(--neon)}
+body.degen .instr .ir a.ch{border:1px solid var(--rule);color:var(--muted);background:none;box-shadow:none}
+body.degen .instr .ir a.ch:hover{color:var(--ink);border-color:var(--ink)}
+body.degen .card.long .instr .ir a.ch.vn{border-color:var(--green);color:var(--green);background:none;box-shadow:none}
+body.degen .card.short .instr .ir a.ch.vn{border-color:var(--neon);color:var(--neon);background:none;box-shadow:none}
+body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04120a}
+body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407}
+body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.8));animation:degenpulse 3s ease-in-out infinite}
+@keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
 /* the account panel: sign-in and the holder key, one place on every page */
 .gate{display:inline-flex;align-items:center}
 .gate .acctbtn{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ink);background:none;border:1px solid var(--rule);padding:5px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
