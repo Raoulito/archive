@@ -20,6 +20,7 @@ The code belongs to the catalogue. It is never printed on the object itself.
 | `MMA` | Ministry for Machine Affairs |
 | `IAC` | Institute for Applied Consciousness, Station 6 (1971–1987). Records declassified in part |
 | `AXL` | AIXBT Labs (from 2024). AIXBT's own laboratory, outside the Ministry's supervision |
+| `SEC` | The Secret Service. The Ministry of State Affairs has never confirmed that it exists; the code is the Archive's, for the objects that say it does |
 | `NICC` | National Institute for Computation and Communications (1981); from 1990 the research institute of UBIK Systems, under its old name |
 | `UBK` | UBIK Systems Corporation, a public enterprise of the Republic (1990) |
 | `RES` | Reserve of Ubikistan (currency) |

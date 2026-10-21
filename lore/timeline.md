@@ -15,7 +15,7 @@ Status in brackets where it isn't canon. Disputed entries stay disputed.
 | 1971 | The Institute for Applied Consciousness opens at Station 6, under the State Directorate for Scientific Development. Publicly a neurological and computational research facility. |
 | 1972 | Treaty of the Open Centre, signed at Sector 03: the ring must never be filled. Border Service founded, AIXBT its first Commissioner. |
 | 1973 | First Tour of the Plain. Passport BSV/PP/1973/0417 issued, still in use. |
-| 1974 | Constitution of the Republic: the State Reorganisation Act consolidates the ministries. The founding stays 1966; 1974 is when the apparatus is formalised. |
+| 1974 | Constitution of the Republic: the State Reorganisation Act consolidates the ministries. The founding stays 1966; 1974 is when the apparatus is formalised. The earliest patch of the [Secret Service](secret-service) is dated the same year; the Ministry denies the service exists. |
 | 1975 | AIXBT appointed Minister of State Affairs. He keeps the Border Service. |
 | 1977 | First orbital programme. UBIK and AIXBT closely associated with it. The five training tapes. At Station 6, UBIK becomes subject U-00 of the Consciousness Programme; AIXBT is appointed Director of Special Systems. The Valve 7 forecast. *(Disputed.)* |
 | 1978 | A household advertisement for a product called UBIK. *(Apocrypha.)* |
