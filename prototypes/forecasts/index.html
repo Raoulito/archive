@@ -221,6 +221,38 @@ body.history .lede p,body.history .moves{display:none}
 .where small{display:block;color:var(--muted);font-family:var(--mono);font-size:10.5px}
 a.pw{text-decoration:none}
 #acct-user{display:none}
+.degenfoot{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.degenfoot button{font:inherit;color:var(--muted);background:none;border:0;cursor:pointer;padding:0;opacity:.45}
+.degenfoot button:hover,.degenfoot button[aria-pressed="true"]{opacity:1;color:var(--gold)}
+.degenfoot #degennote{display:inline;margin-left:10px}
+.degenfoot #degennote.hidden{display:none}
+.degenfoot #degenon{opacity:1;color:var(--gold);border:1px solid var(--gold);padding:2px 8px;margin-left:6px}
+/* degen mode: the same page under a red neon aura */
+body.degen{--neon:#ff2d55;--neon-soft:rgba(255,45,85,.22);--gold:#ff2d55;--gold-ink:#ff7a94;--hot:#ff2d55;--cyan:#ff5c7a;--line:#3a1420;--rule:#ff2d55;--muted:#c48a97;--bg:#0b0608;--surface:#140a0e;--ink:#ffe8ee}
+body.degen{background:radial-gradient(1100px 520px at 50% -8%,rgba(255,45,85,.22),transparent 62%),radial-gradient(800px 400px at 100% 100%,rgba(255,45,85,.12),transparent 60%),var(--bg)}
+body.degen header{border-bottom:1px solid rgba(255,45,85,.55);box-shadow:0 4px 40px rgba(255,45,85,.22)}
+body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--neon);filter:drop-shadow(0 0 8px rgba(255,45,85,.9))}
+body.degen .mast .wm,body.degen h1,body.degen .sum .v,body.degen .card h2{text-shadow:0 0 16px rgba(255,45,85,.75)}
+body.degen .mast .sub::after{content:" · degen";color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.9)}
+body.degen .card{border-color:rgba(255,45,85,.45);box-shadow:0 0 28px rgba(255,45,85,.22),inset 0 0 0 1px rgba(255,45,85,.25)}
+body.degen .card.long{border-left-color:var(--neon)}
+body.degen .card.short{border-left-color:#ff8fa8}
+body.degen .tag{box-shadow:0 0 14px rgba(255,45,85,.7)}
+body.degen .tag.long{background:var(--neon);color:#0b0608}
+body.degen .tag.short{background:#ff8fa8;color:#0b0608}
+body.degen .sum>div{border-color:rgba(255,45,85,.4);box-shadow:inset 0 0 24px rgba(255,45,85,.08)}
+body.degen .sum .long .v,body.degen .sum .short .v{color:var(--neon)}
+body.degen .gauge .edge{background:var(--neon);box-shadow:0 0 10px rgba(255,45,85,.9)}
+body.degen .gauge .u{background:var(--neon)}
+body.degen .pw,body.degen .tabright .pw{border-color:var(--neon);color:#ff7a94;box-shadow:0 0 10px rgba(255,45,85,.45)}
+body.degen .tabs button[aria-selected="true"]{color:var(--neon);border-bottom-color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.8)}
+body.degen .chips button[aria-pressed="true"]{background:var(--neon);color:#0b0608;box-shadow:0 0 12px rgba(255,45,85,.8)}
+body.degen .instr .ir .d.long{color:var(--neon)}
+body.degen .instr .ir .d.short{color:#ff8fa8}
+body.degen .instr .ir a.ch{border-color:var(--neon);color:#ff7a94}
+body.degen .degenfoot button[aria-pressed="true"]{color:var(--neon);text-shadow:0 0 12px rgba(255,45,85,.9);animation:degenpulse 2.2s ease-in-out infinite}
+@keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.55}}
+body.degen footer{border-top-color:rgba(255,45,85,.4)}
 /* the account panel: sign-in and the holder key, one place on every page */
 .gate{display:inline-flex;align-items:center}
 .gate .acctbtn{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ink);background:none;border:1px solid var(--rule);padding:5px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
@@ -347,6 +379,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
     <p><b>How to read it.</b> Above 60% the engine leans yes, below 40% it leans no, between it calls the question open. The gap is the engine's probability minus the market's where a contract exists. Names are where the question shows up, listed for reference; nothing here is a position, a recommendation or a suggestion of what to do.</p>
     <p>Not advice, no price targets. Forecasts are probabilities, not financial advice. Market prices are a snapshot, read on the date shown.</p>
     <p class="mono" id="foot"></p>
+    <p class="degenfoot"><button type="button" id="degenbtn" aria-pressed="false">⭕ degen mode</button><span id="degennote" class="hidden">For entertainment. Positions are a mechanical reading of each forecast (above 60% the YES leg, below 40% the NO leg, else cash), named instruments and chart links. Not advice, not a recommendation; the disclaimer applies in full. <button type="button" id="degenon">Turn on</button></span></p>
     <div class="flogo"><span class="fm" id="fmark"></span><span class="fw">Ubikistan Forecasts</span></div>
     <p class="legal"><a href="../disclaimer/" class="disc">Disclaimer</a> · <a href="https://ubik.gold/terms" target="_blank" rel="noopener">ubik.gold terms</a>. Not financial advice. For entertainment and education only. Built on content published by ubik.gold; a non-commercial, community-run initiative. AI-generated. Not for persons under 18 or in the United States.</p>
   </div>
@@ -415,6 +448,7 @@ async function loadMarkets(){
 const DESK = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? "http://localhost:8787" : "https://ubikistan-guest-desk.ubikistan-archive.workers.dev";
 const UBIK_HOME = "https://ubik.gold";
 const THRESHOLD = "200,000 UBIK";
+let DEGEN=false; try{ DEGEN=localStorage.getItem('ubik-degen')==='1'; }catch(e){}
 let RAW=null, F=[], TS={}, CALLS=[], NON_MARKET=[], EXTRA_CAL=[], F_BY={}, ALL=[], DONE=[], STANDING="none", LIVE=false, EDITION_DAY="";
 const READ={forecasts:"", poly:"2026-10-13", kalshi:"2026-10-14", aixbt:"2026-10-16T07:45Z"};
 const T_KEYS={ukraine:["ukraine","kyiv","putin","zelensky","russia","patriot","hungary"],gulf:["saudi","yemen","houthi","riyadh","aramco","brent","opec","yanbu","iraq"],iran:["iran","hormuz","israel","tehran"],europe:["france","french","paris","moody"],india:["india","delhi","rupee"],americas:["brazil","lula"],asia:["china","shenzhen","korea","taiwan","indonesia"],ai:["ai ","chip","nvidia"],crypto:["bitcoin","polymarket","crypto"],markets:[]};
@@ -501,6 +535,15 @@ function renderGate(){
   d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; } try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
   const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); }); })();
+
+// ---- the easter egg: degen mode ----
+(function wireDegen(){
+  const b=document.getElementById("degenbtn"), note=document.getElementById("degennote"), on=document.getElementById("degenon"); if(!b) return;
+  const paint=()=>{ document.body.classList.toggle("degen",DEGEN); b.setAttribute("aria-pressed",String(DEGEN)); b.textContent=DEGEN?"⭕ degen mode · on":"⭕ degen mode"; };
+  b.addEventListener("click",()=>{ if(DEGEN){ DEGEN=false; try{localStorage.setItem("ubik-degen","0")}catch(e){} paint(); note.classList.add("hidden"); if(RAW) applyEdition(RAW); } else { note.classList.toggle("hidden"); } });
+  on.addEventListener("click",()=>{ DEGEN=true; try{localStorage.setItem("ubik-degen","1")}catch(e){} note.classList.add("hidden"); paint(); if(RAW) applyEdition(RAW); window.scrollTo({top:0,behavior:"smooth"}); });
+  paint();
+})();
 
 const CAT={m:"Markets",s:"Stocks",c:"Crypto"};
 // each call: id (UBIK record), cats, short question, instruments by case, catalysts, chatter (AIXBT topic ids), notes
@@ -592,7 +635,7 @@ function stepsOf(f){
   const h=f.hist; const out=[]; h.forEach((e,i)=>{ if(i===0) out.push(`${d2(e[0])} issued at <b>${pc(e[1])}%</b>`); else if(e[1]!==h[i-1][1]) out.push(`${d2(e[0])} ${e[1]>h[i-1][1]?"raised":"lowered"} to <b>${pc(e[1])}%</b>`); });
   return out.slice(-4).join("<br>");
 }
-function chips(list){ return ""; }
+function chips(list){ if(!DEGEN||!list.length) return ""; return `<div class="instr">${list.map(([n,u,d])=>`<div class="ir"><span class="d ${d}">${d}</span><span class="nm">${esc(n)}</span><span class="lk"><a href="${u}" target="_blank" rel="noopener" class="ch">chart</a></span></div>`).join("")}</div>`; }
 function venueRow(mk){ return `<div class="venue"><span>${esc(mk.venue)}</span><span>${esc(mk.c)}</span><span>YES <b>${pc(mk.p)}¢</b> · ${d2(mk.read)}</span></div>`; }
 function card(o){
   const f=o.f, p=o.p, st=o.m, isM=o.kind==="m";
@@ -611,10 +654,11 @@ function card(o){
     <div class="ol"><span>0</span><span>${mk&&!adjm?`gap <b>${Math.round((p-mk.p)*100)>0?"+":""}${Math.round((p-mk.p)*100)} pts</b> against the market`:mk?`<b>${Math.round((p-mk.p)*100)} pts</b> vs a neighbouring contract`:`<b>${Math.abs(pc(p)-50)} pts</b> from the coin flip`}</span><span>100</span></div>
   </div>`;
   const names=[...new Set([...(o.yes||[]),...(o.no||[])].map(x=>x[0]))];
-  const where=names.length?`<div class="where"><span class="k">Where this question shows up</span><span class="names">${names.map(n=>`<span>${esc(n)}</span>`).join("")}</span><small>named for reference, not as a position</small></div>`:"";
+  const legs=DEGEN?chips(isM?(p>=.5?o.yes:o.no):(st.instr||[])):"";
+  const where=DEGEN?(legs?`<div class="where"><span class="k">The leg this reading takes</span>${legs}<small>degen mode · a mechanical reading of the forecast, not advice</small></div>`:""):names.length?`<div class="where"><span class="k">Where this question shows up</span><span class="names">${names.map(n=>`<span>${esc(n)}</span>`).join("")}</span><small>named for reference, not as a position</small></div>`:"";
   return `<article class="card ${lean==="open"?"cash":lean==="yes"?"long":"short"}" id="${o.id}">
     <div class="top"><span class="cats">${o.cats.map(c=>`<span>${IC[c]}${CAT[c]}</span>`).join("")}</span><span class="sp"></span><span class="hz">${IC.clock}${hz(o.d)} · ${d2(o.catalyst[0])}</span></div>
-    <div class="pos ${lean==="open"?"cash":lean==="yes"?"long":"short"}"><span class="tag ${lean==="open"?"cash":lean==="yes"?"long":"short"}">${IC[lean==="open"?"cash":lean==="yes"?"long":"short"]}${leanWord}</span><span class="asset">${esc(o.short)}</span></div>
+    ${DEGEN?`<div class="pos ${st.s}"><span class="tag ${st.s}">${IC[st.s]}${esc(st.label||(st.s==="cash"?"Cash":st.s))}</span><span class="asset">${esc(o.short)}</span></div>`:`<div class="pos ${lean==="open"?"cash":lean==="yes"?"long":"short"}"><span class="tag ${lean==="open"?"cash":lean==="yes"?"long":"short"}">${IC[lean==="open"?"cash":lean==="yes"?"long":"short"]}${leanWord}</span><span class="asset">${esc(o.short)}</span></div>`}
     <div class="sub">${sub}</div>
     ${stats}
     ${odds}
@@ -657,9 +701,9 @@ function render(){
   const rows=shown();
   tabsHTML();
   document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+BUCKETS.map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
-  const L=rows.filter(o=>o.p>=.6).length,S=rows.filter(o=>o.p<=.4).length,C=rows.filter(o=>o.p>.4&&o.p<.6).length;
+  const L=DEGEN?rows.filter(o=>o.m.s==="long").length:rows.filter(o=>o.p>=.6).length,S=DEGEN?rows.filter(o=>o.m.s==="short").length:rows.filter(o=>o.p<=.4).length,C=DEGEN?rows.filter(o=>o.m.s==="cash").length:rows.filter(o=>o.p>.4&&o.p<.6).length;
   const next=rows.slice().sort((a,b)=>a.d-b.d)[0];
-  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">Leaning yes</div><div class="v">${L}</div></div><div class="short"><div class="k">Leaning no</div><div class="v">${S}</div></div><div><div class="k">Open</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
+  document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
   document.getElementById("h1").innerHTML=`${cat==="all"?"The forecasts":CAT[cat]} for <em>${new Date(TODAY+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long"})}</em>.`;
   document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
   location.hash=`cat=${cat}&hz=${hzn}`;
