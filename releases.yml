@@ -5,6 +5,7 @@
   title: ubikistan.org
   changes:
     - "The archive is also published at ubikistan.org/archive/, sent there by the same workflow that publishes it here, on every change. ubikistan.github.io/archive stays the mirror everything links to."
+    - "The State Archive posts one record a day on X: Monday to Thursday from the Archive, Friday a citizen's work, Saturday a person on file, Sunday a settled forecast from the World State."
 - version: "1.33"
   date: 2026-10-21
   title: One identity

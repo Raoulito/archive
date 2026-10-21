@@ -1,0 +1,49 @@
+name: Daily post
+
+on:
+  schedule:
+    - cron: "33 6 * * *"   # 08:33 in Amsterdam; one record a day from the State Archive
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only print the post, do not send it"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml pillow requests-oauthlib
+      - run: python3 tools/build.py build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARCHIVE_BASE_URL: https://ubikistan.org/archive/
+      - name: Compose (and post, when the keys are set)
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          if [ -n "$X_API_KEY" ] && [ "$DRY" != "true" ]; then python3 tools/daily.py --post; else python3 tools/daily.py; echo "(not posted: no X keys, or dry run)"; fi
+      - name: Remember what was posted
+        run: |
+          if ! git diff --quiet tools/daily.log; then
+            git config user.name Administrator; git config user.email administrator@ubikistan.invalid
+            git add tools/daily.log
+            git commit -m "Daily post: $(tail -1 tools/daily.log | cut -f1)"
+            git push
+          fi
