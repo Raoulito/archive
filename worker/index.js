@@ -49,7 +49,7 @@
 
 const REPO = "ubikistan/archive";
 const SITE = "https://ubikistan.github.io/archive/";
-const ALLOWED_ORIGINS = ["https://ubikistan.github.io", "http://localhost:8765", "http://localhost:8766"];
+const ALLOWED_ORIGINS = ["https://ubikistan.github.io", "https://ubikistan.org", "https://www.ubikistan.org", "http://localhost:8765", "http://localhost:8766"];
 const UBIK = "https://ubik.gold"; // the forecast service; GET /ubik/<path> passes a read through for the site's pages
 const UBIK_PATHS = /^\/(llms\.txt|synthesis|forecasts(\/q_\d{8}_\d{2})?)$/;
 const MAX_TEXT = 100_000;
@@ -446,7 +446,7 @@ async function hit(req, env) {
     ];
     let host = "";
     try { host = body.ref ? new URL(String(body.ref)).hostname.replace(/^www\./, "") : ""; } catch (e) {}
-    if (host && host !== "ubikistan.github.io") stmts.push(env.DB.prepare("INSERT INTO stat_refs (day, host, n) VALUES (?, ?, 1) ON CONFLICT(day, host) DO UPDATE SET n = n + 1").bind(day, host.slice(0, 80)));
+    if (host && host !== "ubikistan.github.io" && host !== "ubikistan.org") stmts.push(env.DB.prepare("INSERT INTO stat_refs (day, host, n) VALUES (?, ?, 1) ON CONFLICT(day, host) DO UPDATE SET n = n + 1").bind(day, host.slice(0, 80)));
     if (isNew) {
       const cc = String((req.cf && req.cf.country) || req.headers.get("CF-IPCountry") || "").slice(0, 2) || "??";
       stmts.push(env.DB.prepare("INSERT INTO stat_countries (day, cc, n) VALUES (?, ?, 1) ON CONFLICT(day, cc) DO UPDATE SET n = n + 1").bind(day, cc));
