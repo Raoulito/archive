@@ -318,7 +318,8 @@ body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px r
 .legal a.disc{font-weight:700}
 
 .gate{margin-left:8px}
-.mast .stamp.next{color:var(--gold-ink)}
+.mast .stamp.next{color:var(--gold-ink);flex:none;overflow:visible}
+.mast #stamp{display:none}
 .mast .stamp.next .due{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px;animation:duepulse 1.6s ease-in-out infinite}
 @keyframes duepulse{0%,100%{opacity:1}50%{opacity:.25}}
 .holdergate{padding:40px 0 60px}
@@ -350,7 +351,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
       <svg class="mark" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--gold)" stroke-width="22"/></svg>
       <span class="lock"><span class="wm">Ubikistan</span><span class="sub">Forecasts</span></span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Powered by ubik.gold</a><span class="pw proto">Prototype</span>
       <span class="sp"></span>
-      <span class="stamp" id="stamp"></span><span class="stamp next" id="nextclock"></span>
+      <span class="stamp" id="stamp"></span><span class="stamp next" id="nextclock" data-short></span>
       <button class="tog" id="tog" aria-label="Switch light and dark"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 1.5v11A5.5 5.5 0 0 0 7 1.5Z" fill="currentColor"/></svg></button>
     </div>
     <div class="tabrow"><nav class="tabs" role="tablist" id="tabs"></nav><span class="tabright"><a class="pw wslink" data-ext="world-state" href="#">World State ↗</a><span class="gate" id="gate"></span><span class="gate" id="gate"></span></span></div>
@@ -480,8 +481,8 @@ function nextEditionAt(){ if(!FIRST_AT) return null; const t=new Date(FIRST_AT).
 function renderNextClock(){
   const el=document.getElementById("nextclock"); if(!el) return; const n=nextEditionAt(); if(!n){ el.textContent=""; el.title=""; return; }
   const hm=n.at.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false}); const ms=n.at.getTime()-Date.now();
-  if(n.overdue){ el.innerHTML=`<i class="due"></i>NEXT EDITION DUE · USUALLY ~${hm}`; el.classList.add("overdue"); }
-  else { const m=Math.max(1,Math.round(ms/60000)), h=Math.floor(m/60), mm=m%60; el.innerHTML=`NEXT EDITION ~${hm} · IN ${h?h+"H ":""}${mm}M`; el.classList.remove("overdue"); }
+  if(n.overdue){ el.innerHTML=el.dataset.short!=null?`<i class="due"></i>NEXT DUE · ~${hm}`:`<i class="due"></i>NEXT EDITION DUE · USUALLY ~${hm}`; el.classList.add("overdue"); }
+  else { const m=Math.max(1,Math.round(ms/60000)), h=Math.floor(m/60), mm=m%60; el.innerHTML=el.dataset.short!=null?`NEXT ~${hm} · ${h?h+"H ":""}${mm}M`:`NEXT EDITION ~${hm} · IN ${h?h+"H ":""}${mm}M`; el.classList.remove("overdue"); }
   el.title=`Estimated from this edition's publication time (${new Date(FIRST_AT).toLocaleString()}), a day on. ubik.gold sets the real hour.`;
   if(n.overdue&&NEXT_RECHECK&&Date.now()-lastRecheck>10*60000){ lastRecheck=Date.now(); Promise.resolve().then(NEXT_RECHECK).catch(()=>{}); }
 }
@@ -790,7 +791,7 @@ function record(){
 }
 function stamp(){
   const last=Object.values(TS).flat().map(e=>e[0]).sort().pop();
-  document.getElementById("stamp").textContent=`${d2(TODAY)} · read ${d2(READ.forecasts)}`;
+  document.getElementById("stamp").textContent=`EDITION ${READ.forecasts}`; document.getElementById("stamp").title=`Read ${d2(TODAY)}`;
   document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last.slice(0,16).replace("T"," ")} ET · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(b){e.preventDefault();cat=b.dataset.cat;render();window.scrollTo({top:0,behavior:"smooth"});}});
