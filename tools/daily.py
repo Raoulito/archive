@@ -114,18 +114,25 @@ def image_bytes(path):
     buf = io.BytesIO(); im.save(buf, "JPEG", quality=86, optimize=True); return buf.getvalue()
 
 def post_to_x(text, image_path, alt):
+    """X API v2 with OAuth 1.0a user context: media upload, alt text, then the post."""
     from requests_oauthlib import OAuth1Session
     keys = [os.environ.get(k) for k in ("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET")]
     if not all(keys): sys.exit("X credentials missing")
     s = OAuth1Session(keys[0], client_secret=keys[1], resource_owner_key=keys[2], resource_owner_secret=keys[3])
+    def fail(what, r): sys.exit(f"X refused the {what}: HTTP {r.status_code} {r.text[:400]}")
     body = {"text": text}
     if image_path:
-        up = s.post("https://upload.twitter.com/1.1/media/upload.json", files={"media": ("image.jpg", image_bytes(image_path), "image/jpeg")})
-        up.raise_for_status(); media_id = up.json()["media_id_string"]
-        if alt: s.post("https://upload.twitter.com/1.1/media/metadata/create.json", json={"media_id": media_id, "alt_text": {"text": alt[:1000]}})
+        up = s.post("https://api.x.com/2/media/upload", data={"media_category": "tweet_image"},
+                    files={"media": ("image.jpg", image_bytes(image_path), "image/jpeg")})
+        if up.status_code >= 300: fail("image", up)
+        j = up.json(); media_id = (j.get("data") or j).get("id") or (j.get("data") or j).get("media_id_string")
+        if not media_id: sys.exit(f"no media id in {up.text[:300]}")
+        if alt:
+            md = s.post("https://api.x.com/2/media/metadata", json={"id": media_id, "metadata": {"alt_text": {"text": alt[:1000]}}})
+            if md.status_code >= 300: print("alt text not set:", md.status_code, md.text[:200])
         body["media"] = {"media_ids": [media_id]}
-    r = s.post("https://api.twitter.com/2/tweets", json=body)
-    if r.status_code >= 300: sys.exit(f"X refused the post: {r.status_code} {r.text[:300]}")
+    r = s.post("https://api.x.com/2/tweets", json=body)
+    if r.status_code >= 300: fail("post", r)
     return r.json()["data"]["id"]
 
 if __name__ == "__main__":
