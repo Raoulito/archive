@@ -1,5 +1,5 @@
 // ---- live data from ubik.gold, through the desk (the Forecasts page) ----
-const DESK = (()=>{ const m=document.querySelector('meta[name="desk"]'); const v=m&&m.content&&!/^%/.test(m.content)?m.content.replace(/\/$/,""):""; if(v) return v; return /^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&location.port!=="5173" ? "http://localhost:8787" : "https://ubikistan-guest-desk.ubikistan-archive.workers.dev"; })();
+const DESK = (()=>{ const m=document.querySelector('meta[name="desk"]'); const v=m&&m.content&&!/^%/.test(m.content)?m.content.replace(/\/$/,""):""; if(v) return v; if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return (location.port==="5173"||location.port==="4173") ? "/api" : "http://localhost:8787"; return "https://ubikistan-guest-desk.ubikistan-archive.workers.dev"; })();
 const UBIK_HOME = "https://ubik.gold";
 const THRESHOLD = "200,000 UBIK";
 let DEGEN=false; try{ DEGEN=localStorage.getItem('ubik-degen')==='1'; }catch(e){}
@@ -49,6 +49,24 @@ function applyEdition(raw){
   FIRST_AT=t.FIRST||""; startNextClock();
 }
 const keyOf=()=>{ try{ return localStorage.getItem("ubik-key")||""; }catch(e){ return ""; } };
+function parseKey(s){
+  s=(s||"").trim();
+  const m=/\bubik_[A-Za-z0-9._~-]{11,123}\b/.exec(s);
+  if(m) return m[0];
+  return /^[A-Za-z0-9._~-]{16,128}$/.test(s)?s:"";
+}
+let USER=null, TOKEN=null; try{ TOKEN=localStorage.getItem("ubk.session"); }catch(e){}
+function setToken(t){ TOKEN=t; try{ if(t) localStorage.setItem("ubk.session",t); else localStorage.removeItem("ubk.session"); }catch(e){} }
+function signinURL(prov){ let n=""; try{ n=sessionStorage.getItem("ubk.nonce")||""; if(!n){ n=Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem("ubk.nonce",n); } }catch(e){} return DESK+"/auth/"+prov+"?nonce="+encodeURIComponent(n)+"&return="+encodeURIComponent(location.href.split("#")[0]); }
+function whoami(){ if(!TOKEN){ USER=null; renderUser(); return; } fetch(DESK+"/me",{headers:{Authorization:"Bearer "+TOKEN}}).then(r=>r.ok?r.json():null).then(u=>{ USER=u?{provider:u.provider,handle:u.handle}:null; if(!u) setToken(null); renderUser(); },()=>{ renderUser(); }); }
+function renderUser(){ const el=document.getElementById("acct-userrow"); if(!el) return;
+  const e=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  el.innerHTML=USER?`<span class="me">@${e(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`;
+  el.querySelectorAll("[data-prov]").forEach(b=>b.addEventListener("click",()=>{ location.href=signinURL(b.dataset.prov); }));
+  const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); });
+  if(typeof renderGate==="function") renderGate();
+}
+(function signedIn(){ const h=location.hash||""; if(!h.startsWith("#/signed-in")) return; const q={}; (h.split("?")[1]||"").split("&").forEach(p=>{ const [k,v]=p.split("="); if(k) q[decodeURIComponent(k)]=decodeURIComponent((v||"").replace(/\+/g," ")); }); let mine=""; try{ mine=sessionStorage.getItem("ubk.nonce")||""; sessionStorage.removeItem("ubk.nonce"); }catch(e){} if(q.t&&q.n&&q.n===mine) setToken(q.t); history.replaceState(null,"",location.pathname); })();
 async function deskGet(path,retry=1){ const headers={}; const k=keyOf(); if(k) headers["Authorization"]="Bearer "+k; let r; try{ r=await fetch(DESK+"/ubik"+path,{headers}); }catch(e){ if(retry>0){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,retry-1); } throw new Error("network"); }
   const standing=r.headers.get("x-ubik-key")||(k?"invalid":"none"); if(r.status===451){ notAvailable(); throw new Error("451"); }
   if(r.status===429){ const e=new Error("429"); e.retryAfter=r.headers.get("retry-after")||"60"; throw e; }
@@ -78,21 +96,53 @@ function holderGate(state){
   g.querySelector("input").value=""; g.querySelector(".kerr").textContent="";
 }
 (function wireHolderGate(){ const g=document.getElementById("holdergate"); if(!g) return;
-  g.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=g.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ g.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; } try{ localStorage.setItem("ubik-key",v); }catch(err){} try{ await loadCurrent(); }catch(err){ if(String(err.message)==="429") holderGate("limited"); else if(String(err.message)!=="451") holderGate("unknown"); } });
-  const f=g.querySelector(".forget"); if(f) f.addEventListener("click",()=>{ try{ localStorage.removeItem("ubik-key"); }catch(e){} holderGate("none"); });
+  const form=g.querySelector("form"), btn=form.querySelector('button[type="submit"]'), errEl=g.querySelector(".kerr");
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const v=parseKey(g.querySelector("input").value);
+    if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
+    try{ localStorage.setItem("ubik-key",v); }catch(err){}
+    STANDING="unknown"; renderGate(); errEl.textContent="";
+    if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
+    try{ await loadCurrent(); }catch(err){ if(String(err.message)==="429") holderGate("limited"); else if(String(err.message)!=="451") holderGate("unknown"); }
+    finally{ if(btn){ btn.disabled=false; btn.textContent="Open"; } }
+  });
+  const f=g.querySelector(".forget"); if(f) f.addEventListener("click",()=>{ try{ localStorage.removeItem("ubik-key"); }catch(e){} STANDING="none"; holderGate("none"); });
 })();
 function renderGate(){
-  const el=document.getElementById("gate"); if(!el) return; const k=keyOf(); const st=k?STANDING:"none";
+  const el=document.getElementById("gate"); if(!el) return; const k=keyOf(); const st=k?(STANDING==="none"?"unknown":STANDING):"none";
   const word={holder:"HOLDER",locked:"UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED",none:"HOLDERS ONLY"}[st]||"HOLDERS ONLY";
-  el.innerHTML=`<button type="button" class="acctbtn" id="keybtn"><i class="${st}"></i>Account<small>${word}</small></button>`;
-  document.getElementById("keybtn").addEventListener("click",()=>{ const d=document.getElementById("keydlg"); d.querySelector("input").value=""; d.querySelector(".kerr").textContent=""; d.showModal(); });
+  const who=(typeof USER!=="undefined"&&USER)?"@"+String(USER.handle||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])):"Account";
+  el.innerHTML=`<button type="button" class="acctbtn" id="keybtn"><i class="${st}"></i>${who}<small>${word}</small></button>`;
+  document.getElementById("keybtn").addEventListener("click",()=>{ const d=document.getElementById("keydlg"); d.querySelector("input").value=""; d.querySelector(".kerr").textContent=""; renderUser(); d.showModal(); });
   const ac=document.getElementById("acct-standing"); if(ac){ ac.className="gstate "+st; ac.textContent={holder:"holder · open",locked:"key holds under "+THRESHOLD,invalid:"key not recognised",unknown:"key not checked yet",none:"no key"}[st]||"no key"; }
   const kf=document.querySelector("#keydlg .kforget"); if(kf) kf.style.display=k?"":"none";
 }
 (function wireKey(){ const d=document.getElementById("keydlg"); if(!d) return;
-  d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; } try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
+  const form=d.querySelector("form"), btn=form.querySelector('button[type="submit"]'), errEl=d.querySelector(".kerr");
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const v=parseKey(d.querySelector("input").value);
+    if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
+    try{ localStorage.setItem("ubik-key",v); }catch(err){}
+    STANDING="unknown"; renderGate(); errEl.textContent="";
+    if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
+    try{
+      await loadCurrent();
+      if(STANDING==="holder") d.close();
+      else if(STANDING==="locked") errEl.textContent=`Key recognised, but wallet holds under ${THRESHOLD}.`;
+      else if(STANDING==="invalid") errEl.textContent="ubik.gold does not recognise this key.";
+      else d.close();
+    }catch(err){
+      renderGate();
+      errEl.textContent=String(err&&err.message)==="429"?"Rate limit reached on ubik.gold (60/min). Try again in a moment.":"Could not reach the desk to verify the key. Try again shortly.";
+    }finally{
+      if(btn){ btn.disabled=false; btn.textContent="Save"; }
+    }
+  });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
   const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); }); })();
+renderUser(); whoami();
 
 NEXT_RECHECK=()=>{ if(STANDING==="holder") return loadCurrent(); };
 // ---- the easter egg: degen mode ----

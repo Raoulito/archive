@@ -2,7 +2,7 @@
 // The page carries no holder content. It renders the public snapshot inlined below at once, then asks
 // the desk for the current edition (public, or with the holder's own key the holder view), and for the
 // archive of earlier editions the desk keeps. The key lives in this browser only.
-const DESK = (()=>{ const m=document.querySelector('meta[name="desk"]'); const v=m&&m.content&&!/^%/.test(m.content)?m.content.replace(/\/$/,""):""; if(v) return v; return /^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&location.port!=="5173" ? "http://localhost:8787" : "https://ubikistan-guest-desk.ubikistan-archive.workers.dev"; })();
+const DESK = (()=>{ const m=document.querySelector('meta[name="desk"]'); const v=m&&m.content&&!/^%/.test(m.content)?m.content.replace(/\/$/,""):""; if(v) return v; if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return (location.port==="5173"||location.port==="4173") ? "/api" : "http://localhost:8787"; return "https://ubikistan-guest-desk.ubikistan-archive.workers.dev"; })();
 const UBIK_HOME = "https://ubik.gold";
 const THRESHOLD = "200,000 UBIK";
 let F=[], CURRENTS=[], TS={}, RESOLVED_AT={}, GEO={}, AGENT_ED={date:"",updated:"",sources:0,developments:0,thesis:"",change:[],watch:[]};
@@ -91,11 +91,18 @@ function transform(raw){
   return out;
 }
 const keyOf=()=>{ try{ return localStorage.getItem("ubik-key")||""; }catch(e){ return ""; } };
+function parseKey(s){
+  s=(s||"").trim();
+  const m=/\bubik_[A-Za-z0-9._~-]{11,123}\b/.exec(s);
+  if(m) return m[0];
+  return /^[A-Za-z0-9._~-]{16,128}$/.test(s)?s:"";
+}
 async function deskGet(path, withKey=true, retry=1){
   const headers={}; const k=withKey?keyOf():""; if(k) headers["Authorization"]="Bearer "+k;
   let r; try{ r=await fetch(DESK+"/ubik"+path,{headers}); }catch(e){ if(retry>0){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,withKey,retry-1); } throw new Error("network"); }
   const standing=r.headers.get("x-ubik-key")||(k?"invalid":"none");
   if(r.status===451){ notAvailable(); throw new Error("451"); }
+  if(r.status===429){ const e=new Error("429"); e.retryAfter=r.headers.get("retry-after")||"60"; throw e; }
   if(!r.ok){ if(retry>0&&r.status>=500){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,withKey,retry-1); } throw new Error(`desk ${path}: ${r.status}`); }
   return {body:await r.json(), standing};
 }
@@ -126,14 +133,19 @@ function applyEdition(raw, showing){
   const counts=document.getElementById("counts"); if(counts) counts.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${moved}</b> changes of mind today</span><span><b>${AGENT_ED.sources}</b> sources</span><span class="sep"></span><span id="score"></span>`;
   const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION ${EDITION_DAY} · ${showing==="current"?(LIVE?"LIVE":"SNAPSHOT"):"FROM THE ARCHIVE"}`;
   if(showing==="current"){ FIRST_AT=t.FIRST||""; startNextClock(); }
-  renderResolved(); renderAll(); renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
+  renderResolved(); renderAll();
+  if(typeof selected==="string"&&selected){
+    if(selected.startsWith("sec:")) selectSection(selected.slice(4));
+    else if(byId[selected]){ const cur=selected; selected=null; select(cur); }
+  }
+  renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
   const cs=document.getElementById("cover-score"); if(cs) cs.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span>${res.length?`<span>Brier <b>${(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3)}</b></span>`:""}<span><b>${AGENT_ED.sources}</b> sources</span>`;
   const back=document.getElementById("archivebar"); if(back){ back.classList.toggle("hidden",showing==="current"); back.querySelector("b").textContent=`Edition of ${EDITION_LONG}, from the archive`; }
 }
 // ---- the gate: a holder's key opens the holder parts; everything else stays open ----
 function renderGate(){
   const el=document.getElementById("gate"); if(!el) return;
-  const k=keyOf(); const st=k?STANDING:"none";
+  const k=keyOf(); const st=k?(STANDING==="none"?"unknown":STANDING):"none";
   const word={holder:"HOLDER",locked:"UNDER "+THRESHOLD.toUpperCase(),invalid:"KEY NOT RECOGNISED",unknown:"KEY NOT CHECKED",none:"PUBLIC"}[st]||"PUBLIC";
   const who=(typeof USER!=="undefined"&&USER)?"@"+esc(USER.handle):"Account";
   el.innerHTML=`<button type="button" class="acctbtn" id="keybtn"><i class="${st}"></i>${who}<small>${word}</small></button>`;
@@ -142,7 +154,7 @@ function renderGate(){
   const kf=document.querySelector("#keydlg .kforget"); if(kf) kf.style.display=k?"":"none";
   document.querySelectorAll(".lockednote").forEach(n=>n.remove());
   if(STANDING!=="holder"){
-    document.querySelectorAll("#dev .ed-sec").forEach(sec=>{ const c=CURRENTS.find(x=>x.theme===sec.dataset.t); if(c&&c.locked) sec.insertAdjacentHTML("beforeend",`<p class="lockednote">${ICON("holders")} The rest of this story, its reasoning and its sources are for holders: a wallet with ${THRESHOLD}, signed in at <a href="${UBIK_HOME}" target="_blank" rel="noopener">ubik.gold</a>, gives a key that opens them here. <button type="button" class="keylink">Enter a key</button></p>`); });
+    document.querySelectorAll("#dev .ed-sec, #dossier .ed-sec").forEach(sec=>{ const c=CURRENTS.find(x=>x.theme===sec.dataset.t); if(c&&c.locked) sec.insertAdjacentHTML("beforeend",`<p class="lockednote">${ICON("holders")} The rest of this story, its reasoning and its sources are for holders: a wallet with ${THRESHOLD}, signed in at <a href="${UBIK_HOME}" target="_blank" rel="noopener">ubik.gold</a>, gives a key that opens them here. <button type="button" class="keylink">Enter a key</button></p>`); });
     document.querySelectorAll(".keylink").forEach(b=>b.addEventListener("click",openKey));
   }
 }
@@ -151,8 +163,27 @@ function openKey(){
 }
 (function wireKey(){
   const d=document.getElementById("keydlg"); if(!d) return;
-  d.querySelector("form").addEventListener("submit",async e=>{ e.preventDefault(); const v=d.querySelector("input").value.trim(); if(!/^[A-Za-z0-9._~-]{16,128}$/.test(v)){ d.querySelector(".kerr").textContent="That does not look like a ubik.gold key."; return; }
-    try{ localStorage.setItem("ubik-key",v); }catch(err){} d.close(); try{ await loadCurrent(); }catch(err){ renderGate(); } });
+  const form=d.querySelector("form"), btn=form.querySelector('button[type="submit"]'), errEl=d.querySelector(".kerr");
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const v=parseKey(d.querySelector("input").value);
+    if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
+    try{ localStorage.setItem("ubik-key",v); }catch(err){}
+    STANDING="unknown"; renderGate(); errEl.textContent="";
+    if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
+    try{
+      await loadCurrent();
+      if(STANDING==="holder") d.close();
+      else if(STANDING==="locked") errEl.textContent=`Key recognised, but wallet holds under ${THRESHOLD}.`;
+      else if(STANDING==="invalid") errEl.textContent="ubik.gold does not recognise this key.";
+      else d.close();
+    }catch(err){
+      renderGate();
+      errEl.textContent=String(err&&err.message)==="429"?"Rate limit reached on ubik.gold (60/min). Try again in a moment.":"Could not reach the desk to verify the key. Try again shortly.";
+    }finally{
+      if(btn){ btn.disabled=false; btn.textContent="Save"; }
+    }
+  });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
   const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); });
 })();

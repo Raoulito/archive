@@ -1779,18 +1779,18 @@ const SILHOUETTE = `<span class="fig" aria-hidden="true"><img src="${FIGURE_SRC}
 // Byline rule: a crypto macro post is AIXBT's card unless the data names another author.
 const byOf = c => c.by || (c.theme==="crypto" ? "AIXBT" : null);
 function opener(c){
-  if(c.still) return `<button type="button" class="still" data-t="${c.theme}" data-clip="${c.still}" aria-label="Play the film for ${c.h}"><span class="grain"></span>${SILHOUETTE}<span class="pending">FILM · ${c.still}</span><span class="meta"><b>${c.h}</b>${THEMES[c.theme]} · ${c.n}</span><span class="play"></span><span class="toast">No clip attached to this section yet. The rendering engine writes it to the edition's <code>film</code> field.</span></button>`;
-  if(byOf(c)==="AIXBT") return `<div class="opener aixbt" data-t="${c.theme}">${AIXBT_FIG}<span class="big">${c.n}</span><span class="meta"><b>${c.h}</b>${THEMES[c.theme]} · by AIXBT</span></div>`;
-  return `<div class="opener" data-t="${c.theme}">${SILHOUETTE}<span class="big">${c.n}</span><span class="meta"><b>${c.h}</b>${THEMES[c.theme]}</span></div>`;
+  if(c.still) return `<button type="button" class="still" data-t="${c.theme}" data-clip="${esc(c.still)}" aria-label="Play the film for ${esc(c.h)}"><span class="grain"></span>${SILHOUETTE}<span class="pending">FILM · ${esc(c.still)}</span><span class="meta"><b>${esc(c.h)}</b>${THEMES[c.theme]} · ${c.n}</span><span class="play"></span><span class="toast">No clip attached to this section yet. The rendering engine writes it to the edition's <code>film</code> field.</span></button>`;
+  if(byOf(c)==="AIXBT") return `<div class="opener aixbt" data-t="${c.theme}">${AIXBT_FIG}<span class="big">${c.n}</span><span class="meta"><b>${esc(c.h)}</b>${THEMES[c.theme]} · by AIXBT</span></div>`;
+  return `<div class="opener" data-t="${c.theme}">${SILHOUETTE}<span class="big">${c.n}</span><span class="meta"><b>${esc(c.h)}</b>${THEMES[c.theme]}</span></div>`;
 }
 function matters(c){
-  return c.matters?`<aside class="matters"><span class="lab withav">${ICON("care")}WHY YOU SHOULD CARE</span><p>${c.matters}</p>${c.watch?`<p class="watch"><b>${ICON("watch")}Watch</b> ${c.watch}</p>`:""}
-        ${c.risk?`<p class="watch risk"><b>${ICON("markets")}Markets</b> ${c.risk}</p>`:""}
+  return c.matters?`<aside class="matters"><span class="lab withav">${ICON("care")}WHY YOU SHOULD CARE</span><p>${esc(c.matters)}</p>${c.watch?`<p class="watch"><b>${ICON("watch")}Watch</b> ${esc(c.watch)}</p>`:""}
+        ${c.risk?`<p class="watch risk"><b>${ICON("markets")}Markets</b> ${esc(c.risk)}</p>`:""}
         
         
       </aside>`:"";
 }
-const fcRows=c=>c.fcs.map(id=>byId[id]).map(f=>`<button type="button" data-id="${f.id}"><span class="p">${pct(now(f))}</span><span>${f.q}${MKT[f.id]&&MKT[f.id].venue?` <span class="mk">mkt ${pct(MKT[f.id].p)}</span>`:""}</span><span class="d">by ${fmt(f.due)}</span></button>`).join("");
+const fcRows=c=>c.fcs.map(id=>byId[id]).map(f=>`<button type="button" data-id="${esc(f.id)}"><span class="p">${pct(now(f))}</span><span>${esc(f.q)}${MKT[f.id]&&MKT[f.id].venue?` <span class="mk">mkt ${pct(MKT[f.id].p)}</span>`:""}</span><span class="d">by ${fmt(f.due)}</span></button>`).join("");
 function wireStills(root){
   root.querySelectorAll(".still").forEach(s=>s.addEventListener("click",()=>{
     const c=CURRENTS.find(x=>x.theme===s.dataset.t);
@@ -1809,12 +1809,12 @@ function renderDev(){
     const rows=CURRENTS.map(c=>{ const inf=(c.lines.find(l=>l[0]==="i")||c.lines[0])[1]; const f=byId[c.fcs[0]]; const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null;
       return `<section class="tl ${visibleC(c)?"":"hide"}" id="cur-${c.theme}" data-t="${c.theme}">
         <span class="num">${c.n}</span>
-        <span class="body"><button type="button" class="h" data-t="${c.theme}">${c.h}</button><span class="l">${inf}</span></span>
-        <button type="button" class="fc" data-id="${f.id}"><b>${pct(now(f))}</b><span>${shortQ(f.q)}</span><small>${fmt(f.due)}${m?` · mkt ${pct(m.p)}`:""}</small></button>
+        <span class="body"><button type="button" class="h" data-t="${c.theme}">${esc(c.h)}</button><span class="l">${esc(inf)}</span></span>
+        <button type="button" class="fc" data-id="${esc(f.id)}"><b>${pct(now(f))}</b><span>${esc(shortQ(f.q))}</span><small>${fmt(f.due)}${m?` · mkt ${pct(m.p)}`:""}</small></button>
       </section>`; }).join("");
     const o=F.filter(f=>f.status==="open"), withM=o.filter(f=>MKT[f.id]&&MKT[f.id].venue), big=withM.slice().sort((a,b)=>Math.abs(gapOf(b))-Math.abs(gapOf(a)))[0], nxt=o.slice().sort((a,b)=>a.due.localeCompare(b.due))[0];
     document.getElementById("dev").innerHTML=`<div class="tldr">${rows}
-      <section class="tl sum" data-t="markets"><span class="num">∑</span><span class="body"><span class="h">The record</span><span class="l">${o.length} open, ${F.filter(f=>f.resolved).length} settled, Brier ${F.filter(f=>f.resolved).map(f=>f.brier)[0]?.toFixed(3)||"—"}. Largest disagreement with the market: ${shortQ(big.q)}, UBIK ${pct(now(big))} vs ${pct(MKT[big.id].p)}. Next to resolve: ${shortQ(nxt.q)}, ${fmt(nxt.due)}.</span></span><button type="button" class="fc" data-goto="ledger"><b>→</b><span>Open the ledger</span></button></section>
+      <section class="tl sum" data-t="markets"><span class="num">∑</span><span class="body"><span class="h">The record</span><span class="l">${o.length} open, ${F.filter(f=>f.resolved).length} settled, Brier ${F.filter(f=>f.resolved).map(f=>f.brier)[0]?.toFixed(3)||"—"}. Largest disagreement with the market: ${esc(shortQ(big.q))}, UBIK ${pct(now(big))} vs ${pct(MKT[big.id].p)}. Next to resolve: ${esc(shortQ(nxt.q))}, ${fmt(nxt.due)}.</span></span><button type="button" class="fc" data-goto="ledger"><b>→</b><span>Open the ledger</span></button></section>
       <p class="tlnote">Five currents, one line each, the forecast each rests on. Switch to Digest for the lead lines and why it matters, or Full for the whole edition.</p></div>`;
     document.querySelectorAll("#dev .tl .h").forEach(b=>b.addEventListener("click",()=>selectSection(b.dataset.t)));
     document.querySelectorAll("#dev .tl .fc[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
@@ -1824,17 +1824,17 @@ function renderDev(){
   }
   document.getElementById("dev").innerHTML=CURRENTS.map(c=>{
     const hide=!visibleC(c);
-    const lines=c.lines.map(([k,t])=>`<li>${tagEl(k)}<span class="t">${t}</span></li>`).join("");
+    const lines=c.lines.map(([k,t])=>`<li>${tagEl(k)}<span class="t">${esc(t)}</span></li>`).join("");
     const words=c.body.join(" ").split(/\s+/).length;
     const full=LEN==="full";
     return `<section class="ed-sec ${hide?"hide":""}" id="cur-${c.theme}" data-t="${c.theme}">
-      <div class="num">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · <span class="by">${byOf(c)}</span>`:""}${followBtn(c.theme)}</div>
-      <h2 class="t">${c.h}</h2>
+      <div class="num">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · <span class="by">${esc(byOf(c))}</span>`:""}${followBtn(c.theme)}</div>
+      <h2 class="t">${esc(c.h)}</h2>
       ${opener(c)}
       <ul class="lead-lines">${lines}</ul>
-      ${full?`<div class="prose">${c.body.map(p=>`<p>${p}</p>`).join("")}</div>
-      <div class="block"><span class="lab withav">${ICON("contrary")}THE STRONGEST CONTRARY READING</span>${c.contrary}</div>
-      ${c.chain?`<div class="block chain"><span class="lab withav">${ICON("chain")}THE CHAIN</span>${c.chain}</div>`:""}`:""}
+      ${full?`<div class="prose">${c.body.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+      <div class="block"><span class="lab withav">${ICON("contrary")}THE STRONGEST CONTRARY READING</span>${esc(c.contrary)}</div>
+      ${c.chain?`<div class="block chain"><span class="lab withav">${ICON("chain")}THE CHAIN</span>${esc(c.chain)}</div>`:""}`:""}
       ${matters(c)}
       <div class="fcs">${fcRows(c)}</div>
       ${full?"":`<button type="button" class="readmore" data-t="${c.theme}">${ICON("edition")}Read the section <span class="mono">${c.body.length} paragraphs · ${words} words · contrary reading · ${c.chain?"chain":""}</span></button>`}
@@ -1852,16 +1852,16 @@ function selectSection(theme){
   const c=CURRENTS.find(x=>x.theme===theme); if(!c) return;
   selected="sec:"+theme;
   const dos=document.getElementById("dossier"), ed=document.getElementById("edition");
-  const prose=c.body.map(p=>`<p>${p}</p>`).join("");
+  const prose=c.body.map(p=>`<p>${esc(p)}</p>`).join("");
   dos.innerHTML=`<div class="dossier"><section class="ed-sec full" data-t="${c.theme}">
     <button type="button" class="back" id="back">← BACK TO THE EDITION</button>
-    <div class="num" style="margin-top:14px">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · <span class="by">${byOf(c)}</span>`:""} · EDITION 2026-10-20${followBtn(c.theme)}</div>
-    <h2 class="t">${c.h}</h2>
+    <div class="num" style="margin-top:14px">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · <span class="by">${esc(byOf(c))}</span>`:""} · EDITION 2026-10-20${followBtn(c.theme)}</div>
+    <h2 class="t">${esc(c.h)}</h2>
     ${opener(c)}
-    <ul class="lead-lines">${c.lines.map(([k,t])=>`<li>${tagEl(k)}<span class="t">${t}</span></li>`).join("")}</ul>
+    <ul class="lead-lines">${c.lines.map(([k,t])=>`<li>${tagEl(k)}<span class="t">${esc(t)}</span></li>`).join("")}</ul>
     <div class="prose">${prose}</div>
-    <div class="block"><span class="lab withav">${ICON("contrary")}THE STRONGEST CONTRARY READING</span>${c.contrary}</div>
-    ${c.chain?`<div class="block chain"><span class="lab withav">${ICON("chain")}THE CHAIN</span>${c.chain}</div>`:""}
+    <div class="block"><span class="lab withav">${ICON("contrary")}THE STRONGEST CONTRARY READING</span>${esc(c.contrary)}</div>
+    ${c.chain?`<div class="block chain"><span class="lab withav">${ICON("chain")}THE CHAIN</span>${esc(c.chain)}</div>`:""}
     ${matters(c)}
     <div class="fcs">${fcRows(c)}</div>
   </section></div>`;
@@ -1878,8 +1878,8 @@ function renderSide(){
   let n=0;
   document.getElementById("scards").innerHTML=list.map(f=>{
     const hide=!visible(f); if(!hide)n++;
-    return `<button type="button" class="sc ${hide?"hide":""}" data-id="${f.id}" data-t="${f.theme}" aria-pressed="${selected===f.id}">
-      <span><span class="k">${THEMES[f.theme]}</span><span class="q">${f.q}</span><span class="m"><b>${pct(now(f))}</b><span>${f.hist.length>1?`was ${pct(first(f))}`:"new"}</span>${MKT[f.id]&&MKT[f.id].venue?`<span class="mk" title="${MKT[f.id].venue}: ${MKT[f.id].c}">mkt ${pct(MKT[f.id].p)}${MKT[f.id].adj?"*":""}</span>`:""}<span class="due ${soon(f.due)?"soon":""}">${fmt(f.due)}</span></span></span>
+    return `<button type="button" class="sc ${hide?"hide":""}" data-id="${esc(f.id)}" data-t="${f.theme}" aria-pressed="${selected===f.id}">
+      <span><span class="k">${THEMES[f.theme]}</span><span class="q">${esc(f.q)}</span><span class="m"><b>${pct(now(f))}</b><span>${f.hist.length>1?`was ${pct(first(f))}`:"new"}</span>${MKT[f.id]&&MKT[f.id].venue?`<span class="mk" title="${esc(MKT[f.id].venue)}: ${esc(MKT[f.id].c)}">mkt ${pct(MKT[f.id].p)}${MKT[f.id].adj?"*":""}</span>`:""}<span class="due ${soon(f.due)?"soon":""}">${fmt(f.due)}</span></span></span>
       <span class="sp">${spark(f,64,22)}${starBtn(f.id,"sm")}</span></button>`;
   }).join("");
   document.querySelectorAll("#scards .sc").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
@@ -1889,7 +1889,7 @@ function renderSide(){
     const fs=F.filter(f=>issued(f)===e.d);
     const vis=fs.filter(visible);
     const hide=(active!=="all"||query)&&vis.length===0 && !(query && e.sum.toLowerCase().includes(query));
-    return `<button type="button" class="se ${hide?"hide":""}" data-d="${e.d}" aria-pressed="${selected==="ed:"+e.d}"><span class="d"><b>${fmt(e.d)}</b>${fs.length} issued</span><span>${e.title}${e.current?' <span class="tag" style="margin-left:4px">CURRENT</span>':""}</span></button>`;
+    return `<button type="button" class="se ${hide?"hide":""}" data-d="${esc(e.d)}" aria-pressed="${selected==="ed:"+e.d}"><span class="d"><b>${fmt(e.d)}</b>${fs.length} issued</span><span>${esc(e.title)}${e.current?' <span class="tag" style="margin-left:4px">CURRENT</span>':""}</span></button>`;
   }).join("");
   document.querySelectorAll("#seds .se").forEach(b=>b.addEventListener("click",()=>selectEdition(b.dataset.d)));
   renderVs();
@@ -1901,11 +1901,11 @@ function renderVs(){
   const withM=F.filter(f=>f.status==="open"&&MKT[f.id]&&MKT[f.id].venue).sort((a,b)=>Math.abs(gapOf(b))-Math.abs(gapOf(a)));
   const noM=F.filter(f=>f.status==="open"&&MKT[f.id]&&!MKT[f.id].venue);
   const rows=withM.map(f=>{ const m=MKT[f.id], g=Math.round(gapOf(f)*100);
-    return `<button type="button" class="vs ${visible(f)?"":"hide"}" data-id="${f.id}" data-t="${f.theme}" aria-pressed="${selected===f.id}">
-      <span class="q">${f.q}${m.adj?` <span class="adj" title="Contract on a neighbouring question: ${m.c}">adjacent contract</span>`:""}</span>
-      <span class="nums"><span><i>UBIK</i><b>${pct(now(f))}</b></span><span><i>${m.venue}</i><b class="mp">${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)}</b></span></span>
-      <span class="src"><span>${m.c}</span><span>read ${fmt(m.t)}</span></span></button>`; }).join("");
-  const none=noM.length?`<div class="vs-none"><span class="lab2">No contract found</span>${noM.map(f=>`<span><button type="button" class="lnk" data-id="${f.id}">${f.q.replace(/^Will /,"").replace(/\?$/,"")}</button> · UBIK ${pct(now(f))} · <a href="${MKT[f.id].url}" target="_blank" rel="noopener">search</a></span>`).join("")}</div>`:"";
+    return `<button type="button" class="vs ${visible(f)?"":"hide"}" data-id="${esc(f.id)}" data-t="${f.theme}" aria-pressed="${selected===f.id}">
+      <span class="q">${esc(f.q)}${m.adj?` <span class="adj" title="Contract on a neighbouring question: ${esc(m.c)}">adjacent contract</span>`:""}</span>
+      <span class="nums"><span><i>UBIK</i><b>${pct(now(f))}</b></span><span><i>${esc(m.venue)}</i><b class="mp">${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)}</b></span></span>
+      <span class="src"><span>${esc(m.c)}</span><span>read ${fmt(m.t)}</span></span></button>`; }).join("");
+  const none=noM.length?`<div class="vs-none"><span class="lab2">No contract found</span>${noM.map(f=>`<span><button type="button" class="lnk" data-id="${esc(f.id)}">${esc(f.q.replace(/^Will /,"").replace(/\?$/,""))}</button> · UBIK ${pct(now(f))} · <a href="${esc(MKT[f.id].url)}" target="_blank" rel="noopener">search</a></span>`).join("")}</div>`:"";
   const open=F.filter(f=>f.status==="open").length;
   document.getElementById("vsm").innerHTML=rows+none+`<p class="vs-note">${withM.length} of ${open} open questions have a listed contract. The other ${open-withM.length} are where a view is cheapest to hold and hardest to check. * adjacent contract.</p>`;
   document.querySelectorAll("#vsm .vs, #vsm .lnk").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
@@ -1959,7 +1959,7 @@ function openShare(f){
   let dlg=document.getElementById("sharedlg");
   if(!dlg){ dlg=document.createElement("dialog"); dlg.id="sharedlg"; document.body.appendChild(dlg); }
   const cv=shareCard(f); const url=cv.toDataURL("image/png");
-  dlg.innerHTML=`<div class="sh"><img src="${url}" alt="Share card for ${f.q}"><div class="row"><button type="button" class="dl" id="shsave" hidden>Save PNG</button><a class="dl x" href="https://x.com/intent/post?text=${encodeURIComponent(`UBIK ${pct(now(f))}${MKT[f.id]&&MKT[f.id].venue?` vs ${MKT[f.id].venue} ${pct(MKT[f.id].p)}`:""} · ${f.q} · resolves ${fmt(f.due)} · ${f.id}`)}" target="_blank" rel="noopener">Post on X</a><button type="button" class="dl" id="shclose">Close</button></div><p class="note" id="shnote">1200 × 675. The record ID on the card is the thing anyone can check later. Right-click the image to copy it.</p></div>`;
+  dlg.innerHTML=`<div class="sh"><img src="${url}" alt="Share card for ${esc(f.q)}"><div class="row"><button type="button" class="dl" id="shsave" hidden>Save PNG</button><a class="dl x" href="https://x.com/intent/post?text=${encodeURIComponent(`UBIK ${pct(now(f))}${MKT[f.id]&&MKT[f.id].venue?` vs ${MKT[f.id].venue} ${pct(MKT[f.id].p)}`:""} · ${f.q} · resolves ${fmt(f.due)} · ${f.id}`)}" target="_blank" rel="noopener">Post on X</a><button type="button" class="dl" id="shclose">Close</button></div><p class="note" id="shnote">1200 × 675. The record ID on the card is the thing anyone can check later. Right-click the image to copy it.</p></div>`;
   dlg.querySelector("#shclose").addEventListener("click",()=>dlg.close());
   // Saving goes through the viewer's confirmation; the button appears only where that is available.
   (async()=>{ const dls = window.claude && claude.use ? await claude.use("downloads") : null; if(!dls) return;
@@ -1981,9 +1981,9 @@ function select(id){
   const hist=f.hist.map(([dt,p],i)=>{
     const prev=i? f.hist[i-1][1] : null;
     const why = i===0 ? (f.why? "Issued. "+f.why : "Issued.") : (i===f.hist.length-1 && f.change ? f.change : (prev!==null? (p>prev?"Raised":"Lowered")+" on the day's edition." : ""));
-    return `<li><span class="d">${fmt(dt)} ${dt.slice(0,4)}</span><span class="p">${pct(p)}</span>${i? `<span class="mono" style="font-size:11px;color:var(--muted)">${p>prev?"+":"−"}${Math.round(Math.abs(p-prev)*100)}</span>`:""}<div>${why}</div></li>`;
-  }).join("") + (f.status==="yes"?`<li class="res"><span class="d">${fmt(f.resolved)} 2026</span><span class="p">RESOLVED YES</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier.toFixed(4)}</span><div>${tagEl("v")}${f.evidence}</div></li>`:"");
-  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${c.h}</h3>${c.body.slice(0,2).map(p=>`<p>${p}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
+    return `<li><span class="d">${fmt(dt)} ${dt.slice(0,4)}</span><span class="p">${pct(p)}</span>${i? `<span class="mono" style="font-size:11px;color:var(--muted)">${p>prev?"+":"−"}${Math.round(Math.abs(p-prev)*100)}</span>`:""}<div>${esc(why)}</div></li>`;
+  }).join("") + (f.status==="yes"?`<li class="res"><span class="d">${fmt(f.resolved)} 2026</span><span class="p">RESOLVED YES</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier.toFixed(4)}</span><div>${tagEl("v")}${esc(f.evidence)}</div></li>`:"");
+  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
   // ---- the sheet: the team's schema for one forecast, with the ledger attached underneath ----
   const inEd=CURRENTS.flatMap(x=>x.fcs).filter((v,k,a)=>a.indexOf(v)===k); const sheetIx=inEd.indexOf(f.id);
   const prevId=sheetIx>0?inEd[sheetIx-1]:null, nextId=sheetIx>=0&&sheetIx<inEd.length-1?inEd[sheetIx+1]:null;
@@ -1992,20 +1992,20 @@ function select(id){
   const dots=`<svg class="dots" viewBox="0 0 100 100" aria-label="${P} of 100">${Array.from({length:100},(_,k)=>`<circle cx="${(k%10)*10+5}" cy="${Math.floor(k/10)*10+5}" r="3.4" class="${k<P?"on":"off"}"/>`).join("")}</svg>`;
   const whyLine=f.change||f.why||(c?c.lines.find(l=>l[0]==="i")?.[1]:"")||"";
   const chainItems=(f.chain&&f.chain.length?f.chain:(c&&c.chain?c.chain.split(/(?<=\.)\s+/).filter(Boolean).slice(0,5):[])).concat([f.q]);
-  const missing=k=>`<p class="miss">Not in this snapshot. The engine returns it as <code>${k}</code> at <code>GET /forecasts/${f.id}</code>.</p>`;
+  const missing=k=>`<p class="miss">Not in this snapshot. The engine returns it as <code>${k}</code> at <code>GET /forecasts/${esc(f.id)}</code>.</p>`;
   const fold=(icon,title,body,open,cls="")=>`<details class="fold ${cls}" ${open?"open":""}><summary>${ICON(icon,"ico")}<span>${title}</span><i class="chev"></i></summary><div class="fb">${body}</div></details>`;
-  const vs=(()=>{ const m=MKT[f.id]; if(m&&m.venue){ const g=Math.round(gapOf(f)*100); return `<div class="vsrow"><span><i>UBIK</i><b>${pct(pnow)}</b></span><span><i>${m.venue}${m.adj?" · adjacent":""}</i><b>${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)} pts</b></span><span><i>Contract</i><span>${m.c}</span><small> · read ${fmt(m.t)}</small></span></div>${m.adj?`<p class="adjnote">The market contract asks a neighbouring question, not this one. The gap is indicative, not a score.</p>`:`<p class="adjnote">When this resolves, the market price at issue time becomes the baseline UBIK is scored against.</p>`}`; }
-    if(m) return `<p class="adjnote">${m.note} UBIK holds ${pct(pnow)} with no price to lean on. No listed contract checked.</p>`;
+  const vs=(()=>{ const m=MKT[f.id]; if(m&&m.venue){ const g=Math.round(gapOf(f)*100); return `<div class="vsrow"><span><i>UBIK</i><b>${pct(pnow)}</b></span><span><i>${esc(m.venue)}${m.adj?" · adjacent":""}</i><b>${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)} pts</b></span><span><i>Contract</i><span>${esc(m.c)}</span><small> · read ${fmt(m.t)}</small></span></div>${m.adj?`<p class="adjnote">The market contract asks a neighbouring question, not this one. The gap is indicative, not a score.</p>`:`<p class="adjnote">When this resolves, the market price at issue time becomes the baseline UBIK is scored against.</p>`}`; }
+    if(m) return `<p class="adjnote">${esc(m.note)} UBIK holds ${pct(pnow)} with no price to lean on. No listed contract checked.</p>`;
     return `<p class="adjnote">No listed contract checked for this question yet.</p>`; })();
   const hasMkt=!!(MKT[f.id]&&MKT[f.id].venue);
   dos.innerHTML=`<div class="dossier sheet" data-t="${f.theme}">
     <button type="button" class="back" id="back">← BACK TO THE BOARD</button>
     <header class="sh-head">
-      <div class="sh-l"><div class="k">${f.id} · ${f.status==="yes"?"RESOLVED YES":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${f.q}</h2></div>
+      <div class="sh-l"><div class="k">${esc(f.id)} · ${f.status==="yes"?"RESOLVED YES":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${esc(f.q)}</h2></div>
       <div class="sh-r"><div class="pn"><span class="k"><i></i>${sheetIx>=0?`F${sheetIx+1}`:"ARCHIVE"}</span><b>${pct(pnow)}</b></div>${dots}</div>
     </header>
     <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"?` · settled ${fmt(f.resolved).toLowerCase()}`:` · ${daysTo(f.due)} days left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
-    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine||"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
+    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
     <div class="folds">
       ${fold("ring","Thesis", f.thesis?`<p><b>${esc(f.thesis.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.thesis.split(". ").slice(1).join(". "))}</p>`:f.why?`<p><b>${esc(f.why.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.why.split(". ").slice(1).join(". "))}</p>${c?`<p class="src">From the ${THEMES[c.theme]} current of the ${fmt(AGENT_ED.date)} edition; question issued ${fmt(issued(f))}.</p>`:""}`:missing("thesis"), true)}
       ${fold("chain","How the news leads here", `<ol>${chainItems.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>${!(f.chain&&f.chain.length)&&c?`<p class="src">Chain taken from the section's mechanism; the engine's own <code>chain</code> for this question is not in the snapshot.</p>`:""}`, true)}
@@ -2061,11 +2061,11 @@ function answer(qtext){
 function renderResolved(){
   const f=F.find(x=>x.status==="yes");
   document.getElementById("resolved").innerHTML=`
-    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${f.id}</span></div>
-    <h3 style="font-size:18px;margin-top:8px">${f.q}</h3>
+    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span></div>
+    <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
     <div class="row" style="margin-top:10px"><span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span><span>Resolved ${fmt(f.resolved)}<b>YES</b></span><span>Brier<b>${f.brier.toFixed(4)}</b></span></div>
-    <div class="ev">${tagEl("v")}${f.evidence}</div>
-    <div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${f.rule}</div>`;
+    <div class="ev">${tagEl("v")}${esc(f.evidence)}</div>
+    <div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${esc(f.rule)}</div>`;
 }
 function renderLedger(){
   const rows=[...F].sort((a,b)=>issued(b).localeCompare(issued(a)));
@@ -2073,13 +2073,13 @@ function renderLedger(){
   document.getElementById("tbody").innerHTML=rows.map(f=>{
     const hide=!visible(f); if(!hide)n++;
     const st=f.status==="yes"?`<span class="tag v">YES · ${f.brier.toFixed(3)}</span>`:`<span class="tag">OPEN</span>`;
-    return `<tr class="${hide?"hide":""}" data-id="${f.id}" style="cursor:pointer"><td class="num">${fmt(issued(f))}</td><td>${f.q}<span class="id">${f.id}</span></td><td>${THEMES[f.theme]}</td><td class="num">${pct(first(f))}</td><td class="num"><b>${pct(now(f))}</b></td><td><span class="spark">${spark(f)}</span></td><td class="num">${fmt(f.due)}</td><td>${st}</td></tr>`;
+    return `<tr class="${hide?"hide":""}" data-id="${esc(f.id)}" style="cursor:pointer"><td class="num">${fmt(issued(f))}</td><td>${esc(f.q)}<span class="id">${esc(f.id)}</span></td><td>${THEMES[f.theme]}</td><td class="num">${pct(first(f))}</td><td class="num"><b>${pct(now(f))}</b></td><td><span class="spark">${spark(f)}</span></td><td class="num">${fmt(f.due)}</td><td>${st}</td></tr>`;
   }).join("");
   document.getElementById("lgcount").textContent=`${n} of ${F.length} forecasts shown · newest first · history drawn from issue date to 13 Oct, 0 to 1`;
 }
 function renderTicker(){
   // Latest signals, derived from the record: settlements, changes of mind, new questions. Newest first.
-  const esc=s=>s.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+  const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const pc=p=>Math.round(p*100)+"%";
   const sig=[];
   for(const f of F){
@@ -2234,7 +2234,7 @@ document.getElementById("sortlink").addEventListener("click",e=>e.preventDefault
 document.getElementById("chatform").addEventListener("submit",e=>{
   e.preventDefault(); const inp=document.getElementById("chatin"); const t=inp.value.trim(); if(!t) return;
   const log=document.getElementById("chatlog");
-  log.insertAdjacentHTML("beforeend",`<div class="u">${t.replace(/[<>&]/g,s=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[s]))}</div><div class="a"><img class="av" src="${FRAMES.portrait}" alt="" width="22" height="22">${answer(t)}</div>`);
+  log.insertAdjacentHTML("beforeend",`<div class="u">${esc(t)}</div><div class="a"><img class="av" src="${FRAMES.portrait}" alt="" width="22" height="22">${esc(answer(t))}</div>`);
   inp.value=""; log.scrollTop=log.scrollHeight;
 });
 // appearance toggle: light / auto / dark / neon, remembered per viewer
@@ -2259,7 +2259,7 @@ document.querySelectorAll(".side h2.fold").forEach(h=>{
 // ---------------- Dashboard: numbers, a map, and the question titles. No prose. ----------------
 var TODAY="2026-10-14";
 function daysTo(d){ return Math.round((new Date(d)-new Date(TODAY))/864e5); }
-function esc(s){ return s.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c])); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function shortQ(q){ return q.replace(/^Will /,"").replace(/\?$/,""); }
 
 function renderDash(){
@@ -2289,7 +2289,7 @@ function renderDash(){
   const beyond=open.filter(f=>daysTo(f.due)>H).length;
   const hz=`<section class="mod"><h3><span class="withav">${ICON("history")}Resolution horizon</span><span class="mono">next ${H} days · ${beyond} beyond</span></h3>
     <div class="horizon"><div class="axis">${[0,15,30,45,60,75,90].map(d=>`<span style="left:${d/H*100}%">${d===0?"today":fmt(new Date(new Date(TODAY).getTime()+d*864e5).toISOString().slice(0,10))}</span>`).join("")}</div>
-    ${Object.entries(byDay).map(([d,fs])=>{ const t=fs[0].theme; return `<button type="button" class="hz" data-t="${t}" data-id="${fs[0].id}" style="left:${d/H*100}%;--n:${fs.length}" title="${fs.map(f=>f.q).join("\n")}"><i>${fs.length>1?fs.length:""}</i><span>${fmt(fs[0].due)} · ${fs.length}</span></button>`; }).join("")}</div></section>`;
+    ${Object.entries(byDay).map(([d,fs])=>{ const t=fs[0].theme; return `<button type="button" class="hz" data-t="${t}" data-id="${esc(fs[0].id)}" style="left:${d/H*100}%;--n:${fs.length}" title="${esc(fs.map(f=>f.q).join("\n"))}"><i>${fs.length>1?fs.length:""}</i><span>${fmt(fs[0].due)} · ${fs.length}</span></button>`; }).join("")}</div></section>`;
 
   // Probability matrix
   const rows=[...open].sort((a,b)=>a.due.localeCompare(b.due)).map(f=>{ const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null; const p0=first(f), p1=now(f);
@@ -2513,7 +2513,7 @@ function renderAgent(){
   const ed=CURRENTS.flatMap(c=>c.fcs).filter((v,i,a)=>a.indexOf(v)===i).map(id=>byId[id]).filter(Boolean);
   const bar=`<div class="agbar"><span class="lab">Read it</span><a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="https://ubik.gold/synthesis?include=all" target="_blank" rel="noopener">GET /synthesis?include=all</a><a href="https://ubik.gold/forecasts" target="_blank" rel="noopener">GET /forecasts</a><span class="sp"></span><button type="button" id="agview" aria-pressed="${agJson}">${agJson?"Read as page":"View as JSON"}</button><button type="button" id="agcopy">Copy JSON</button></div>`;
   if(agJson){ el.innerHTML=bar+`<pre class="agjson">${esc(JSON.stringify(agentPayload(),null,2))}</pre>`; wireAg(); return; }
-  const thesis=`<section class="ag"><div class="lab">Thesis<span class="mono">updated ${AGENT_ED.updated.replace("T"," ").slice(0,16)} · ${AGENT_ED.developments} developments · ${AGENT_ED.sources} sources</span></div><p class="thesis">${AGENT_ED.thesis}</p></section>`;
+  const thesis=`<section class="ag"><div class="lab">Thesis<span class="mono">updated ${esc(AGENT_ED.updated.replace("T"," ").slice(0,16))} · ${AGENT_ED.developments} developments · ${AGENT_ED.sources} sources</span></div><p class="thesis">${esc(AGENT_ED.thesis)}</p></section>`;
   const mechs=`<section class="ag"><div class="lab">Currents · mechanism<span class="mono">${CURRENTS.length} threads</span></div>${CURRENTS.map(c=>`<div class="mech" data-t="${c.theme}"><div class="id">${c.cid}<b>${THEMES[c.theme]}${byOf(c)?` · ${byOf(c)}`:""}</b><small>${esc(c.h)}</small></div><div class="m">${esc(c.mech)}<div class="fcs">${c.fcs.map(id=>byId[id]).filter(Boolean).map(f=>`<button type="button" data-id="${f.id}" title="${esc(f.q)}"><b>${pct(now(f))}</b>${f.id}</button>`).join("")}<button type="button" class="sec" data-theme="${c.theme}" title="Read this section in the human edition">human edition →</button></div></div></div>`).join("")}</section>`;
   const fx=`<section class="ag"><div class="lab">Forecasts the edition rests on<span class="mono">${ed.length} questions · soonest first</span></div><table class="fx"><thead><tr><th>Record ID</th><th>Claim</th><th>UBIK</th><th>Resolves</th><th>Market</th></tr></thead><tbody>${[...ed].sort((a,b)=>a.due.localeCompare(b.due)).map(f=>{ const d=now(f)-first(f); const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null; return `<tr><td class="id"><button type="button" data-id="${f.id}">${f.id}</button></td><td>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="id">${fmt(f.due)}</td><td class="mk">${m?`${m.venue} ${pct(m.p)}${m.adj?" adj":""}`:"—"}</td></tr>`; }).join("")}</tbody></table></section>`;
   const change=`<section class="ag"><div class="lab">What would change the view<span class="mono">${AGENT_ED.change.length} conditions</span></div><ul>${AGENT_ED.change.map(([t,i,c])=>`<li data-t="${t}"><span class="d">${THEMES[t]}</span><span class="if"><b>If</b> ${esc(i)}: <span>${esc(c)}</span></span></li>`).join("")}</ul></section>`;
@@ -2530,7 +2530,7 @@ function wireAg(){
   const c=document.getElementById("agcopy"); if(c) c.addEventListener("click",async()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(agentPayload(),null,2)); c.textContent="Copied"; setTimeout(()=>c.textContent="Copy JSON",1500); }catch(e){ c.textContent="Select the JSON view"; } });
 }
 // ---- Films: one tile per edition. A linked film plays in place; without one the tile is the engine's lead still. ----
-function filmEmbed(url){ const m=url.match(/archive\.org\/(?:details|embed)\/([^/?#]+)/); if(m) return `<iframe src="https://archive.org/embed/${m[1]}" allowfullscreen loading="lazy" title="Film"></iframe>`; if(/\.(mp4|webm)(\?|$)/.test(url)) return `<video src="${url}" controls playsinline></video>`; return `<iframe src="${url}" allowfullscreen loading="lazy" title="Film"></iframe>`; }
+function filmEmbed(url){ if(!/^https?:\/\//i.test(url||"")) return ""; const m=url.match(/archive\.org\/(?:details|embed)\/([^/?#]+)/); if(m) return `<iframe src="https://archive.org/embed/${esc(m[1])}" allowfullscreen loading="lazy" title="Film"></iframe>`; if(/\.(mp4|webm)(\?|$)/.test(url)) return `<video src="${esc(url)}" controls playsinline></video>`; return `<iframe src="${esc(url)}" allowfullscreen loading="lazy" title="Film"></iframe>`; }
 function renderFilms(){
   const g=document.getElementById("filmgrid"); if(!g) return;
   const fcsOn=d=>F.filter(f=>f.hist.some(h=>h[0]===d)).length;
@@ -2570,7 +2570,7 @@ if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view");
 document.getElementById("tbody").addEventListener("click",e=>{ const tr=e.target.closest("tr"); if(tr&&tr.dataset.id) select(tr.dataset.id); });
 
 // the Forecasts page: next to this one on the archive site, otherwise its published copy
-const FORECASTS_URL=/\/prototypes\//.test(location.pathname)?"../forecasts/":"https://claude.ai/artifact/QAJwbSBkVCMsCirDS1QM1h";
+const FORECASTS_URL="../forecasts/";
 document.querySelectorAll('[data-ext="forecasts"]').forEach(a=>{a.href=FORECASTS_URL;a.target="_blank";a.rel="noopener";});
 </script>
 
