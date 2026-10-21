@@ -38,6 +38,43 @@ jobs:
         with:
           path: dist
 
+  # The same site at ubikistan.org/archive/: built again with that base address and sent over ssh.
+  # Needs the secret DEPLOY_SSH_KEY (the deploy key the server knows); without it the job is skipped.
+  ubikistan-org:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.DEPLOY_SSH_KEY != '' }}
+    steps:
+      - if: env.HAS_KEY == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - if: env.HAS_KEY == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - if: env.HAS_KEY == 'true'
+        run: pip install pyyaml
+      - if: env.HAS_KEY == 'true'
+        run: python3 tools/build.py build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARCHIVE_BASE_URL: https://ubikistan.org/archive/
+      - if: env.HAS_KEY == 'true'
+        name: Send to the server
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: 161.33.206.162
+          DEPLOY_USER: ubuntu
+          DEPLOY_PATH: /srv/ubikistan/archive
+        run: |
+          umask 077; mkdir -p ~/.ssh; printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          rsync -az --delete --exclude 'prototypes/' -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+          rm -f ~/.ssh/deploy_key
+
   deploy:
     if: github.event_name != 'pull_request'
     needs: build
