@@ -386,11 +386,14 @@ footer{border-top:2px solid var(--rule);font-family:var(--ui);letter-spacing:.06
 .socials a{text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
 .socials a:hover,.socials a:focus-visible{color:var(--ink);border-bottom-color:var(--rule);outline:none}
 .socials .dot{color:var(--line)}
-.socials .who,.msoc .who{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:none;color:var(--ring-text);border:1px solid var(--line);padding:2px 6px;border-radius:2px}
-.socials .who.sep,.msoc .who.sep{margin-left:14px}
+.socials .grp{display:inline-flex;align-items:center;gap:8px}
+.socials .grp+.grp{margin-left:16px;padding-left:16px;border-left:1px solid var(--line)}
+.socials .who,.msoc .who{font-family:var(--mono);font-size:10.5px;letter-spacing:0;text-transform:none;color:var(--ring-text);margin-right:2px}
+.msoc .grp{display:inline-flex;align-items:center;gap:10px}
+.msoc .grp+.grp{margin-left:14px;padding-left:14px;border-left:1px solid var(--line)}
 .socials .agent{margin-left:14px;color:var(--ink);border-bottom-color:var(--rule)}
 .socials .agent:hover{color:var(--ring);border-bottom-color:var(--ring)}
-.socials .llms{margin-left:14px;font-family:var(--mono);text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:1px 6px}
+.socials .llms{margin-left:2px;font-family:var(--mono);text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:1px 6px}
 .socials .llms:hover,.socials .llms:focus-visible{color:var(--ink);border-color:var(--rule);outline:none}
 @media (max-width:959px){.socials{order:3;flex-basis:100%;margin-left:0;flex-wrap:wrap}.socials .agent{margin-left:auto}}
 
@@ -1479,15 +1482,14 @@ a.pw{text-decoration:none}
     </div>
     <div class="row2">
       <nav class="socials" aria-label="ubik.gold elsewhere, and the Republic">
-        <span class="who">ubik.gold</span>
+        <span class="grp"><span class="who">ubik.gold:</span>
         <a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">youtube</a><span class="dot">·</span>
         <a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">instagram</a><span class="dot">·</span>
         <a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">tiktok</a><span class="dot">·</span>
-        
-        <a class="llms" href="https://ubik.gold/llms.txt" target="_blank" rel="noopener" title="ubik.gold's edition as plain text, for any model">llms.txt</a>
-        <span class="who sep">ubikistan</span>
+        <a class="llms" href="https://ubik.gold/llms.txt" target="_blank" rel="noopener" title="ubik.gold's edition as plain text, for any model">llms.txt</a></span>
+        <span class="grp"><span class="who">ubikistan:</span>
         <a href="https://ubikistan.github.io/archive/" target="_blank" rel="noopener">archive</a><span class="dot">·</span>
-        <a href="https://x.com/ubikworldstate" target="_blank" rel="noopener" title="Ubikistan World State on X">x</a>
+        <a href="https://x.com/ubikworldstate" target="_blank" rel="noopener" title="Ubikistan World State on X">x</a></span>
       </nav>
       <span class="stamp" id="stamp">EDITION ${EDITION_DAY} · UPDATED 08:29 EDT</span>
       <span class="gate" id="gate"></span><span class="who" id="who"></span>
@@ -1671,7 +1673,7 @@ a.pw{text-decoration:none}
     <span>Provenance: <span class="tag v">VERIFIED</span><span class="tag r">REPORTED</span><span class="tag i">INFERENCE</span><span class="tag f">FORECAST</span></span>
     <span>For models: <a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a> · <a href="#agent" data-goto="agent">API and MCP</a></span>
     <span><a href="#cover" id="coverlink">Cover</a></span>
-    <span class="msoc" aria-label="ubik.gold elsewhere"><span class="who">ubik.gold</span><a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">youtube</a><a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">instagram</a><a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">tiktok</a><a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a><span class="who sep">ubikistan</span><a href="https://x.com/ubikworldstate" target="_blank" rel="noopener">x</a><a href="https://ubikistan.github.io/archive/" target="_blank" rel="noopener">archive</a></span>
+    <span class="msoc" aria-label="ubik.gold elsewhere, and the Republic"><span class="grp"><span class="who">ubik.gold:</span><a href="https://www.youtube.com/@ubik_gold" target="_blank" rel="noopener">youtube</a><a href="https://www.instagram.com/ubik_gold/" target="_blank" rel="noopener">instagram</a><a href="https://www.tiktok.com/@ubik_gold" target="_blank" rel="noopener">tiktok</a><a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a></span><span class="grp"><span class="who">ubikistan:</span><a href="https://ubikistan.github.io/archive/" target="_blank" rel="noopener">archive</a><a href="https://x.com/ubikworldstate" target="_blank" rel="noopener">x</a></span></span>
     <span class="mtog" role="group" aria-label="Appearance"><button type="button" data-m="light">Light</button><button type="button" data-m="system">Auto</button><button type="button" data-m="dark">Dark</button><button type="button" data-m="neon">Neon</button></span>
   </footer>
 </div>
@@ -1692,7 +1694,7 @@ let MKT={};
 async function loadMarkets(){
   const ids=[...new Set(Object.values(MKT_MAP).map(m=>m.pm))]; if(!ids.length) return;
   const {body}=await deskGet("/markets?pm="+ids.join(","),false); const got={};
-  for(const [q,m] of Object.entries(MKT_MAP)){ const r=(body.markets||{})[m.pm]; if(r&&r.yes!=null&&!r.closed){ got[q]={venue:m.venue, p:m.invert?+(1-r.yes).toFixed(3):r.yes, c:m.c, adj:!!m.adj, t:r.read.slice(0,10), read:r.read.slice(0,10), vol:""}; } }
+  for(const [q,m] of Object.entries(MKT_MAP)){ const r=(body.markets||{})[m.pm]; if(r&&r.yes!=null&&!r.closed){ got[q]={venue:m.venue, p:m.invert?+(1-r.yes).toFixed(3):r.yes, c:m.c, adj:!!m.adj, t:r.read.slice(0,10), read:r.read.slice(0,10), vol:"", url:r.slug?"https://polymarket.com/market/"+r.slug:null}; } }
   MKT=got;
 }
 // ---- live data from ubik.gold, through the desk ----

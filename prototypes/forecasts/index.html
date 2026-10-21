@@ -221,12 +221,14 @@ body.history .lede p,body.history .moves{display:none}
 .where small{display:block;color:var(--muted);font-family:var(--mono);font-size:10.5px}
 a.pw{text-decoration:none}
 #acct-user{display:none}
-.degenfoot{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
-.degenfoot button{font:inherit;color:var(--muted);background:none;border:0;cursor:pointer;padding:0;opacity:.45}
-.degenfoot button:hover,.degenfoot button[aria-pressed="true"]{opacity:1;color:var(--gold)}
-.degenfoot #degennote{display:inline;margin-left:10px}
-.degenfoot #degennote.hidden{display:none}
-.degenfoot #degenon{opacity:1;color:var(--gold);border:1px solid var(--gold);padding:2px 8px;margin-left:6px}
+.degenfab{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;align-items:flex-end;gap:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .4s,transform .4s}
+.degenfab.show{opacity:1;transform:none;pointer-events:auto}
+.degenfab #degenbtn{font:inherit;font-size:18px;line-height:1;background:none;border:0;cursor:pointer;padding:6px;opacity:.55;filter:grayscale(1);animation:degenblink 2.6s ease-in-out infinite}
+.degenfab #degenbtn:hover,.degenfab #degenbtn[aria-pressed="true"]{opacity:1;filter:none;animation:none}
+@keyframes degenblink{0%,100%{opacity:.25}50%{opacity:.8}}
+.degenfab #degennote{display:block;max-width:300px;font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--muted);background:var(--surface);border:1px solid var(--rule);padding:10px 12px;border-radius:3px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.degenfab #degennote.hidden{display:none}
+.degenfab #degenon{font:inherit;color:var(--gold);background:none;border:1px solid var(--gold);padding:2px 8px;margin-left:6px;cursor:pointer}
 /* degen mode: the same page under a red neon aura */
 body.degen{--neon:#ff2d55;--neon-soft:rgba(255,45,85,.22);--gold:#ff2d55;--gold-ink:#ff7a94;--hot:#ff2d55;--cyan:#ff5c7a;--line:#3a1420;--rule:#ff2d55;--muted:#c48a97;--bg:#0b0608;--surface:#140a0e;--ink:#ffe8ee}
 body.degen{background:radial-gradient(1100px 520px at 50% -8%,rgba(255,45,85,.22),transparent 62%),radial-gradient(800px 400px at 100% 100%,rgba(255,45,85,.12),transparent 60%),var(--bg)}
@@ -235,11 +237,18 @@ body.degen .mast .mark circle,body.degen .fm svg circle{stroke:var(--neon);filte
 body.degen .mast .wm,body.degen h1,body.degen .sum .v,body.degen .card h2{text-shadow:0 0 16px rgba(255,45,85,.75)}
 body.degen .mast .sub::after{content:" · degen";color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.9)}
 body.degen .card{border-color:rgba(255,45,85,.45);box-shadow:0 0 28px rgba(255,45,85,.22),inset 0 0 0 1px rgba(255,45,85,.25)}
-body.degen .card.long{border-left-color:var(--neon)}
-body.degen .card.short{border-left-color:#ff8fa8}
+body.degen{--green:#39ff88}
+body.degen .card.long{border-left-color:var(--green);box-shadow:0 0 28px rgba(57,255,136,.18),inset 0 0 0 1px rgba(57,255,136,.22)}
+body.degen .card.short{border-left-color:var(--neon)}
 body.degen .tag{box-shadow:0 0 14px rgba(255,45,85,.7)}
-body.degen .tag.long{background:var(--neon);color:#0b0608}
-body.degen .tag.short{background:#ff8fa8;color:#0b0608}
+body.degen .tag.long{background:var(--green);color:#04120a;box-shadow:0 0 14px rgba(57,255,136,.8)}
+body.degen .tag.short{background:var(--neon);color:#0b0608}
+body.degen .tag.cash{box-shadow:none}
+body.degen .sum .long .v{color:var(--green);text-shadow:0 0 16px rgba(57,255,136,.8)}
+body.degen .sum .short .v{color:var(--neon)}
+body.degen .cv .v.pos,body.degen .card.long .instr .ir .d.long{color:var(--green);text-shadow:0 0 10px rgba(57,255,136,.7)}
+body.degen .instr .ir a.ch.vn{background:var(--neon);color:#0b0608;border-color:var(--neon);box-shadow:0 0 10px rgba(255,45,85,.6)}
+body.degen .card.long .instr .ir a.ch.vn{background:var(--green);color:#04120a;border-color:var(--green);box-shadow:0 0 10px rgba(57,255,136,.6)}
 body.degen .sum>div{border-color:rgba(255,45,85,.4);box-shadow:inset 0 0 24px rgba(255,45,85,.08)}
 body.degen .sum .long .v,body.degen .sum .short .v{color:var(--neon)}
 body.degen .gauge .edge{background:var(--neon);box-shadow:0 0 10px rgba(255,45,85,.9)}
@@ -247,10 +256,10 @@ body.degen .gauge .u{background:var(--neon)}
 body.degen .pw,body.degen .tabright .pw{border-color:var(--neon);color:#ff7a94;box-shadow:0 0 10px rgba(255,45,85,.45)}
 body.degen .tabs button[aria-selected="true"]{color:var(--neon);border-bottom-color:var(--neon);text-shadow:0 0 10px rgba(255,45,85,.8)}
 body.degen .chips button[aria-pressed="true"]{background:var(--neon);color:#0b0608;box-shadow:0 0 12px rgba(255,45,85,.8)}
-body.degen .instr .ir .d.long{color:var(--neon)}
-body.degen .instr .ir .d.short{color:#ff8fa8}
+body.degen .instr .ir .d.long{color:var(--green)}
+body.degen .instr .ir .d.short{color:var(--neon)}
 body.degen .instr .ir a.ch{border-color:var(--neon);color:#ff7a94}
-body.degen .degenfoot button[aria-pressed="true"]{color:var(--neon);text-shadow:0 0 12px rgba(255,45,85,.9);animation:degenpulse 2.2s ease-in-out infinite}
+body.degen .degenfab #degenbtn[aria-pressed="true"]{text-shadow:0 0 12px rgba(255,45,85,.9);filter:drop-shadow(0 0 8px rgba(255,45,85,.9));animation:degenpulse 2.2s ease-in-out infinite}
 @keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.55}}
 body.degen footer{border-top-color:rgba(255,45,85,.4)}
 /* the account panel: sign-in and the holder key, one place on every page */
@@ -379,7 +388,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
     <p><b>How to read it.</b> Above 60% the engine leans yes, below 40% it leans no, between it calls the question open. The gap is the engine's probability minus the market's where a contract exists. Names are where the question shows up, listed for reference; nothing here is a position, a recommendation or a suggestion of what to do.</p>
     <p>Not advice, no price targets. Forecasts are probabilities, not financial advice. Market prices are a snapshot, read on the date shown.</p>
     <p class="mono" id="foot"></p>
-    <p class="degenfoot"><button type="button" id="degenbtn" aria-pressed="false">⭕ degen mode</button><span id="degennote" class="hidden">For entertainment. Positions are a mechanical reading of each forecast (above 60% the YES leg, below 40% the NO leg, else cash), named instruments and chart links. Not advice, not a recommendation; the disclaimer applies in full. <button type="button" id="degenon">Turn on</button></span></p>
+    <div class="degenfab" id="degenfab" aria-label="Degen mode"><span id="degennote" class="hidden">For entertainment only. Positions are a mechanical reading of each forecast (above 60% the YES leg, below 40% the NO leg, else cash), with chart, venue and contract links. Nothing here is a recommendation or advice; venues may not be available or lawful where you are; the disclaimer applies in full. By turning this on you confirm you understand that. <button type="button" id="degenon">Turn on</button></span><button type="button" id="degenbtn" aria-pressed="false" title="degen mode">⭕</button></div>
     <div class="flogo"><span class="fm" id="fmark"></span><span class="fw">Ubikistan Forecasts</span></div>
     <p class="legal"><a href="../disclaimer/" class="disc">Disclaimer</a> · <a href="https://ubik.gold/terms" target="_blank" rel="noopener">ubik.gold terms</a>. Not financial advice. For entertainment and education only. Built on content published by ubik.gold; a non-commercial, community-run initiative. AI-generated. Not for persons under 18 or in the United States.</p>
   </div>
@@ -441,7 +450,7 @@ let MKT={};
 async function loadMarkets(){
   const ids=[...new Set(Object.values(MKT_MAP).map(m=>m.pm))]; if(!ids.length) return;
   const {body}=await deskGet("/markets?pm="+ids.join(","),false); const got={};
-  for(const [q,m] of Object.entries(MKT_MAP)){ const r=(body.markets||{})[m.pm]; if(r&&r.yes!=null&&!r.closed){ got[q]={venue:m.venue, p:m.invert?+(1-r.yes).toFixed(3):r.yes, c:m.c, adj:!!m.adj, t:r.read.slice(0,10), read:r.read.slice(0,10), vol:""}; } }
+  for(const [q,m] of Object.entries(MKT_MAP)){ const r=(body.markets||{})[m.pm]; if(r&&r.yes!=null&&!r.closed){ got[q]={venue:m.venue, p:m.invert?+(1-r.yes).toFixed(3):r.yes, c:m.c, adj:!!m.adj, t:r.read.slice(0,10), read:r.read.slice(0,10), vol:"", url:r.slug?"https://polymarket.com/market/"+r.slug:null}; } }
   MKT=got;
 }
 // ---- live data from ubik.gold, through the desk (the Forecasts page) ----
@@ -482,7 +491,7 @@ function buildCalls(){
   for(const f of F){ if(f.status!=="open") continue; let i=INSTR[f.id];
     if(!i||!(i.yes.length||i.no.length)) NON_MARKET.push(f.id);
     if(!i) i={asset:f.q.slice(0,40), cats:["m"], short:f.q, yes:[], no:[], catalyst:[f.due,"Resolution date"], note:""};
-    const mk=MKT[f.id]; CALLS.push({id:f.id, asset:i.asset, cats:i.cats, short:i.short, yes:i.yes, no:i.no, catalyst:i.catalyst, chatter:[], note:i.note, market:mk?{venue:mk.venue,p:mk.p,read:mk.read,c:mk.c,adj:mk.adj}:undefined}); }
+    const mk=MKT[f.id]; CALLS.push({id:f.id, asset:i.asset, cats:i.cats, short:i.short, yes:i.yes, no:i.no, catalyst:i.catalyst, chatter:[], note:i.note, market:mk?{venue:mk.venue,p:mk.p,read:mk.read,c:mk.c,adj:mk.adj,url:mk.url}:undefined}); }
 }
 function applyEdition(raw){
   const t=transform(raw); F=t.F; TS=t.TS; EXTRA_CAL=t.EXTRA_CAL; EDITION_DAY=t.DATE; READ.forecasts=t.DATE;
@@ -539,7 +548,11 @@ function renderGate(){
 // ---- the easter egg: degen mode ----
 (function wireDegen(){
   const b=document.getElementById("degenbtn"), note=document.getElementById("degennote"), on=document.getElementById("degenon"); if(!b) return;
-  const paint=()=>{ document.body.classList.toggle("degen",DEGEN); b.setAttribute("aria-pressed",String(DEGEN)); b.textContent=DEGEN?"⭕ degen mode · on":"⭕ degen mode"; };
+  const fab=document.getElementById("degenfab");
+  const paint=()=>{ document.body.classList.toggle("degen",DEGEN); b.setAttribute("aria-pressed",String(DEGEN)); b.title=DEGEN?"degen mode · on":"degen mode"; };
+  // the circle shows itself once the reader has scrolled down, and only when the page is open
+  const show=()=>{ fab.classList.toggle("show",(window.scrollY>400||DEGEN)&&!document.body.classList.contains("gated")); if(window.scrollY<=400&&!DEGEN) note.classList.add("hidden"); };
+  window.addEventListener("scroll",show,{passive:true}); setInterval(show,1500); show();
   b.addEventListener("click",()=>{ if(DEGEN){ DEGEN=false; try{localStorage.setItem("ubik-degen","0")}catch(e){} paint(); note.classList.add("hidden"); if(RAW) applyEdition(RAW); } else { note.classList.toggle("hidden"); } });
   on.addEventListener("click",()=>{ DEGEN=true; try{localStorage.setItem("ubik-degen","1")}catch(e){} note.classList.add("hidden"); paint(); if(RAW) applyEdition(RAW); window.scrollTo({top:0,behavior:"smooth"}); });
   paint();
@@ -558,7 +571,13 @@ const TOPICS={
 };
 
 // where to actually take the position. RH = Robinhood (US-listed only), HL = Hyperliquid, CB = Coinbase; exchanges for futures; ADRs where a European or Asian name has one.
-const VENUES={};
+const RH=t=>["Robinhood",`https://robinhood.com/us/en/stocks/${t}/`];
+const VENUES={
+ "EWQ":[RH("EWQ")],"KSA":[RH("KSA")],"XLE":[RH("XLE")],"EWZ":[RH("EWZ")],"Nvidia":[RH("NVDA")],"CoreWeave":[RH("CRWV")],"Petrobras":[RH("PBR")],
+ "Brent":[["ICE Brent","https://www.ice.com/products/219/Brent-Crude-Futures"],["BNO ETF",RH("BNO")[1]]],
+ "Diesel crack":[["CME heating oil","https://www.cmegroup.com/markets/energy/refined-products/heating-oil.html"],["ICE gasoil","https://www.ice.com/products/34361119/Low-Sulphur-Gasoil-Futures"]],
+ "MOL":[["Budapest MOL","https://www.google.com/finance/quote/MOL:BUD"]],
+};
 
 const TODAY=new Date().toISOString().slice(0,10);
 const P=f=>f.hist[f.hist.length-1][1];
@@ -635,7 +654,7 @@ function stepsOf(f){
   const h=f.hist; const out=[]; h.forEach((e,i)=>{ if(i===0) out.push(`${d2(e[0])} issued at <b>${pc(e[1])}%</b>`); else if(e[1]!==h[i-1][1]) out.push(`${d2(e[0])} ${e[1]>h[i-1][1]?"raised":"lowered"} to <b>${pc(e[1])}%</b>`); });
   return out.slice(-4).join("<br>");
 }
-function chips(list){ if(!DEGEN||!list.length) return ""; return `<div class="instr">${list.map(([n,u,d])=>`<div class="ir"><span class="d ${d}">${d}</span><span class="nm">${esc(n)}</span><span class="lk"><a href="${u}" target="_blank" rel="noopener" class="ch">chart</a></span></div>`).join("")}</div>`; }
+function chips(list){ if(!DEGEN||!list.length) return ""; return `<div class="instr">${list.map(([n,u,d])=>{const v=VENUES[n]||[];return `<div class="ir"><span class="d ${d}">${d}</span><span class="nm">${esc(n)}</span><span class="lk"><a href="${u}" target="_blank" rel="noopener" class="ch">chart</a>${v.map(([l,h])=>`<a href="${h}" target="_blank" rel="noopener" class="ch vn">${esc(l)}</a>`).join("")}</span></div>`}).join("")}</div>`; }
 function venueRow(mk){ return `<div class="venue"><span>${esc(mk.venue)}</span><span>${esc(mk.c)}</span><span>YES <b>${pc(mk.p)}¢</b> · ${d2(mk.read)}</span></div>`; }
 function card(o){
   const f=o.f, p=o.p, st=o.m, isM=o.kind==="m";
@@ -663,6 +682,7 @@ function card(o){
     ${stats}
     ${odds}
     <h2>${esc(f.q)}</h2>
+    ${DEGEN&&mk&&mk.url?`<div class="instr"><div class="ir"><span class="d ${p>mk.p?"long":"short"}">${p>mk.p?"yes":"no"}</span><span class="nm">${esc(mk.venue)} · ${esc(mk.c)}</span><span class="lk"><a href="${mk.url}" target="_blank" rel="noopener" class="ch vn">contract</a></span></div></div>`:""}
     ${where}
     <div class="plan"><div class="entry"><span class="k">What settles it</span><b>${d2(o.catalyst[0])}</b> ${esc(o.catalyst[1].split(" ·")[0])}</div><div class="exit"><span class="k">Resolves by</span><b>${d2(f.due)}</b></div></div>
     <details class="more"><summary>Why, history, rule</summary><div class="body">

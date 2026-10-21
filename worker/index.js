@@ -967,7 +967,7 @@ async function markets(req, url, cors, env) {
       if (!r.ok) { out[id] = { error: r.status }; return; }
       const m = await r.json();
       let yes = null; try { yes = parseFloat(JSON.parse(m.outcomePrices || "[]")[0]); } catch (e) {}
-      const row = { yes: Number.isFinite(yes) ? yes : null, question: m.question || "", ends: (m.endDate || "").slice(0, 10), closed: !!m.closed, read: new Date().toISOString() };
+      const row = { yes: Number.isFinite(yes) ? yes : null, question: m.question || "", slug: m.slug || "", ends: (m.endDate || "").slice(0, 10), closed: !!m.closed, read: new Date().toISOString() };
       out[id] = row;
       await env.KV.put(k, JSON.stringify(row), { expirationTtl: 300 });
     } catch (e) { out[id] = { error: "unreachable" }; }

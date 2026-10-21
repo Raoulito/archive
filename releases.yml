@@ -1,5 +1,12 @@
 # The site's versions, newest first. Add a release at the top whenever the site's features change:
 # a new page, view, tool or way of taking part. Content (records, lore, images) does not change the version.
+- version: "1.29"
+  date: 2026-10-21
+  title: Degen mode, second cut
+  changes:
+    - "Degen mode is now a small circle in the bottom-right corner of the Forecasts page, which appears once you scroll down. One click shows the notice; Turn on opens it."
+    - "In degen mode long legs glow green and short legs red, and every leg has chart and venue buttons. Questions with a listed Polymarket contract get a contract button."
+    - "The World State's channel links are grouped under their owners: ubik.gold (YouTube, Instagram, TikTok, llms.txt) and Ubikistan (archive, X)."
 - version: "1.28"
   date: 2026-10-21
   title: "Degen mode"
