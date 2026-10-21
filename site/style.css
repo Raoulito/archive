@@ -8,9 +8,9 @@
 :root{
   /* The Republic's palette, shared with the World State: warm paper by day, near-black by night, one gold ring. */
   --ground:#efece6;--surface:#f6f4ef;--raised:#fbfaf7;--ink:#15140f;--muted:#625d54;--faint:#8a847a;
-  --rule:#d6d1c7;--rule-strong:#b8b2a6;--teal:#8a6710;--teal-soft:rgba(217,162,27,.13);
+  --rule:#d6d1c7;--rule-strong:#b8b2a6;--teal:#4a3b7c;--teal-soft:rgba(74,59,124,.11);
   --rust:#b0402a;--rust-soft:rgba(176,64,42,.1);--violet:#5a4fb0;--violet-soft:rgba(90,79,176,.1);
-  --red:#c8322a;--gold:#d9a21b;--gold-text:#8a6710;--shade:#e6e2d9;--flag:#4A3B7C;
+  --red:#c8322a;--gold:#d9a21b;--gold-text:#8a6710;--purple:#4a3b7c;--shade:#e6e2d9;--flag:#4A3B7C;
   --display:"Newsreader",Georgia,"Times New Roman",serif;
   --body:"Source Serif 4",Georgia,"Times New Roman",serif;
   --ui:"Archivo","Helvetica Neue",Arial,sans-serif;
@@ -20,16 +20,16 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --ground:#121315;--surface:#1a1b1e;--raised:#202226;--ink:#ece6d8;--muted:#a8a396;--faint:#7d786d;
-    --rule:#2a2c30;--rule-strong:#3f4247;--teal:#d1a74c;--teal-soft:rgba(209,167,76,.14);
+    --rule:#2a2c30;--rule-strong:#3f4247;--teal:#b4a3f0;--teal-soft:rgba(180,163,240,.13);
     --rust:#e77a62;--rust-soft:rgba(231,122,98,.12);--violet:#b98bff;--violet-soft:rgba(185,139,255,.13);
-    --red:#e0473c;--gold:#d1a74c;--gold-text:#d1a74c;--shade:#232428;color-scheme:dark;
+    --red:#e0473c;--gold:#d1a74c;--gold-text:#d1a74c;--purple:#b4a3f0;--shade:#232428;color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --ground:#121315;--surface:#1a1b1e;--raised:#202226;--ink:#ece6d8;--muted:#a8a396;--faint:#7d786d;
-  --rule:#2a2c30;--rule-strong:#3f4247;--teal:#d1a74c;--teal-soft:rgba(209,167,76,.14);
+  --rule:#2a2c30;--rule-strong:#3f4247;--teal:#b4a3f0;--teal-soft:rgba(180,163,240,.13);
   --rust:#e77a62;--rust-soft:rgba(231,122,98,.12);--violet:#b98bff;--violet-soft:rgba(185,139,255,.13);
-  --red:#e0473c;--gold:#d1a74c;--gold-text:#d1a74c;--shade:#232428;color-scheme:dark;
+  --red:#e0473c;--gold:#d1a74c;--gold-text:#d1a74c;--purple:#b4a3f0;--shade:#232428;color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -51,9 +51,9 @@ img{max-width:100%;display:block}
 .brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;margin-right:auto}
 .seal{width:26px;height:26px;flex:none}
 .brand-t{display:flex;align-items:baseline;gap:10px;line-height:1}
-.b1{font:700 14px/1 var(--ui);letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.b1{font:700 14px/1 var(--ui);letter-spacing:.18em;text-transform:uppercase;color:var(--gold-text)}
 .b2{font:500 10.5px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.brand:hover .b1{color:var(--gold-text)}
+.brand:hover .b1{color:var(--ink)}
 .flag{width:15px;height:10px;flex:none;box-shadow:0 0 0 .5px var(--rule-strong)}
 .b3{display:none}
 .doctrine{display:block;margin-top:6px;font:500 10.5px/1.4 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
