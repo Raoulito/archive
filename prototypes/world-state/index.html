@@ -1634,7 +1634,7 @@ a.pw{text-decoration:none}
   <div id="cover" class="hidden" role="dialog" aria-modal="true" aria-labelledby="cover-h">
     <div class="coverfig" aria-hidden="true"></div>
     <div class="coverin">
-      <div class="coverhead"><svg class="logo" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--ring)" stroke-width="22"/></svg><span class="wm">Ubikistan</span><span class="ws">World State</span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Powered by ubik.gold</a><span class="pw proto">Prototype</span><span class="mono" id="cover-stamp"></span></div>
+      <div class="coverhead"><svg class="logo" viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="46" fill="none" stroke="var(--ring)" stroke-width="22"/></svg><span class="wm">Ubikistan</span><span class="ws">World State</span><a class="pw" href="https://ubik.gold" target="_blank" rel="noopener">Powered by ubik.gold</a><span class="pw proto">Prototype</span></div>
       <div class="ekick" id="cover-k"></div><h1 id="cover-h"></h1>
       <p class="thesis" id="cover-thesis"></p>
       <div class="coverscore" id="cover-score"></div>
@@ -2639,7 +2639,6 @@ function showCover(force){
   const c=document.getElementById("cover"); if(!c) return;
   const res=F.filter(f=>f.resolved), open=F.filter(f=>f.status==="open");
   c.querySelector(".coverfig").innerHTML=COVER_FIG;
-  document.getElementById("cover-stamp").textContent=`EDITION ${AGENT_ED.date} · UPDATED ${AGENT_ED.updated.slice(11,16)} EDT`;
   document.getElementById("cover-h").textContent=EDITION_TITLE||`The world on ${EDITION_LONG}`;
   document.getElementById("cover-thesis").textContent=AGENT_ED.thesis.split(". ")[0]+".";
   document.getElementById("cover-score").innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span><span>Brier <b>${res.length?(res.reduce((a,f)=>a+f.brier,0)/res.length).toFixed(3):"—"}</b></span><span><b>${AGENT_ED.sources}</b> sources</span>`;
