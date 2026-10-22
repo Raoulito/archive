@@ -45,11 +45,12 @@ function transform(raw){
   const hist=f=>{ const h=(f.history||[]).map(e=>Array.isArray(e)?{at:e[0],probability:e[1],why:e[2]}:e); return h.length?h:[{at:f.updated_at||meta.revised_at||date,probability:f.probability,why:null}]; };
   const out={F:[],TS:{},RESOLVED_AT:{},GEO:{},CURRENTS:[],DATE:date,LONG:longDate(date),UPDATED:meta.revised_at||meta.updated_at||"",FIRST:meta.updated_at||meta.revised_at||"",LOCKED:meta.locked||""};
   for(const f of Object.values(all).sort((a,b)=>hist(b)[0].at.localeCompare(hist(a)[0].at))){
-    const h=hist(f), id=f.question_id, status=["open","yes","no"].includes(f.status)?f.status:"open";
+    const h=hist(f), id=f.question_id, status=["open","yes","no"].includes(f.status)?f.status:(["yes","no"].includes(f.outcome)?f.outcome:"open");
     out.TS[id]=h.map(e=>[e.at,e.probability]);
     const o={id, theme:themeOf(f.claim,null)||themeOf((f.reasoning||"").slice(0,300)), q:f.claim, hist:h.map(e=>[e.at.slice(0,10),e.probability]), due:f.deadline, status, locked:!!f.locked};
     const g=geoOf(f.claim); if(g) out.GEO[id]=g;
     if(f.resolved_at){ o.resolved=f.resolved_at.slice(0,10); out.RESOLVED_AT[id]=f.resolved_at; }
+    if(f.outcome) o.outcome=f.outcome;
     if(f.brier!=null) o.brier=f.brier;
     if(inEd.has(id)) o.edition=true;
     const why=h[0].why||(f.reasoning||"").split(". ")[0]; if(why) o.why=why;
