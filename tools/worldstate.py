@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """The World State on X (@ubikworldstate): the edition when it lands, the forecasts it issues, and what settles.
 
+The edition is a thread: the headline with the first sentences of the day's argument (the thesis, or the lead when
+there is none), the questions issued that day, then the counts and an invitation to reply with one's own number.
+
   python3 tools/worldstate.py           print what would be posted now (no posting)
   python3 tools/worldstate.py --post    post it (needs WS_X_API_KEY, WS_X_API_SECRET, WS_X_ACCESS_TOKEN, WS_X_ACCESS_SECRET)
 
@@ -8,7 +11,7 @@ Runs every hour from .github/workflows/worldstate.yml. tools/worldstate.log reme
 item (kind, key, day, post id), so an edition is announced once, a question once, a settlement once. Revisions of
 an edition during the day are not announced. Wording: forecasts are issued, resolve, settle, are scored; never bets.
 """
-import argparse, datetime as dt, json, os, sys, urllib.request
+import argparse, datetime as dt, json, os, re, sys, urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG = os.path.join(ROOT, "tools", "worldstate.log")
 SITE = "https://ubikistan.org/world-state/"
@@ -29,12 +32,35 @@ def posted():
 def long_day(iso): d = dt.date.fromisoformat(iso[:10]); return f"{d.day} {d.strftime('%B')}"
 def pct(p): return f"{round((p or 0) * 100)}%"
 def short_claim(c): return (c or "").strip()   # the question as issued, verbatim
+def tlen(text): return len(re.sub(r"https?://\S+", "x" * 23, text))   # X counts every link as 23 characters
+
+def sentences(text):
+    """Split prose into sentences, keeping 'Oct. 21', 'U.S.' and the like together."""
+    out, cur = [], ""
+    for part in re.split(r"(?<=[.!?])\s+", (text or "").strip()):
+        cur = (cur + " " + part).strip() if cur else part
+        last = cur.split()[-1] if cur.split() else ""
+        if re.fullmatch(r"[A-Z][a-z]{0,3}\.|(?:[A-Z]\.)+", last): continue   # an abbreviation, not an end
+        out.append(cur); cur = ""
+    if cur: out.append(cur)
+    return out
+
+def hook(thesis, lead, budget):
+    """The first sentences of the day's argument (or of the lead) that fit the budget, at least one."""
+    for src in (thesis, lead):
+        picked = ""
+        for s in sentences(src):
+            if picked and tlen(picked + " " + s) > budget: break
+            if not picked and tlen(s) > budget: break
+            picked = (picked + " " + s).strip()
+        if picked: return picked
+    return ""
 
 def chunks(lines, head, limit=270):
     """Group lines into posts under the limit, the first carrying the head."""
     out, cur = [], head
     for l in lines:
-        if len(cur) + len(l) + 1 > limit and cur.strip(): out.append(cur.rstrip()); cur = ""
+        if tlen(cur) + tlen(l) + 1 > limit and cur.strip(): out.append(cur.rstrip()); cur = ""
         cur += ("\n" if cur else "") + l
     if cur.strip(): out.append(cur.rstrip())
     return out
@@ -42,17 +68,24 @@ def chunks(lines, head, limit=270):
 def plan():
     """What to post now: a list of threads, each a list of post texts, with the log lines they stand for."""
     done = posted(); items = []
-    syn = get("/synthesis"); meta = syn.get("meta", {}); prose = syn.get("prose", "")
+    syn = get("/synthesis?include=thesis"); meta = syn.get("meta", {}); prose = syn.get("prose", "")
     day = (meta.get("updated_at") or "")[:10]
-    head = next((l[2:].strip() for l in prose.split("\n") if l.startswith("# ")), "")
+    paras = [p.strip() for p in prose.split("\n") if p.strip()]
+    head = next((p[2:].strip() for p in paras if p.startswith("# ")), "")
+    lead = next((p for p in paras if not p.startswith("#")), "")
+    thesis = (syn.get("methodology") or {}).get("thesis", "")
     open_ = get("/forecasts?status=open&include=history").get("data", [])
     settled = get("/forecasts?status=settled").get("data", [])
     new_qs = [f for f in open_ if f.get("question_id", "").startswith("q_" + day.replace("-", "")) and ("issued", f["question_id"]) not in done]
-    # 1. the edition, once a day, with the questions it issued as replies
+    # 1. the edition, once a day: the headline and the argument, the questions it issued, and a word to the reader
     if day and head and ("edition", day) not in done:
-        first = f"Edition of {long_day(day)}: {head}\n\n{len(new_qs)} forecast{'s' if len(new_qs) != 1 else ''} issued, {len(open_)} open.\n\n{SITE}"
+        top = f"Edition of {long_day(day)}\n{head}\n\n"
+        first = top + hook(thesis, lead, 276 - tlen(top) - tlen("\n\n" + SITE)) + "\n\n" + SITE
         lines = [f"• {short_claim(f['claim'])} · {pct(f.get('probability'))} · by {long_day(f['deadline'])}" for f in sorted(new_qs, key=lambda f: f["question_id"])]
-        thread = [first] + (chunks(lines, "Issued today:") if lines else [])
+        n = len(new_qs)
+        last = (f"{n} forecast{'s' if n != 1 else ''} issued today, {len(open_)} open. Each one is dated, and each one is scored in public when it settles.\n\n"
+                f"Think the engine is wrong? Reply with your own number.\n\n{SITE}")
+        thread = [first] + (chunks(lines, "Issued today:") if lines else []) + [last]
         items.append({"thread": thread, "log": [("edition", day, day)] + [("issued", f["question_id"], day) for f in new_qs]})
     elif new_qs:
         # questions issued later in the day, after the edition was announced
