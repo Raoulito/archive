@@ -1983,20 +1983,16 @@ function openShare(f){
   dlg.showModal();
 }
 
-function select(id){
-  selected = selected===id ? null : id;
-  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
-  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
-  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
-  const f=byId[id]; const c=currentOf(id);
+function renderDossierSheet(f){
+  const dos=document.getElementById("dossier");
+  const c=currentOf(f.id);
   const d=now(f)-first(f);
   const hist=f.hist.map(([dt,p],i)=>{
     const prev=i? f.hist[i-1][1] : null;
     const why = i===0 ? (f.why? "Issued. "+f.why : "Issued.") : (i===f.hist.length-1 && f.change ? f.change : (prev!==null? (p>prev?"Raised":"Lowered")+" on the day's edition." : ""));
     return `<li><span class="d">${fmt(dt)} ${dt.slice(0,4)}</span><span class="p">${pct(p)}</span>${i? `<span class="mono" style="font-size:11px;color:var(--muted)">${p>prev?"+":"−"}${Math.round(Math.abs(p-prev)*100)}</span>`:""}<div>${esc(why)}</div></li>`;
   }).join("") + ((f.status==="yes"||f.status==="no"||f.resolved)?`<li class="res"><span class="d">${fmt(f.resolved||f.due)} 2026</span><span class="p">RESOLVED ${(f.outcome||f.status||"").toUpperCase()}</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier!=null?f.brier.toFixed(4):"—"}</span><div>${tagEl("v")}${esc(f.evidence||"")}</div></li>`:"");
-  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
-  // ---- the sheet: the team's schema for one forecast, with the ledger attached underneath ----
+  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">Issued on ${fmt(issued(f))}. <a href="#" class="goed" data-day="${issued(f)}">Open the ${fmt(issued(f))} edition →</a></p></div>`;
   const inEd=CURRENTS.flatMap(x=>x.fcs).filter((v,k,a)=>a.indexOf(v)===k); const sheetIx=inEd.indexOf(f.id);
   const prevId=sheetIx>0?inEd[sheetIx-1]:null, nextId=sheetIx>=0&&sheetIx<inEd.length-1?inEd[sheetIx+1]:null;
   const pnow=now(f), P=Math.round(pnow*100);
@@ -2004,7 +2000,12 @@ function select(id){
   const dots=`<svg class="dots" viewBox="0 0 100 100" aria-label="${P} of 100">${Array.from({length:100},(_,k)=>`<circle cx="${(k%10)*10+5}" cy="${Math.floor(k/10)*10+5}" r="3.4" class="${k<P?"on":"off"}"/>`).join("")}</svg>`;
   const whyLine=f.change||f.why||(c?c.lines.find(l=>l[0]==="i")?.[1]:"")||"";
   const chainItems=(f.chain&&f.chain.length?f.chain:(c&&c.chain?c.chain.split(/(?<=\.)\s+/).filter(Boolean).slice(0,5):[])).concat([f.q]);
-  const missing=k=>`<p class="miss">Not in this snapshot. The engine returns it as <code>${k}</code> at <code>GET /forecasts/${esc(f.id)}</code>.</p>`;
+  const missing=k=>{
+    if(f.locked){
+      return `<div class="lockednote" style="margin:6px 0">${ICON("holders")} The reasoning and sources of open forecasts outside story 1 are for holders: signing in on <a href="${UBIK_HOME}" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds ${THRESHOLD} opens them. <button type="button" class="keylink">Enter a key</button></div>`;
+    }
+    return `<p class="miss">No ${esc(k)} provided for this forecast.</p>`;
+  };
   const fold=(icon,title,body,open,cls="")=>`<details class="fold ${cls}" ${open?"open":""}><summary>${ICON(icon,"ico")}<span>${title}</span><i class="chev"></i></summary><div class="fb">${body}</div></details>`;
   const vs=(()=>{ const m=MKT[f.id]; if(m&&m.venue){ const g=Math.round(gapOf(f)*100); return `<div class="vsrow"><span><i>UBIK</i><b>${pct(pnow)}</b></span><span><i>${esc(m.venue)}${m.adj?" · adjacent":""}</i><b>${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)} pts</b></span><span><i>Contract</i><span>${esc(m.c)}</span><small> · read ${fmt(m.t)}</small></span></div>${m.adj?`<p class="adjnote">The market contract asks a neighbouring question, not this one. The gap is indicative, not a score.</p>`:`<p class="adjnote">When this resolves, the market price at issue time becomes the baseline UBIK is scored against.</p>`}`; }
     if(m) return `<p class="adjnote">${esc(m.note)} UBIK holds ${pct(pnow)} with no price to lean on. No listed contract checked.</p>`;
@@ -2017,7 +2018,7 @@ function select(id){
       <div class="sh-r"><div class="pn"><span class="k"><i></i>${sheetIx>=0?`F${sheetIx+1}`:"ARCHIVE"}</span><b>${pct(pnow)}</b></div>${dots}</div>
     </header>
     <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"||f.status==="no"||f.resolved?` · settled ${fmt(f.resolved||f.due).toLowerCase()}`:daysTo(f.due)===0?" · resolves today":daysTo(f.due)<0?" · awaiting resolution":` · ${daysTo(f.due)} day${daysTo(f.due)===1?"":"s"} left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
-    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
+    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):(f.locked?`<span class="miss">${ICON("holders")} Holder forecast · One-line reason is reserved for holders.</span>`:`<span class='miss'>No one-line reason recorded.</span>`)}</p></div>
     <div class="folds">
       ${fold("ring","Thesis", f.thesis?`<p><b>${esc(f.thesis.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.thesis.split(". ").slice(1).join(". "))}</p>`:f.why?`<p><b>${esc(f.why.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.why.split(". ").slice(1).join(". "))}</p>${c?`<p class="src">From the ${THEMES[c.theme]} current of the ${fmt(AGENT_ED.date)} edition; question issued ${fmt(issued(f))}.</p>`:""}`:missing("thesis"), true)}
       ${fold("chain","How the news leads here", `<ol>${chainItems.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>${!(f.chain&&f.chain.length)&&c?`<p class="src">Chain taken from the section's mechanism; the engine's own <code>chain</code> for this question is not in the snapshot.</p>`:""}`, true)}
@@ -2035,13 +2036,44 @@ function select(id){
   </div>`;
   dos.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{ selected=null; select(b.dataset.nav); }));
   const fa=document.getElementById("foldall"); fa.addEventListener("click",()=>{ const all=[...dos.querySelectorAll("details.fold")]; const anyOpen=all.some(d=>d.open); all.forEach(d=>d.open=!anyOpen); fa.textContent=anyOpen?"OPEN ALL ▸":"FOLD SHUT ▸"; });
-  ed.classList.add("hidden"); dos.classList.remove("hidden");
   document.getElementById("back").addEventListener("click",()=>select(selected));
   document.getElementById("share").addEventListener("click",()=>openShare(f));
   wireStars(dos); wireFollows(dos);
   const more=dos.querySelector(".more"); if(more) more.addEventListener("click",()=>{ selectSection(more.dataset.t); });
+  dos.querySelectorAll(".goed").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); selectEdition(a.dataset.day); }));
+  dos.querySelectorAll(".keylink").forEach(b=>b.addEventListener("click",openKey));
+}
+
+function select(id){
+  selected = selected===id ? null : id;
+  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
+  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
+  const f=byId[id];
+  renderDossierSheet(f);
+  ed.classList.add("hidden"); dos.classList.remove("hidden");
   renderSide();
   window.scrollTo({top:document.querySelector(".shell").offsetTop-16,behavior:"smooth"});
+
+  if((!f.reasoning || f.locked) && typeof deskGet==="function" && !f._fetching){
+    f._fetching=true;
+    deskGet("/forecasts/"+id).then(({body})=>{
+      f._fetching=false;
+      if(!body) return;
+      if(body.reasoning) f.reasoning=body.reasoning;
+      if(body.uncertainty) f.uncertainty=body.uncertainty;
+      if(body.rises_if) f.confirmation=body.rises_if;
+      if(body.falls_if) f.disconfirmation=body.falls_if;
+      if(body.resolution_rule) f.rule=body.resolution_rule;
+      if(body.resolution_source) f.source=body.resolution_source;
+      if(body.evidence) f.evidence=body.evidence;
+      if(Array.isArray(body.chain)&&body.chain.length) f.chain=body.chain.map(c=>typeof c==="string"?c:(c.step||c.text||JSON.stringify(c)));
+      if(Array.isArray(body.theses)&&body.theses.length){ const t=body.theses[0]; f.thesis=typeof t==="string"?t:(t.thesis||t.text||t.claim||""); }
+      if(body.history&&body.history[0]&&body.history[0].why) f.why=body.history[0].why;
+      f.locked=!!body.locked;
+      if(selected===id) renderDossierSheet(f);
+    }).catch(()=>{ f._fetching=false; });
+  }
 }
 function selectEdition(d){
   selected = selected==="ed:"+d ? null : "ed:"+d;
