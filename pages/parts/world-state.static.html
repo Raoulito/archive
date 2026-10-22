@@ -2200,7 +2200,7 @@ function renderTicker(){
   const sig=[];
   for(const f of F){
     const h=f.hist, last=h[h.length-1], first=h[0];
-    if(f.resolved){ sig.push({d:f.resolved, k:1, id:f.id, t:"settled "+f.status, p:`${pc(first[1])} · brier ${f.brier.toFixed(3)}`, q:f.q}); continue; }
+    if(f.resolved){ const o=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":f.status)).toLowerCase(); const br=f.brier!=null?` · brier ${f.brier.toFixed(3)}`:""; sig.push({d:f.resolved, k:1, id:f.id, t:"settled "+o, p:`${pc(first[1])}${br}`, q:f.q}); continue; }
     if(h.length>1){
       // compare against the last value from an earlier day, so same-day revisions read as one move
       const prev=[...h].reverse().find(x=>x[0]!==last[0]) || first;
@@ -2337,7 +2337,17 @@ function renderMine(){
   const soon=open.filter(f=>daysTo(f.due)<=30);
   const tiles=`<div class="tiles"><div><i>Kept</i><b>${mine.length}</b></div><div><i>Open</i><b>${open.length}</b></div><div><i>Settled</i><b>${res.length}</b></div><div><i>Changed</i><b>${changed.length}</b></div><div><i>Resolve in 30 days</i><b>${soon.length}</b></div><div><i>Brier, yours</i><b>${res.length?(res.reduce((a,f)=>a+f.brier,0)/res.length).toFixed(3):"—"}</b></div></div>`;
   const list=(fs,emptyText)=>fs.length?fs.map(f=>{ const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null; const d=now(f)-first(f);
-    return `<button type="button" class="mq" data-id="${f.id}" data-t="${f.theme}"><span class="sp">${spark(f,72,22)}</span><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""}</span><span class="q">${esc(shortQ(f.q))}</span><span class="n"><b>${pct(now(f))}</b>${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}${m?`<small>mkt ${pct(m.p)}</small>`:""}</span><span class="due">${f.resolved?`settled ${f.status}`:fmt(f.due)}</span>${starBtn(f.id)}</button>`; }).join("") : `<p class="note">${emptyText}</p>`;
+    const isSettled=!!f.resolved||f.status==="yes"||f.status==="no";
+    let dueHtml;
+    if(isSettled){
+      const outcome=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"yes")).toLowerCase();
+      const p=now(f);
+      const correct=outcome==="yes"?p>=0.5:outcome==="no"?p<=0.5:(f.brier!=null&&f.brier<0.25);
+      dueHtml=`<span class="tag ${correct?"correct":"incorrect"}">${outcome.toUpperCase()}${f.brier!=null?` · ${f.brier.toFixed(3)}`:""}</span>`;
+    } else {
+      dueHtml=fmt(f.due);
+    }
+    return `<button type="button" class="mq" data-id="${f.id}" data-t="${f.theme}"><span class="sp">${spark(f,72,22)}</span><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""}</span><span class="q">${esc(shortQ(f.q))}</span><span class="n"><b>${pct(now(f))}</b>${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}${m?`<small>mkt ${pct(m.p)}</small>`:""}</span><span class="due">${dueHtml}</span>${starBtn(f.id)}</button>`; }).join("") : `<p class="note">${emptyText}</p>`;
   const secs=CURRENTS.filter(c=>MINE.themes.has(c.theme)||c.fcs.some(id=>MINE.stars.has(id))||c.fcs.some(id=>GEO[id]&&MINE.places.has(GEO[id][2]))||secTopics(c).length);
   const sections=`<section class="mod"><h3><span class="withav">${ICON("edition")}In this edition, for you</span><span class="mono">${secs.length} of ${CURRENTS.length} sections</span></h3>${secs.length?secs.map(c=>`<button type="button" class="msec" data-t="${c.theme}" data-theme="${c.theme}"><span class="num">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · ${byOf(c)}`:""}${secTopics(c).length?` · <span class="by">${esc(secTopics(c).join(", "))}</span>`:""}</span><span class="h">${esc(c.h)}</span><span class="l">${esc(c.lines[0][1])}</span><span class="w">${c.watch?esc(c.watch):""}</span></button>`).join(""):`<p class="note">No section in today's edition touches your interests yet.</p>`}</section>`;
   document.getElementById("minepage").innerHTML=`<div class="mine"><div class="num">MINE · YOUR FEED</div><h2 class="t">${mine.length} question${mine.length===1?"":"s"} you keep${secs.length?`, ${secs.length} section${secs.length===1?"":"s"} for you today`:""}.</h2>${feedbar}${tiles}
@@ -2451,7 +2461,7 @@ function renderDash(){
     <p class="note">${open.length-withM.length} open questions have no listed contract.</p></div></section>`;
 
   // Calibration
-  const bins=[0,0.2,0.4,0.6,0.8,1]; const pts=res.map(f=>({p:first(f),o:f.status==="yes"?1:0}));
+  const bins=[0,0.2,0.4,0.6,0.8,1]; const pts=res.map(f=>{ const o=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"")).toLowerCase(); return {p:first(f),o:o==="yes"?1:0}; });
   const cal=`<section class="mod half"><h3><span class="withav">${ICON("record")}Calibration</span><span class="mono">n = ${res.length} · meaningful from ~30</span></h3>
     <svg class="calib" viewBox="0 0 240 240" aria-label="Calibration plot"><g class="grid">${[0,1,2,3,4].map(i=>`<line x1="40" y1="${20+i*45}" x2="220" y2="${20+i*45}"/><line x1="${40+i*45}" y1="20" x2="${40+i*45}" y2="200"/>`).join("")}</g>
       <line class="diag" x1="40" y1="200" x2="220" y2="20"/>
