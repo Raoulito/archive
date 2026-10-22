@@ -22,7 +22,7 @@ def lore():
     return json.load(open(p, encoding="utf-8"))
 
 def posted():
-    try: return [l.strip() for l in open(LOG, encoding="utf-8") if l.strip() and not l.startswith("#")]
+    try: return [l.split("\t")[0].strip() for l in open(LOG, encoding="utf-8") if l.strip() and not l.startswith("#")]
     except FileNotFoundError: return []
 
 def slug(code): return re.sub(r"[/ ]", "-", code)
@@ -144,7 +144,13 @@ def post_to_x(text, image_path, alt):
     return r.json()["data"]["id"]
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true"); ap.add_argument("--date"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true"); ap.add_argument("--date"); ap.add_argument("--delete", help="take a post down by its id"); a = ap.parse_args()
+    if a.delete:
+        from requests_oauthlib import OAuth1Session
+        keys = [(os.environ.get(k) or "").strip() for k in ("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET")]
+        if not all(keys): sys.exit("X credentials missing")
+        s = OAuth1Session(keys[0], client_secret=keys[1], resource_owner_key=keys[2], resource_owner_secret=keys[3])
+        r = s.delete("https://api.x.com/2/tweets/" + a.delete); print("delete", a.delete, r.status_code, r.text[:200]); sys.exit(0 if r.ok else 1)
     day = dt.date.fromisoformat(a.date) if a.date else dt.datetime.now(dt.timezone(dt.timedelta(hours=2))).date()
     d = lore(); done = posted(); p = compose(d, day, done)
     print(p["text"]); print("\n[image]", p["image"] or "none", "|", p["alt"][:80])

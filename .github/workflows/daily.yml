@@ -9,6 +9,10 @@ on:
         description: "Only print the post, do not send it"
         type: boolean
         default: false
+      delete_id:
+        description: "Take this post down instead (its id), then stop"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -37,7 +41,9 @@ jobs:
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
           DRY: ${{ inputs.dry_run }}
+          DELETE_ID: ${{ inputs.delete_id }}
         run: |
+          if [ -n "$DELETE_ID" ]; then python3 tools/daily.py --delete "$DELETE_ID"; sed -i "/\t$DELETE_ID\$/d" tools/daily.log; exit 0; fi
           if [ -n "$X_API_KEY" ] && [ "$DRY" != "true" ]; then python3 tools/daily.py --post; else python3 tools/daily.py; echo "(not posted: no X keys, or dry run)"; fi
       - name: Remember what was posted
         run: |
