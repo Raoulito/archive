@@ -115,7 +115,9 @@ def session():
     if not all(keys): sys.exit("World State X credentials missing")
     s = OAuth1Session(keys[0], client_secret=keys[1], resource_owner_key=keys[2], resource_owner_secret=keys[3])
     me = s.get("https://api.x.com/2/users/me")
-    if not me.ok: sys.exit(f"X refused the key check: {me.status_code} {me.text[:200]}")
+    if not me.ok:
+        print("key lengths (consumer key, consumer secret, access token, access secret):", [len(k) for k in keys], "| expected about [25, 50, 50, 45]")
+        sys.exit(f"X refused the key check: {me.status_code} {me.text[:200]}")
     print("posting as @" + (me.json().get("data") or {}).get("username", "?")); return s
 
 def upload(s, im, alt):
