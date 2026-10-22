@@ -10,7 +10,7 @@ fonttools and brotli (the fonts in site/fonts are woff2 and are unpacked once in
 import argparse, io, os, tempfile
 from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-W, H, PAD = 1600, 720, 96
+W, H, PAD = 1600, 900, 110
 FOOT = "UBIK FORECAST · UBIKISTAN.ORG/WORLD-STATE"
 FOOT_ED = "UBIK WORLD STATE · UBIKISTAN.ORG/WORLD-STATE"
 GOLD, INK = (217, 162, 27), (14, 14, 14)

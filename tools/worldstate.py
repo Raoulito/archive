@@ -3,7 +3,7 @@
 
 The edition is a thread: the headline with the first sentences of the day's argument (the thesis, or the lead when
 there is none), the questions issued that day, then the counts and an invitation to reply with one's own number. Each post carries a header card (tools/card.py):
-the headline on the edition, one card per question issued (up to four), and the settled question with its score.
+the headline on the edition, one post and card per question issued, and the settled question with its score.
 
   python3 tools/worldstate.py           print what would be posted now (no posting); --cards DIR also writes the header images
   python3 tools/worldstate.py --post    post it (needs WS_X_API_KEY, WS_X_API_SECRET, WS_X_ACCESS_TOKEN, WS_X_ACCESS_SECRET)
@@ -59,6 +59,8 @@ def hook(thesis, lead, budget):
     return ""
 
 def kicker(f): return f"{f['question_id']} · open · resolves by {long_day(f['deadline'])}"
+def issued_text(f, head="Issued today"): return f"{head}: {short_claim(f['claim'])}\n\nUBIK: {pct(f.get('probability'))}. Resolves by {long_day(f['deadline'])}."
+def issued_card(f): return (card.forecast_card(f["claim"], f.get("probability") or 0, kicker(f), "ISSUED"), f["claim"])
 
 def chunks(lines, head, limit=270):
     """Group lines into posts under the limit, the first carrying the head."""
@@ -85,19 +87,17 @@ def plan():
     if day and head and ("edition", day) not in done:
         top = f"Edition of {long_day(day)}\n{head}\n\n"
         first = top + hook(thesis, lead, 276 - tlen(top) - tlen("\n\n" + SITE)) + "\n\n" + SITE
-        lines = [f"• {short_claim(f['claim'])} · {pct(f.get('probability'))} · by {long_day(f['deadline'])}" for f in sorted(new_qs, key=lambda f: f["question_id"])]
-        n = len(new_qs)
+        qs = sorted(new_qs, key=lambda f: f["question_id"]); n = len(qs)
         last = (f"{n} forecast{'s' if n != 1 else ''} issued today, {len(open_)} open. Each one is dated, and each one is scored in public when it settles.\n\n"
                 f"Think the engine is wrong? Reply with your own number.\n\n{SITE}")
-        thread = [first] + (chunks(lines, "Issued today:") if lines else []) + [last]
-        media = [[(card.edition_card(head, f"Edition of {long_day(day)} · {n} issued · {len(open_)} open"), head)]]
-        if lines: media.append([(card.forecast_card(f["claim"], f.get("probability") or 0, kicker(f), "ISSUED"), f["claim"]) for f in sorted(new_qs, key=lambda f: f["question_id"])[:4]])
+        thread = [first] + [issued_text(f) for f in qs] + [last]
+        media = [[(card.edition_card(head, f"Edition of {long_day(day)} · {n} issued · {len(open_)} open"), head)]] + [[issued_card(f)] for f in qs]
         items.append({"thread": thread, "media": media, "log": [("edition", day, day)] + [("issued", f["question_id"], day) for f in new_qs]})
     elif new_qs:
         # questions issued later in the day, after the edition was announced
-        lines = [f"• {short_claim(f['claim'])} · {pct(f.get('probability'))} · by {long_day(f['deadline'])}" for f in sorted(new_qs, key=lambda f: f["question_id"])]
-        media = [[(card.forecast_card(f["claim"], f.get("probability") or 0, kicker(f), "ISSUED"), f["claim"]) for f in sorted(new_qs, key=lambda f: f["question_id"])[:4]]]
-        items.append({"thread": chunks(lines, f"Issued, {long_day(day)}:") + [SITE], "media": media, "log": [("issued", f["question_id"], day) for f in new_qs]})
+        qs = sorted(new_qs, key=lambda f: f["question_id"])
+        items.append({"thread": [issued_text(f, f"Issued, {long_day(day)}") for f in qs] + [SITE], "media": [[issued_card(f)] for f in qs],
+                      "log": [("issued", f["question_id"], day) for f in new_qs]})
     # 2. what settled
     for f in sorted(settled, key=lambda f: f.get("resolved_at") or ""):
         qid = f.get("question_id");
