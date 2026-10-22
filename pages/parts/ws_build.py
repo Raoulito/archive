@@ -43,15 +43,15 @@ page = page.replace('source:"https://ubik.gold/synthesis?include=all"', 'source:
 if not page.lstrip().lower().startswith("<!doctype"):
     page = '<!doctype html>\n<html lang="en">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<meta name="desk" content="%VITE_DESK%">\n' + page
 # 2. markup: ids, gate, key dialog, archive bar, footer
-page = page.replace('<div class="date">The world on 20 October 2026</div>', '<div class="ekick" id="ekick">The world on 20 October 2026</div><div class="date" id="edate">The world on 20 October 2026</div>', 1)
+page = page.replace('<div class="date">The world on 20 October 2026</div>', '<div class="ekick" id="ekick"></div><div class="date" id="edate"></div>', 1)
 page = page.replace('<span class="s">${esc(e.sum)}</span></span><span class="n">', '<span class="s">${esc(e.sum)}${(e.current?EDITION_UPDATED:e.updated)?` <span class="upd">${esc(updatedTag(e.current?EDITION_UPDATED:e.updated))}</span>`:""}</span></span><span class="n">', 1)
 page = re.sub(r'document\.getElementById\("cover-h"\)\.textContent=`The world on \$\{new Date\(AGENT_ED\.date\+"T12:00:00Z"\)[^;]*;', 'document.getElementById("cover-h").textContent=EDITION_TITLE||`The world on ${EDITION_LONG}`;', page, count=1)
 page = page.replace('<h1 id="cover-h"></h1>', '<div class="ekick" id="cover-k"></div><h1 id="cover-h"></h1>', 1)
-page = re.sub(r'(<div class="date" id="edate">[^<]*</div>\n\s*)<p>', r'\1<p id="elede">', page, count=1)
+page = re.sub(r'(<div class="date" id="edate">[^<]*</div>\n\s*)<p>[^<]*</p>', r'\1<p id="elede"></p>', page, count=1)
 page = page.replace('<div class="num">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', '<div class="num" id="agdate">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', 1)
 page = page.replace('<h2 class="t">The world on 20 October 2026, as data.</h2>', '<h2 class="t" id="agtitle">The world on 20 October 2026, as data.</h2>', 1)
 page = page.replace('<span class="who" id="who"></span>', '<span class="gate" id="gate"></span><span class="who" id="who"></span>', 1)
-page = re.sub(r'(<span class="stamp" id="stamp">[^<]*</span>)', r'\1<span class="stamp next" id="nextclock"></span>', page, count=1)
+page = re.sub(r'<span class="stamp" id="stamp">[^<]*</span>', '<span class="stamp" id="stamp"></span><span class="stamp next" id="nextclock"></span>', page, count=1)
 page = page.replace('<div class="counts" id="counts">', '<div class="archivebar hidden" id="archivebar"><b></b><button type="button" id="tocurrent">Back to the current edition →</button></div>\n    <div class="counts" id="counts">', 1)
 page = page.replace('  <footer>', open('account.html', encoding='utf-8').read() + '  <footer>', 1)
 FOOT = '''<span class="legal"><a href="../disclaimer/" class="disc">Disclaimer</a> · <a href="https://ubik.gold/terms" target="_blank" rel="noopener">ubik.gold terms</a>. Not financial advice. For entertainment and education only. Built on content published by ubik.gold; a non-commercial, community-run initiative. AI-generated. Not for persons under 18 or in the United States.</span>'''
@@ -71,7 +71,7 @@ page = page.replace("</style>", open('account.css', encoding='utf-8').read() + '
 # 4. the live module goes in before the first render would have happened: at the end of the script
 j = page.index("const THEMES = {")
 page = page[:j] + SNAP + open("markets.js", encoding="utf-8").read() + open("nextclock.js", encoding="utf-8").read() + live_top + "\n" + page[j:]
-page = page.replace("\nif(!route()){", "\napplyEdition(SNAPSHOT,\"current\");\nif(!route()){", 1)
+page = page.replace("\nif(!route()){", "\nif(false&&!route()){", 1)
 i = page.rfind("</script>")
 page = page[:i] + "\n" + live_boot + '\ndocument.getElementById("tocurrent").addEventListener("click",()=>{ loadCurrent().then(loadEditions).catch(()=>applyEdition(SNAPSHOT,"current")); });\n' + page[i:]
 # selectEdition: open an archived day from the desk

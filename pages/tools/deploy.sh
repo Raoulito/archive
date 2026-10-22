@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 [ -f .env.local ] && . ./.env.local
 : "${DEPLOY_HOST:?set DEPLOY_HOST in .env.local}"; : "${DEPLOY_USER:?set DEPLOY_USER in .env.local}"; : "${DEPLOY_PATH:?set DEPLOY_PATH in .env.local}"
 KEY="${DEPLOY_KEY:-$HOME/.ssh/id_ed25519}"
-KEY="${KEY/#\~/$HOME}"
+case "$KEY" in "~/"*) KEY="$HOME/${KEY#\~/}" ;; esac
 SRC="$(cd ../prototypes && pwd)/"
 echo "deploying $SRC -> $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
 # --delete keeps the server equal to the build; the sealed archive, READMEs, lock.py and root landing files are preserved
