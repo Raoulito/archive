@@ -89,13 +89,13 @@ def post_thread(s, texts):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true"); a = ap.parse_args()
+    s = session() if a.post else None   # the keys are checked even when there is nothing to say
     items = plan()
     if not items: print("nothing new"); sys.exit(0)
     for it in items:
         for t in it["thread"]: print(t); print("  ---")
         print("====")
     if a.post:
-        s = session()
         with open(LOG, "a", encoding="utf-8") as f:
             for it in items:
                 ids = post_thread(s, it["thread"])
