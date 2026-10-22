@@ -84,9 +84,29 @@ async function deskGet(path,retry=1){ const headers={}; const k=keyOf(); if(k) h
   const standing=r.headers.get("x-ubik-key")||(k?"invalid":"none"); if(r.status===451){ notAvailable(); throw new Error("451"); }
   if(r.status===429){ const e=new Error("429"); e.retryAfter=r.headers.get("retry-after")||"60"; throw e; }
   if(!r.ok){ if(retry>0&&r.status>=500){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,retry-1); } throw new Error(`desk ${path}: ${r.status}`); } return {body:await r.json(), standing}; }
+async function deskGetForecasts(path,retry=1){
+  const first=await deskGet(path,retry);
+  let all=Array.isArray(first.body)?first.body:(Array.isArray(first.body&&first.body.data)?first.body.data:[]);
+  if(Array.isArray(first.body)) return first;
+  let next=first.body&&first.body.meta&&first.body.meta.links&&first.body.meta.links.next;
+  const seen=new Set([path]);
+  while(next&&!seen.has(next)&&seen.size<50){
+    seen.add(next);
+    let p=next;
+    if(p.startsWith("http://")||p.startsWith("https://")){ try{ const u=new URL(p); p=u.pathname+u.search; }catch(e){} }
+    if(!p.startsWith("/")) p="/"+p;
+    try{
+      const res=await deskGet(p,retry);
+      const data=Array.isArray(res.body)?res.body:(Array.isArray(res.body&&res.body.data)?res.body.data:[]);
+      all=all.concat(data);
+      next=res.body&&res.body.meta&&res.body.meta.links&&res.body.meta.links.next;
+    }catch(e){ break; }
+  }
+  return {body:{...(first.body||{}),data:all},standing:first.standing};
+}
 async function loadCurrent(){
   if(!keyOf()){ holderGate("none"); return; }
-  const [syn,open,settled]=await Promise.all([deskGet("/synthesis?include=all"),deskGet("/forecasts?status=open&include=history,details"),deskGet("/forecasts?status=settled&include=history,details")]);
+  const [syn,open,settled]=await Promise.all([deskGet("/synthesis?include=all"),deskGetForecasts("/forecasts?status=open&include=history,details"),deskGetForecasts("/forecasts?status=settled&include=history,details")]);
   STANDING=syn.standing; LIVE=true;
   if(STANDING!=="holder"){ holderGate(STANDING); return; }
   holderGate(null); RAW={synthesis:syn.body,open:open.body,settled:settled.body}; applyEdition(RAW);
