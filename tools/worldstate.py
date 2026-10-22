@@ -7,6 +7,9 @@ the headline on the edition, one post and card per question issued, and the sett
 
   python3 tools/worldstate.py           print what would be posted now (no posting); --cards DIR also writes the header images
   python3 tools/worldstate.py --post    post it (needs WS_X_API_KEY, WS_X_API_SECRET, WS_X_ACCESS_TOKEN, WS_X_ACCESS_SECRET)
+  python3 tools/worldstate.py --say tools/posts/pinned.txt [--post]
+                                        post a written thread instead: posts separated by a line "---"; an optional first
+                                        line "card: headline | kicker" gives the first post a headline card. Logged as "say".
 
 Runs every hour from .github/workflows/worldstate.yml. tools/worldstate.log remembers what went out, one line per
 item (kind, key, day, post id), so an edition is announced once, a question once, a settlement once. Revisions of
@@ -109,6 +112,19 @@ def plan():
         items.append({"thread": [text], "media": [[(im, f["claim"])]], "log": [("settled", qid, (f.get("resolved_at") or "")[:10])]})
     return items
 
+def said(path):
+    """A written thread from a file, as a plan item."""
+    text = open(path, encoding="utf-8").read().strip(); media = []
+    if text.startswith("card:"):
+        head, text = text.split("\n", 1); spec = head[5:].split("|")
+        media = [[(card.edition_card(spec[0].strip(), (spec[1] if len(spec) > 1 else "Ubikistan World State").strip()), spec[0].strip())]]
+    posts = [p.strip() for p in re.split(r"\n---\n", text) if p.strip()]
+    for p in posts:
+        if tlen(p) > 280: sys.exit(f"too long ({tlen(p)}): {p[:60]}...")
+    key = os.path.splitext(os.path.basename(path))[0]
+    if ("say", key) in posted(): print(f"already said: {key}"); return []
+    return [{"thread": posts, "media": media, "log": [("say", key, dt.date.today().isoformat())]}]
+
 def session():
     from requests_oauthlib import OAuth1Session
     keys = [(os.environ.get(k) or "").strip() for k in ("WS_X_API_KEY", "WS_X_API_SECRET", "WS_X_ACCESS_TOKEN", "WS_X_ACCESS_SECRET")]
@@ -141,9 +157,10 @@ def post_thread(s, texts, media=()):
     return ids
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true"); ap.add_argument("--cards", help="also write the cards as PNGs into this folder"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true"); ap.add_argument("--cards", help="also write the cards as PNGs into this folder")
+    ap.add_argument("--say", help="post this written thread instead of the day's plan"); a = ap.parse_args()
     s = session() if a.post else None   # the keys are checked even when there is nothing to say
-    items = plan()
+    items = said(a.say) if a.say else plan()
     if not items: print("nothing new"); sys.exit(0)
     for it in items:
         for i, t in enumerate(it["thread"]):

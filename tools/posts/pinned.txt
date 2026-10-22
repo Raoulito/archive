@@ -1,0 +1,17 @@
+card: The world each day, as UBIK forecasts it | Ubikistan World State · one edition a day · scored in public
+The world each day, as UBIK forecasts it.
+
+Each morning an edition: what happened, what it means, and dated yes/no questions, each with a probability. When one resolves, the score is public, hit or miss.
+
+Read today's edition, then say where it's wrong:
+https://ubikistan.org/world-state/
+---
+How it works:
+
+• The UBIK engine writes one edition a day from the news
+• Each forecast is a yes/no question with a date and a probability
+• Nothing is edited afterwards; when it resolves, the score goes on the ledger
+• Reply with your own number. The ledger says who was closer
+---
+Forecasts are probabilities, not financial advice. Built on ubik.gold data. The edition, the open forecasts and the full ledger:
+https://ubikistan.org/world-state/
