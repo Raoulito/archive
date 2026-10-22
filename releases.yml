@@ -4,7 +4,7 @@
   date: 2026-10-22
   title: The World State on X
   changes:
-    - "The World State posts on X as @ubikworldstate: each edition as a thread with its headline, the day's argument in a few sentences, the forecasts it issued and an invitation to reply with your own number; and every forecast that settles, with its score."
+    - "The World State posts on X as @ubikworldstate: each edition as a thread with its headline, the day's argument in a few sentences, the forecasts it issued and an invitation to reply with your own number; and every forecast that settles, with its score. Each post carries a header card in the style of the Forecasts page: the question, the probability and the hundred dots."
 - version: "1.34"
   date: 2026-10-21
   title: ubikistan.org
