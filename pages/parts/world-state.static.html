@@ -1994,7 +1994,7 @@ function select(id){
     const prev=i? f.hist[i-1][1] : null;
     const why = i===0 ? (f.why? "Issued. "+f.why : "Issued.") : (i===f.hist.length-1 && f.change ? f.change : (prev!==null? (p>prev?"Raised":"Lowered")+" on the day's edition." : ""));
     return `<li><span class="d">${fmt(dt)} ${dt.slice(0,4)}</span><span class="p">${pct(p)}</span>${i? `<span class="mono" style="font-size:11px;color:var(--muted)">${p>prev?"+":"−"}${Math.round(Math.abs(p-prev)*100)}</span>`:""}<div>${esc(why)}</div></li>`;
-  }).join("") + (f.status==="yes"?`<li class="res"><span class="d">${fmt(f.resolved)} 2026</span><span class="p">RESOLVED YES</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier.toFixed(4)}</span><div>${tagEl("v")}${esc(f.evidence)}</div></li>`:"");
+  }).join("") + ((f.status==="yes"||f.status==="no"||f.resolved)?`<li class="res"><span class="d">${fmt(f.resolved||f.due)} 2026</span><span class="p">RESOLVED ${(f.outcome||f.status||"").toUpperCase()}</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier!=null?f.brier.toFixed(4):"—"}</span><div>${tagEl("v")}${esc(f.evidence||"")}</div></li>`:"");
   const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
   // ---- the sheet: the team's schema for one forecast, with the ledger attached underneath ----
   const inEd=CURRENTS.flatMap(x=>x.fcs).filter((v,k,a)=>a.indexOf(v)===k); const sheetIx=inEd.indexOf(f.id);
@@ -2096,16 +2096,17 @@ function renderResolved(){
     return;
   }
   resEl.innerHTML=sorted.map(f=>{
-    const outcome=(f.outcome||f.status||"yes").toLowerCase();
-    const isYes=outcome==="yes", isNo=outcome==="no";
-    const tagColor=isYes?"var(--good)":(isNo?"var(--hot)":"var(--muted)");
-    const tagClass=isYes?"yes":(isNo?"no":"");
-    const label=isYes?"RESOLVED YES":(isNo?"RESOLVED NO":"RESOLVED");
+    const outcome=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"yes")).toLowerCase();
+    const p=now(f);
+    const correct=outcome==="yes"?p>=0.5:outcome==="no"?p<=0.5:(f.brier!=null&&f.brier<0.25);
+    const tagColor=correct?"var(--good)":"var(--hot)";
+    const tagClass=correct?"correct":"incorrect";
+    const label=outcome==="yes"?"RESOLVED YES":(outcome==="no"?"RESOLVED NO":"RESOLVED");
     const brierStr=f.brier!=null?f.brier.toFixed(4):"—";
     const resolvedDate=f.resolved?fmt(f.resolved):(f.due?fmt(f.due):"—");
     return `<article class="res-item" data-id="${esc(f.id)}">
       <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <span class="status ${tagClass}" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid ${tagColor};border-radius:2px;color:${tagColor}">FORECAST / ${label}</span>
+        <span class="status tag ${tagClass}" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid ${tagColor};border-radius:2px;color:${tagColor};background:color-mix(in srgb,${tagColor} 12%,var(--surface))">FORECAST / ${label}</span>
         <span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span>
       </div>
       <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
