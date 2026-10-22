@@ -142,6 +142,7 @@ function applyEdition(raw, showing){
   }
   renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
   if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+  if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
   const cs=document.getElementById("cover-score"); if(cs) cs.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span>${res.length?`<span>Brier <b>${(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3)}</b></span>`:""}<span><b>${AGENT_ED.sources}</b> sources</span>`;
   const back=document.getElementById("archivebar"); if(back){ back.classList.toggle("hidden",showing==="current"); back.querySelector("b").textContent=`Edition of ${EDITION_LONG}, from the archive`; }
 }
@@ -177,6 +178,7 @@ function openKey(){
     try{
       await loadCurrent();
       if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
       if(STANDING==="holder") d.close();
       else if(STANDING==="locked") errEl.textContent=`Key recognised, but wallet holds under ${THRESHOLD}.`;
       else if(STANDING==="invalid") errEl.textContent="ubik.gold does not recognise this key.";
@@ -196,9 +198,11 @@ function openKey(){
     if(typeof renderUser==="function") renderUser();
     loadCurrent().then(()=>{
       if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
     }).catch(()=>{
       if(typeof holderGate==="function") holderGate("none"); else renderGate();
       if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
     });
   });
 })();

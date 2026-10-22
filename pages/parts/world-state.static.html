@@ -161,6 +161,9 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 .rec .note{font-size:14px;color:var(--muted);margin-top:12px}
 .resolved{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
 .resolved .ev{font-size:14px;margin-top:8px}
+.res-item{padding:16px 0}
+.res-item:first-child{padding-top:0}
+.res-item + .res-item{border-top:1px solid var(--line);margin-top:16px}
 
 /* ledger */
 .ledger{margin-top:16px;overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
@@ -1519,10 +1522,10 @@ a.pw{text-decoration:none}
           <section id="record">
         
         <div class="rec">
-          <div class="row">
+          <div class="row" id="rec-stats">
             <span>Resolved<b>1</b></span><span>Open<b>29</b></span><span>Brier, resolved<b>0.058</b></span><span>Calibration<b>n/a</b></span>
           </div>
-          <p class="note">One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).</p>
+          <p class="note" id="rec-note">One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).</p>
           <div class="resolved" id="resolved"></div>
         </div>
       </section>
@@ -2068,13 +2071,57 @@ function answer(qtext){
   return `${pct(now(f))} on "${f.q}" (${f.id}), resolves ${fmt(f.due)}. ${f.why? f.why : f.hist.length>1? `Moved from ${pct(first(f))} to ${pct(now(f))} since ${fmt(issued(f))}.` : `Issued ${fmt(issued(f))}, unchanged.`}`;
 }
 function renderResolved(){
-  const f=F.find(x=>x.status==="yes");
-  document.getElementById("resolved").innerHTML=`
-    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span></div>
-    <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
-    <div class="row" style="margin-top:10px"><span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span><span>Resolved ${fmt(f.resolved)}<b>YES</b></span><span>Brier<b>${f.brier.toFixed(4)}</b></span></div>
-    <div class="ev">${tagEl("v")}${esc(f.evidence)}</div>
-    <div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${esc(f.rule)}</div>`;
+  const res=F.filter(f=>f.status==="yes"||f.status==="no"||!!f.resolved);
+  const open=F.filter(f=>f.status==="open");
+  const meanBrier=res.length?(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3):"—";
+  const statsEl=document.getElementById("rec-stats");
+  if(statsEl){
+    statsEl.innerHTML=`<span>Resolved<b>${res.length}</b></span><span>Open<b>${open.length}</b></span><span>Brier, resolved<b>${meanBrier}</b></span><span>Calibration<b>n/a</b></span>`;
+  }
+  const noteEl=document.getElementById("rec-note");
+  if(noteEl){
+    if(res.length===0){
+      noteEl.textContent="No forecast has resolved yet.";
+    } else if(res.length===1){
+      noteEl.textContent="One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).";
+    } else {
+      noteEl.textContent=`${res.length} forecasts have resolved (mean Brier ${meanBrier}). The table becomes meaningful for calibration at around thirty resolutions. The next batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).`;
+    }
+  }
+  const sorted=[...res].sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||"")||b.id.localeCompare(a.id));
+  const resEl=document.getElementById("resolved");
+  if(!resEl) return;
+  if(!sorted.length){
+    resEl.innerHTML=`<p class="note">No resolved forecasts in the record yet.</p>`;
+    return;
+  }
+  resEl.innerHTML=sorted.map(f=>{
+    const outcome=(f.outcome||f.status||"yes").toLowerCase();
+    const isYes=outcome==="yes", isNo=outcome==="no";
+    const tagColor=isYes?"var(--good)":(isNo?"var(--hot)":"var(--muted)");
+    const tagClass=isYes?"yes":(isNo?"no":"");
+    const label=isYes?"RESOLVED YES":(isNo?"RESOLVED NO":"RESOLVED");
+    const brierStr=f.brier!=null?f.brier.toFixed(4):"—";
+    const resolvedDate=f.resolved?fmt(f.resolved):(f.due?fmt(f.due):"—");
+    return `<article class="res-item" data-id="${esc(f.id)}">
+      <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="status ${tagClass}" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid ${tagColor};border-radius:2px;color:${tagColor}">FORECAST / ${label}</span>
+        <span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span>
+      </div>
+      <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
+      <div class="row" style="margin-top:10px">
+        <span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span>
+        <span>Resolved ${resolvedDate}<b>${outcome.toUpperCase()}</b></span>
+        <span>Brier<b>${brierStr}</b></span>
+      </div>
+      ${f.evidence?`<div class="ev">${tagEl("v")}${esc(f.evidence)}</div>`:""}
+      ${f.rule?`<div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${esc(f.rule)}</div>`:""}
+    </article>`;
+  }).join("");
+  resEl.querySelectorAll(".res-item").forEach(el=>{
+    el.style.cursor="pointer";
+    el.addEventListener("click",()=>select(el.dataset.id));
+  });
 }
 function renderLedger(){
   const rows=[...F].sort((a,b)=>issued(b).localeCompare(issued(a)));
@@ -2424,6 +2471,7 @@ function showPane(pn){
   document.querySelectorAll(".tabs a[data-view=\"ledger\"]").forEach(a=>{ const on=(a.dataset.sub==="mine")===(pn==="mine"); if(on) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   document.querySelector(".qnav").classList.toggle("hidden", pn!=="forecasts");
   const q=document.querySelector(".qnav"), host=document.getElementById("pane-forecasts"); if(pn==="forecasts" && q.parentElement!==host) host.prepend(q);
+  if(pn==="record") renderResolved();
   if(pn==="history") renderHistory();
   if(pn==="mine") renderMine();
   const hash="#ledger/"+pn; if(location.hash!==hash) history.replaceState(null,"",hash);
