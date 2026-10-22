@@ -32,7 +32,7 @@ cut(r"const TS=\{.*?\};\n")
 cut(r"const RESOLVED_AT=\{.*?\};\n")
 cut(r"const GEO = \{\n.*?\n\};\n")
 cut(r"const AGENT_ED=\{.*?\n\};\n")
-cut(r"const LAST_CHANGE=changes\(\)\[0\]\.t;\n")
+cut(r"const LAST_CHANGE=.*?\n")
 cut(r"const byId = Object\.fromEntries\(F\.map\(f=>\[f\.id,f\]\)\);\n")
 # the first render at the foot of the script and the dated labels in templates
 cut(r"renderResolved\(\); renderAll\(\);\n", "")
