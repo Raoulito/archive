@@ -1525,7 +1525,7 @@ a.pw{text-decoration:none}
           <div class="row" id="rec-stats">
             <span>Resolved<b>1</b></span><span>Open<b>29</b></span><span>Brier, resolved<b>0.058</b></span><span>Calibration<b>n/a</b></span>
           </div>
-          <p class="note" id="rec-note">One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).</p>
+          <p class="note" id="rec-note">Scored against the resolution rule and evidence when the outcome arrives. The table becomes meaningful for calibration at around thirty resolutions.</p>
           <div class="resolved" id="resolved"></div>
         </div>
       </section>
@@ -2072,7 +2072,7 @@ function answer(qtext){
 }
 function renderResolved(){
   const res=F.filter(f=>f.status==="yes"||f.status==="no"||!!f.resolved);
-  const open=F.filter(f=>f.status==="open");
+  const open=[...F.filter(f=>f.status==="open")].sort((a,b)=>a.due.localeCompare(b.due));
   const meanBrier=res.length?(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3):"—";
   const statsEl=document.getElementById("rec-stats");
   if(statsEl){
@@ -2080,13 +2080,19 @@ function renderResolved(){
   }
   const noteEl=document.getElementById("rec-note");
   if(noteEl){
-    if(res.length===0){
-      noteEl.textContent="No forecast has resolved yet.";
-    } else if(res.length===1){
-      noteEl.textContent="One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).";
+    const resNote=res.length===0?"No forecast has resolved yet.":(res.length===1?"One forecast has resolved.":`${res.length} forecasts have resolved (mean Brier ${meanBrier}).`);
+    const calibNote="The table becomes meaningful for calibration at around thirty resolutions.";
+    let nextNote="";
+    if(!open.length){
+      nextNote="No forecasts are currently open.";
     } else {
-      noteEl.textContent=`${res.length} forecasts have resolved (mean Brier ${meanBrier}). The table becomes meaningful for calibration at around thirty resolutions. The next batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).`;
+      const nextFs=open.slice(0,3);
+      const d0=fmt(nextFs[0].due), d1=fmt(nextFs[nextFs.length-1].due);
+      const dateStr=nextFs[0].due===nextFs[nextFs.length-1].due?`on ${d0}`:`between ${d0} and ${d1}`;
+      const qList=nextFs.map(f=>{ const s=shortQ(f.q).replace(/\.$/,""); return s.length>70?s.slice(0,68).trim()+"…":s; }).join("; ");
+      nextNote=nextFs.length===1?`The next forecast resolves on ${d0} (${qList}).`:`The next batch lands ${dateStr} (${qList}).`;
     }
+    noteEl.textContent=`${resNote} ${calibNote} ${nextNote}`;
   }
   const sorted=[...res].sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||"")||b.id.localeCompare(a.id));
   const resEl=document.getElementById("resolved");
