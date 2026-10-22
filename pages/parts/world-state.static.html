@@ -2016,7 +2016,7 @@ function select(id){
       <div class="sh-l"><div class="k">${esc(f.id)} · ${f.status==="yes"?"RESOLVED YES":f.status==="no"?"RESOLVED NO":f.resolved?"RESOLVED":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${esc(f.q)}</h2></div>
       <div class="sh-r"><div class="pn"><span class="k"><i></i>${sheetIx>=0?`F${sheetIx+1}`:"ARCHIVE"}</span><b>${pct(pnow)}</b></div>${dots}</div>
     </header>
-    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"||f.status==="no"||f.resolved?` · settled ${fmt(f.resolved||f.due).toLowerCase()}`:daysTo(f.due)<=0?" · resolves today":` · ${daysTo(f.due)} day${daysTo(f.due)===1?"":"s"} left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
+    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"||f.status==="no"||f.resolved?` · settled ${fmt(f.resolved||f.due).toLowerCase()}`:daysTo(f.due)===0?" · resolves today":daysTo(f.due)<0?" · awaiting resolution":` · ${daysTo(f.due)} day${daysTo(f.due)===1?"":"s"} left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
     <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
     <div class="folds">
       ${fold("ring","Thesis", f.thesis?`<p><b>${esc(f.thesis.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.thesis.split(". ").slice(1).join(". "))}</p>`:f.why?`<p><b>${esc(f.why.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.why.split(". ").slice(1).join(". "))}</p>${c?`<p class="src">From the ${THEMES[c.theme]} current of the ${fmt(AGENT_ED.date)} edition; question issued ${fmt(issued(f))}.</p>`:""}`:missing("thesis"), true)}
@@ -2072,7 +2072,10 @@ function answer(qtext){
 }
 function renderResolved(){
   const res=F.filter(f=>f.status==="yes"||f.status==="no"||!!f.resolved);
+  const curDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:((typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10));
   const open=[...F.filter(f=>f.status==="open")].sort((a,b)=>a.due.localeCompare(b.due));
+  const pastDue=open.filter(f=>f.due<curDay);
+  const upcoming=open.filter(f=>f.due>=curDay);
   const meanBrier=res.length?(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3):"—";
   const statsEl=document.getElementById("rec-stats");
   if(statsEl){
@@ -2082,17 +2085,24 @@ function renderResolved(){
   if(noteEl){
     const resNote=res.length===0?"No forecast has resolved yet.":(res.length===1?"One forecast has resolved.":`${res.length} forecasts have resolved (mean Brier ${meanBrier}).`);
     const calibNote="The table becomes meaningful for calibration at around thirty resolutions.";
+    let pastNote="";
+    if(pastDue.length===1){
+      const s=shortQ(pastDue[0].q).replace(/\.$/,"");
+      pastNote=`One forecast is awaiting resolution since ${fmt(pastDue[0].due)} (${s.length>70?s.slice(0,68).trim()+"…":s}).`;
+    } else if(pastDue.length>1){
+      pastNote=`${pastDue.length} forecasts are awaiting resolution.`;
+    }
     let nextNote="";
-    if(!open.length){
-      nextNote="No forecasts are currently open.";
+    if(!upcoming.length){
+      nextNote="No further open forecasts are scheduled.";
     } else {
-      const nextFs=open.slice(0,3);
+      const nextFs=upcoming.slice(0,3);
       const d0=fmt(nextFs[0].due), d1=fmt(nextFs[nextFs.length-1].due);
       const dateStr=nextFs[0].due===nextFs[nextFs.length-1].due?`on ${d0}`:`between ${d0} and ${d1}`;
       const qList=nextFs.map(f=>{ const s=shortQ(f.q).replace(/\.$/,""); return s.length>70?s.slice(0,68).trim()+"…":s; }).join("; ");
       nextNote=nextFs.length===1?`The next forecast resolves on ${d0} (${qList}).`:`The next batch lands ${dateStr} (${qList}).`;
     }
-    noteEl.textContent=`${resNote} ${calibNote} ${nextNote}`;
+    noteEl.textContent=[resNote, calibNote, pastNote, nextNote].filter(Boolean).join(" ");
   }
   const sorted=[...res].sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||"")||b.id.localeCompare(a.id));
   const resEl=document.getElementById("resolved");
@@ -2183,7 +2193,7 @@ function renderBoard(){
   rows.sort(sorters[boardSort]||sorters.soonest);
   const head=`<div class="bhead"><span class="num"><b>${rows.length}</b> open question${rows.length===1?"":"s"}${active!=="all"?` · ${THEMES[active]}`:""}${query?` · “${esc(query)}”`:""}</span><span class="num">last change ${ago(LAST_CHANGE)}</span><span class="sorts" role="group" aria-label="Sort">${[["soonest","Soonest"],["move","Biggest move"],["gap","Gap to market"],["prob","Most likely"],["newest","Newest"]].map(([k,l])=>`<button type="button" data-sort="${k}" aria-pressed="${boardSort===k}">${l}</button>`).join("")}</span></div>`;
   const tr=(f,i)=>{ const d=now(f)-first(f), m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null, g=gapOf(f), days=daysTo(f.due);
-    return `<tr class="r" data-id="${f.id}" data-t="${f.theme}" tabindex="0"><td class="n">${String(i+1).padStart(2,"0")}</td><td class="q"><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""} <span>${f.id}</span></span>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="sp">${spark(f,88,24)}</td><td class="mk">${m?`<b>${pct(m.p)}</b> ${m.venue}${m.adj?" adj":""}${g!==null?` <i>${g>0?"+":"−"}${Math.round(Math.abs(g)*100)}</i>`:""}`:"<span>no contract</span>"}</td><td class="due${days<=14?" soon":""}">${fmt(f.due)}${days<=14?`<br><small>${days}d</small>`:""}</td><td class="st">${starBtn(f.id)}</td></tr>`; };
+    return `<tr class="r" data-id="${f.id}" data-t="${f.theme}" tabindex="0"><td class="n">${String(i+1).padStart(2,"0")}</td><td class="q"><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""} <span>${f.id}</span></span>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="sp">${spark(f,88,24)}</td><td class="mk">${m?`<b>${pct(m.p)}</b> ${m.venue}${m.adj?" adj":""}${g!==null?` <i>${g>0?"+":"−"}${Math.round(Math.abs(g)*100)}</i>`:""}`:"<span>no contract</span>"}</td><td class="due${days<=14?" soon":""}">${fmt(f.due)}${days<=14?`<br><small>${days<0?"due":days===0?"today":days+"d"}</small>`:""}</td><td class="st">${starBtn(f.id)}</td></tr>`; };
   const LIM=12, shown=boardAll?rows:rows.slice(0,LIM);
   const table=`<table class="board"><thead><tr><th>#</th><th>Question</th><th>UBIK</th><th class="sp">14 days</th><th class="mk">Market · gap</th><th>Resolves</th><th></th></tr></thead><tbody>${shown.map(tr).join("")}</tbody></table>${rows.length>LIM?`<button type="button" class="more" id="boardmore">${boardAll?"Show the first 12":`Show all ${rows.length} →`}</button>`:""}`;
   const ch=changes().filter(c=>active==="all"||c.f.theme===active).slice(0,6);
