@@ -7,18 +7,18 @@ const bootTimer=setTimeout(()=>{
     applyEdition(SNAPSHOT,"current");
     LIVE=false;
     const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION ${EDITION_DAY} · SNAPSHOT · THE DESK DID NOT ANSWER`;
-    if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
+    if(!route()){ showCover(true); }
   }
 }, 2500);
 
 loadCurrent().then(loadEditions).then(()=>{
   booted=true; clearTimeout(bootTimer);
-  if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
+  if(!route()){ showCover(true); }
 }).catch(()=>{
   booted=true; clearTimeout(bootTimer);
   applyEdition(SNAPSHOT,"current");
   LIVE=false;
   const st=document.getElementById("stamp"); if(st) st.textContent=`EDITION ${EDITION_DAY} · SNAPSHOT · THE DESK DID NOT ANSWER`;
-  if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
+  if(!route()){ showCover(true); }
   loadEditions().catch(()=>{});
 });

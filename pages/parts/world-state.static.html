@@ -2564,7 +2564,7 @@ function renderChips(){
 }
 try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
 try{ history.scrollRestoration="manual"; }catch(e){}
-if(!route()){ let v=null, reader=null; try{ v=localStorage.getItem("ubik-view"); reader=localStorage.getItem("ubik-reader"); }catch(e){} if(v==="chat") v="agent"; if(v==="mine") v="ledger"; go(v||(reader==="human"?"edition":"agent")); if(!reader) showCover(false); }
+if(!route()){ showCover(true); }
 
 
 // ledger rows open the dossier too
