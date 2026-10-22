@@ -590,7 +590,12 @@ function renderHistory(){
   document.getElementById("sum").innerHTML=`<div class="long"><div class="k">Won</div><div class="v">${W}</div></div><div class="short"><div class="k">Lost</div><div class="v">${L}</div></div><div><div class="k">Brier</div><div class="v">${br}</div></div><div><div class="k">Open</div><div class="v">${F.length-DONE.length}</div></div>`;
   document.getElementById("chips").innerHTML="";
   document.getElementById("h1").innerHTML=`<em>History.</em> Every forecast the engine has settled.`;
-  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${F.length-DONE.length} forecasts are still open and the next settles ${d2(F.filter(f=>f.status==="open").map(f=>f.due).sort()[0])}.</p>`;
+  const curDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:new Date().toISOString().slice(0,10);
+  const openFs=F.filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due));
+  const upcoming=openFs.filter(f=>f.due>=curDay);
+  const pastDue=openFs.filter(f=>f.due<curDay);
+  const nextPhrase=upcoming.length?` and the next settles ${d2(upcoming[0].due)}`:(pastDue.length?` (${pastDue.length} awaiting resolution)`:"");
+  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
   location.hash=`cat=h`;
 }
 function render(){
