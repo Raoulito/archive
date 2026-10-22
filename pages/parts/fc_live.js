@@ -25,7 +25,8 @@ function transform(raw){
     if(f.brier!=null) o.brier=f.brier;
     if(f.resolution_rule) o.rule=f.resolution_rule;
     let ev=f.evidence; if(ev&&typeof ev==="object") ev=(ev.quote||"")+(ev.url?` (${ev.url.split("/")[2]})`:""); if(ev) o.evidence=ev;
-    if(h[0].why) o.why=h[0].why; else if(f.reasoning) o.why=f.reasoning.split(". ")[0];
+    const curWhy=(h.length&&h[h.length-1].why)||h[0].why;
+    if(curWhy) o.why=curWhy; else if(f.reasoning) o.why=f.reasoning.split(". ")[0];
     if(h.length>1&&h[h.length-1].why) o.change=h[h.length-1].why;
     Fo.push(o);
   }

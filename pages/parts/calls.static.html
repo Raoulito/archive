@@ -316,6 +316,7 @@ body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px r
 </footer>
 
 <script>
+var DEGEN=false; try{ DEGEN=localStorage.getItem('ubik-degen')==='1'; }catch(e){}
 const F = [
  {"id": "q_20261020_04", "theme": "europe", "q": "Will Saturday's protests in France draw less than half last week's crowd?", "hist": [["2026-10-20", 0.8]], "due": "2026-10-31", "status": "open", "rule": "Yes if the Interior Ministry's nationwide count of protesters in France for Saturday, Oct. 24, 2026, is below 275,000, which is half its count of 550,000 for Oct. 17. No if it is 275,000 or more. Use the latest full-day national figure the ministry publishes by 23:59 Paris time on Oct. 31, 2026; if it publishes only an intraday figure, use the latest one published by then. Ignore later revisions and any count by unions, organizers or independent counters. If the ministry publishes a national figure for Oct. 24, that figure settles the question whatever else happens. If it publishes none by the deadline: void if the national protest day was moved from Oct. 24 to a later date; otherwise Yes, including when the calls are withdrawn or banned or the protests are too scattered for a national count.", "why": "Unions stay out, curfews deter marchers, and second days usually shrink."},
  {"id": "q_20261020_01", "theme": "gulf", "q": "Will Saudi Arabia's private businesses shrink this month?", "hist": [["2026-10-20", 0.15]], "due": "2026-11-05", "status": "open", "rule": "Yes if the headline seasonally adjusted Riyad Bank Saudi Arabia PMI for October 2026, as first published by S&P Global, is below 50.0. No if it is 50.0 or higher. Later revisions are ignored. If S&P Global has not published the October 2026 reading by the end of Nov. 5, 2026, the question is void.", "why": "The survey must fall over five points from 55.3; only broad shocks did that."},
@@ -643,7 +644,7 @@ function record(){
 function stamp(){
   const last=Object.values(TS).flat().map(e=>e[0]).sort().pop();
   document.getElementById("stamp").textContent=`EDITION ${READ.forecasts}`; document.getElementById("stamp").title=`Read ${d2(TODAY)}`;
-  document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last.slice(0,16).replace("T"," ")} ET · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
+  document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last?last.slice(0,16).replace("T"," ")+" ET":READ.forecasts} · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(b){e.preventDefault();cat=b.dataset.cat;render();window.scrollTo({top:0,behavior:"smooth"});}});
 document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest("[data-hz]");if(b){hzn=b.dataset.hz;render();}});
