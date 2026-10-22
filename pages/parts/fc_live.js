@@ -40,6 +40,7 @@ function buildCalls(){
 }
 function applyEdition(raw){
   const t=transform(raw); F=t.F; TS=t.TS; EXTRA_CAL=t.EXTRA_CAL; EDITION_DAY=t.DATE; READ.forecasts=t.DATE;
+  TODAY=(new Date().toISOString().slice(0,10)>=EDITION_DAY)?new Date().toISOString().slice(0,10):(EDITION_DAY||new Date().toISOString().slice(0,10));
   buildCalls(); F_BY=Object.fromEntries(F.map(f=>[f.id,f]));
   // listed contracts first, widest gap first; then the rest by distance from the coin flip, soonest first
   const hasM=o=>o.market&&o.market.p!=null?0:1, gapAbs=o=>o.market&&o.market.p!=null?Math.abs(o.p-o.market.p):0;

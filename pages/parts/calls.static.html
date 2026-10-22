@@ -453,7 +453,7 @@ const VENUES={
  "MOL":[["Budapest MOL","https://www.google.com/finance/quote/MOL:BUD"]],
 };
 
-const TODAY=new Date().toISOString().slice(0,10);
+let TODAY=new Date().toISOString().slice(0,10);
 const F_BY=Object.fromEntries(F.map(f=>[f.id,f]));
 const P=f=>f.hist[f.hist.length-1][1];
 const pc=p=>Math.round(p*100);

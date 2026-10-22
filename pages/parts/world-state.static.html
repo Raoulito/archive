@@ -1734,22 +1734,24 @@ const tagEl = k => `<span class="tag ${k}">${{v:"VERIFIED",r:"REPORTED",i:"INFER
 
 function stepChart(f, w=240, h=96){
   const pad={l:30,r:8,t:8,b:18};
-  const t0=new Date(issued(f)).getTime(), t1=new Date("2026-10-13").getTime();
+  const endDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:(f.hist.length?f.hist[f.hist.length-1][0]:new Date().toISOString().slice(0,10));
+  const t0=new Date(issued(f)).getTime(), t1=new Date(endDay.length===10?endDay+"T12:00:00Z":endDay).getTime();
   const span=Math.max(t1-t0, 3*864e5);
-  const x=d=>pad.l+((new Date(d).getTime()-t0)/span)*(w-pad.l-pad.r);
+  const x=d=>pad.l+((new Date(d.length===10?d+"T12:00:00Z":d).getTime()-t0)/span)*(w-pad.l-pad.r);
   const y=p=>pad.t+(1-p)*(h-pad.t-pad.b);
   let d="", prev=null;
   f.hist.forEach(([dt,p],i)=>{ const X=x(dt),Y=y(p); if(i===0) d+=`M${X},${Y}`; else d+=`H${X}V${Y}`; prev=[X,Y]; });
-  d+=`H${x("2026-10-13")}`;
+  d+=`H${x(endDay)}`;
   const grid=[0,0.25,0.5,0.75,1].map(g=>`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(g)}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l-5}" y="${y(g)+3}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${g===0?"0":g===1?"1":g}</text>`).join("");
   const pts=f.hist.map(([dt,p])=>`<circle cx="${x(dt)}" cy="${y(p)}" r="3" fill="var(--ring)"/>`).join("");
-  const end=`<circle cx="${x("2026-10-13")}" cy="${y(now(f))}" r="4" fill="var(--surface)" stroke="var(--ring)" stroke-width="2"/>`;
-  const xl=`<text x="${pad.l}" y="${h-4}" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(issued(f))}</text><text x="${w-pad.r}" y="${h-4}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">13 Oct</text>`;
+  const end=`<circle cx="${x(endDay)}" cy="${y(now(f))}" r="4" fill="var(--surface)" stroke="var(--ring)" stroke-width="2"/>`;
+  const xl=`<text x="${pad.l}" y="${h-4}" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(issued(f))}</text><text x="${w-pad.r}" y="${h-4}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(endDay)}</text>`;
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Probability history">${grid}<path d="${d}" fill="none" stroke="var(--ring)" stroke-width="2"/>${pts}${end}${xl}</svg>`;
 }
 function spark(f, w=80, h=22){
-  const t0=new Date(issued(f)).getTime(), t1=new Date("2026-10-13").getTime(); const span=Math.max(t1-t0,3*864e5);
-  const x=d=>2+((new Date(d).getTime()-t0)/span)*(w-4); const y=p=>2+(1-p)*(h-4);
+  const endDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:(f.hist.length?f.hist[f.hist.length-1][0]:new Date().toISOString().slice(0,10));
+  const t0=new Date(issued(f)).getTime(), t1=new Date(endDay.length===10?endDay+"T12:00:00Z":endDay).getTime(); const span=Math.max(t1-t0,3*864e5);
+  const x=d=>2+((new Date(d.length===10?d+"T12:00:00Z":d).getTime()-t0)/span)*(w-4); const y=p=>2+(1-p)*(h-4);
   let d=""; f.hist.forEach(([dt,p],i)=>{ d+= i===0?`M${x(dt)},${y(p)}`:`H${x(dt)}V${y(p)}`; }); d+=`H${w-2}`;
   return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><line x1="2" x2="${w-2}" y1="${y(0.5)}" y2="${y(0.5)}" stroke="var(--line)"/><path d="${d}" fill="none" stroke="var(--ring)" stroke-width="1.5"/><circle cx="${w-2}" cy="${y(now(f))}" r="2.2" fill="var(--ring)"/></svg>`;
 }
@@ -1874,7 +1876,7 @@ function selectSection(theme){
 
 function renderSide(){
   const list=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due)||issued(a).localeCompare(issued(b)));
-  const soon=d=>new Date(d)-new Date("2026-10-13")<=18*864e5;
+  const soon=d=>daysTo(d)<=18&&daysTo(d)>=0;
   let n=0;
   document.getElementById("scards").innerHTML=list.map(f=>{
     const hide=!visible(f); if(!hide)n++;
@@ -2004,7 +2006,7 @@ function select(id){
       <div class="sh-l"><div class="k">${esc(f.id)} · ${f.status==="yes"?"RESOLVED YES":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${esc(f.q)}</h2></div>
       <div class="sh-r"><div class="pn"><span class="k"><i></i>${sheetIx>=0?`F${sheetIx+1}`:"ARCHIVE"}</span><b>${pct(pnow)}</b></div>${dots}</div>
     </header>
-    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"?` · settled ${fmt(f.resolved).toLowerCase()}`:` · ${daysTo(f.due)} days left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
+    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"?` · settled ${fmt(f.resolved).toLowerCase()}`:daysTo(f.due)<=0?" · resolves today":` · ${daysTo(f.due)} day${daysTo(f.due)===1?"":"s"} left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
     <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
     <div class="folds">
       ${fold("ring","Thesis", f.thesis?`<p><b>${esc(f.thesis.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.thesis.split(". ").slice(1).join(". "))}</p>`:f.why?`<p><b>${esc(f.why.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.why.split(". ").slice(1).join(". "))}</p>${c?`<p class="src">From the ${THEMES[c.theme]} current of the ${fmt(AGENT_ED.date)} edition; question issued ${fmt(issued(f))}.</p>`:""}`:missing("thesis"), true)}
@@ -2257,8 +2259,14 @@ document.querySelectorAll(".side h2.fold").forEach(h=>{
 });
 
 // ---------------- Dashboard: numbers, a map, and the question titles. No prose. ----------------
-var TODAY="2026-10-14";
-function daysTo(d){ return Math.round((new Date(d)-new Date(TODAY))/864e5); }
+var TODAY=(typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10);
+function daysTo(d){
+  if(!d) return 0;
+  const cur=(typeof TODAY!=="undefined"&&TODAY)?TODAY:((typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10));
+  const t0=new Date(cur.length===10?cur+"T12:00:00Z":cur).getTime();
+  const t1=new Date(d.length===10?d+"T12:00:00Z":d).getTime();
+  return Math.round((t1-t0)/864e5);
+}
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function shortQ(q){ return q.replace(/^Will /,"").replace(/\?$/,""); }
 
@@ -2271,7 +2279,7 @@ function renderDash(){
   const next=open.map(f=>daysTo(f.due)).sort((a,b)=>a-b)[0];
   const tiles=`<div class="tiles">
     <div><i>Open</i><b>${open.length}</b></div><div><i>Settled</i><b>${res.length}</b></div><div><i>Brier</i><b>${brier!==null?brier.toFixed(3):"—"}</b></div>
-    <div><i>Priced vs market</i><b>${withM.length}</b></div><div><i>Mean gap</i><b>${mean}<small>pts</small></b></div><div><i>Changed, 7 days</i><b>${changed}</b></div><div><i>Next resolves</i><b>${next}<small>days</small></b></div>
+    <div><i>Priced vs market</i><b>${withM.length}</b></div><div><i>Mean gap</i><b>${mean}<small>pts</small></b></div><div><i>Changed, 7 days</i><b>${changed}</b></div><div><i>Next resolves</i><b>${next<=0?"today":next}</b><small>${next<=0?"":next===1?"day":"days"}</small></div>
   </div>`;
 
   // Map: pins aggregated by place

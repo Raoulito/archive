@@ -125,6 +125,7 @@ async function openEdition(day){
 function applyEdition(raw, showing){
   RAW=raw; SHOWING=showing; const t=transform(raw);
   F=t.F; CURRENTS=t.CURRENTS; TS=t.TS; RESOLVED_AT=t.RESOLVED_AT; GEO=t.GEO; AGENT_ED=t.AGENT_ED; EDITION_DAY=t.DATE; EDITION_LONG=t.LONG; EDITION_TITLE=t.TITLE; EDITION_UPDATED=t.UPDATED; LEDE=t.LEDE; LOCKED=t.LOCKED;
+  TODAY=(showing==="current"&&new Date().toISOString().slice(0,10)>=EDITION_DAY)?new Date().toISOString().slice(0,10):(EDITION_DAY||new Date().toISOString().slice(0,10));
   byId=Object.fromEntries(F.map(f=>[f.id,f])); const ch=changes(); LAST_CHANGE=ch.length?ch[0].t:(t.UPDATED||new Date().toISOString());
   if(!EDITIONS.length||showing==="current") EDITIONS=[{d:EDITION_DAY,title:EDITION_TITLE,sum:LEDE,current:true,live:true},...EDITIONS.filter(e=>!e.live&&e.d!==EDITION_DAY)];
   const open=F.filter(f=>f.status==="open"), res=F.filter(f=>f.resolved), moved=F.filter(f=>TS[f.id].slice(1).some(e=>e[0].slice(0,10)===EDITION_DAY)).length;
