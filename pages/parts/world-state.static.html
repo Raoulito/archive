@@ -922,6 +922,7 @@ dialog#signin::backdrop{background:rgba(10,10,12,.45)}
 .feedbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:10px 14px;border:1px solid var(--line);background:var(--surface);margin:0 0 18px;font-family:var(--body);font-size:14px;color:var(--muted)}
 .feedbar b{color:var(--ink);font-weight:500}
 .feedbar button{margin-left:auto;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.feedbar button.secondary{background:none;color:var(--ink);border:1px solid var(--rule)}
 .topicrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .topicrow form{display:flex;border:1px solid var(--rule);margin-right:6px}
 .topicrow input{border:0;background:none;font-family:var(--body);font-size:13px;padding:5px 8px;width:150px;color:var(--ink);outline:none}
@@ -2184,10 +2185,20 @@ function setToken(t){ TOKEN=t; try{ if(t) localStorage.setItem("ubk.session",t);
 function signinURL(prov){ let n=""; try{ n=sessionStorage.getItem("ubk.nonce")||""; if(!n){ n=Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem("ubk.nonce",n); } }catch(e){} return DESK+"/auth/"+prov+"?nonce="+encodeURIComponent(n)+"&return="+encodeURIComponent(location.href.split("#")[0]+"#"+(HASH[view]||"#edition").replace("#","")); }
 function whoami(){ if(!TOKEN){ USER=null; renderUser(); return; } fetch(DESK+"/me",{headers:{Authorization:"Bearer "+TOKEN}}).then(r=>r.ok?r.json():null).then(u=>{ USER=u?{provider:u.provider,handle:u.handle}:null; if(!u) setToken(null); renderUser(); },()=>{ renderUser(); }); }
 function renderUser(){ const el=document.getElementById("acct-userrow"); if(!el) return;
-  el.innerHTML=USER?`<span class="me">@${esc(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button><button type="button" class="secondary myfeed">My feed</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`;
+  const kTitle=document.getElementById("acct-user-k"), kDesc=document.getElementById("acct-user-desc"), hasKey=!!keyOf();
+  if(kTitle){
+    if(USER) kTitle.textContent="SOCIAL ACCOUNT";
+    else if(hasKey) kTitle.textContent="SOCIAL ACCOUNT (OPTIONAL)";
+    else kTitle.textContent="SIGN IN (SOCIAL)";
+  }
+  if(kDesc){
+    if(hasKey && !USER) kDesc.textContent="Signed in with your ubik.gold key (Holder). You can optionally link GitHub or X to attach your handle to remarks.";
+    else kDesc.textContent="Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.";
+  }
+  el.innerHTML=USER?`<span class="me">@${esc(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button><button type="button" class="secondary myfeed">My feed</button>`:(hasKey?`<button type="button" data-prov="github">Link GitHub</button><button type="button" data-prov="x">Link X</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`);
   el.querySelectorAll("[data-prov]").forEach(b=>b.addEventListener("click",()=>{ location.href=signinURL(b.dataset.prov); }));
-  const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); if(view==="ledger"&&pane==="mine") renderMine(); });
-  const mf=el.querySelector(".myfeed"); if(mf) mf.addEventListener("click",()=>{ document.getElementById("keydlg").close(); go("ledger",true,"mine"); });
+  const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine(); });
+  const mf=el.querySelector(".myfeed"); if(mf) mf.addEventListener("click",()=>{ document.getElementById("keydlg").close(); if(typeof go==="function") go("ledger",true,"mine"); });
   if(typeof renderGate==="function") renderGate(); }
 function openSignin(){ openKey(); }
 // back from the desk: #/signed-in?t=...&n=...&back=...
@@ -2207,10 +2218,20 @@ function renderMine(){
   const open=mine.filter(f=>f.status==="open"), res=mine.filter(f=>f.resolved);
   const places=[...new Set(Object.values(GEO).map(g=>g[2]))].sort();
   const empty=!MINE.themes.size&&!MINE.stars.size&&!MINE.places.size&&!MINE.topics.size;
-  const feedbar=USER?`<div class="feedbar"><b>@${esc(USER.handle)}</b> · signed in with ${esc(USER.provider)} · your feed follows you across devices <span class="mono" style="font-size:10.5px;opacity:.7">(prototype: this browser)</span></div>`
-    :`<div class="feedbar">Your feed lives in this browser. <b>Sign in</b> to keep it on every device and to sign your remarks. <button type="button" id="feed-signin">Sign in</button></div>`;
+  const k=keyOf();
+  const isHolder=STANDING==="holder";
+  let feedbar;
+  if(USER){
+    const stTag=isHolder?" · Holder":(k?` · ${STANDING==="locked"?"Under 200k UBIK":"Active"}`:"");
+    feedbar=`<div class="feedbar"><b>@${esc(USER.handle)}</b> · signed in with ${esc(USER.provider)}${stTag} · your feed follows you across devices <span class="mono" style="font-size:10.5px;opacity:.7">(prototype: this browser)</span><button type="button" id="feed-acct" class="secondary">Account</button></div>`;
+  }else if(k){
+    const stLabel=isHolder?"Holder":(STANDING==="locked"?"Under 200k UBIK":(STANDING==="invalid"?"Key not recognised":"Key active"));
+    feedbar=`<div class="feedbar"><b>Signed in with ubik.gold key</b> · ${stLabel} · your feed is active in this browser<button type="button" id="feed-acct" class="secondary">Account</button></div>`;
+  }else{
+    feedbar=`<div class="feedbar">Your feed lives in this browser. <b>Sign in</b> with your ubik.gold key to unlock holder forecasts and keep your feed. <button type="button" id="feed-signin">Sign in</button></div>`;
+  }
   const sugg=TOPIC_SUGGEST.filter(k=>![...MINE.topics].some(x=>norm(x)===norm(k))).slice(0,8);
-  const pick=`<section class="mod"><h3><span class="withav">${ICON("head")}Your interests</span><span class="mono">themes, places, topics and questions you keep${USER?"":". Stored in this browser"}.</span></h3>
+  const pick=`<section class="mod"><h3><span class="withav">${ICON("head")}Your interests</span><span class="mono">themes, places, topics and questions you keep${(USER||k)?"":". Stored in this browser"}.</span></h3>
     <div class="topicrow"><span class="lab2">Topics</span><form id="topicform"><input id="topicin" type="text" placeholder="Add a word: Hormuz, BYD, Starlink…" aria-label="Follow a topic" autocomplete="off"><button type="submit">Follow</button></form>${[...MINE.topics].map(k=>`<button type="button" class="pk topic" data-topic="${esc(k)}" aria-pressed="true" title="Stop following">${esc(k)}<span class="x">×</span></button>`).join("")}${sugg.map(k=>`<button type="button" class="pk sug" data-sug="${esc(k)}" title="Follow ${esc(k)}">+ ${esc(k)}</button>`).join("")}</div>
     <div class="pickrow"><span class="lab2">Themes</span>${Object.keys(THEMES).map(k=>`<button type="button" class="pk" data-t="${k}" data-theme="${k}" aria-pressed="${MINE.themes.has(k)}">${THEMES[k]}</button>`).join("")}</div>
     <div class="pickrow"><span class="lab2">Places</span>${places.map(pl=>`<button type="button" class="pk place" data-place="${esc(pl)}" aria-pressed="${MINE.places.has(pl)}">${esc(pl)}</button>`).join("")}</div>
@@ -2241,6 +2262,7 @@ function wirePicks(){
   document.querySelectorAll("#minepage .pk.sug").forEach(b=>b.addEventListener("click",()=>addTopic(b.dataset.sug)));
   const tf=document.getElementById("topicform"); if(tf) tf.addEventListener("submit",e=>{ e.preventDefault(); addTopic(document.getElementById("topicin").value); });
   const fs=document.getElementById("feed-signin"); if(fs) fs.addEventListener("click",openSignin);
+  const fa=document.getElementById("feed-acct"); if(fa) fa.addEventListener("click",openKey);
 }
 renderUser(); whoami();
 updateMineCount();

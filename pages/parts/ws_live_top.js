@@ -141,6 +141,7 @@ function applyEdition(raw, showing){
     else if(byId[selected]){ const cur=selected; selected=null; select(cur); }
   }
   renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
+  if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
   const cs=document.getElementById("cover-score"); if(cs) cs.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span>${res.length?`<span>Brier <b>${(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3)}</b></span>`:""}<span><b>${AGENT_ED.sources}</b> sources</span>`;
   const back=document.getElementById("archivebar"); if(back){ back.classList.toggle("hidden",showing==="current"); back.querySelector("b").textContent=`Edition of ${EDITION_LONG}, from the archive`; }
 }
@@ -171,10 +172,11 @@ function openKey(){
     const v=parseKey(d.querySelector("input").value);
     if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
     try{ localStorage.setItem("ubik-key",v); }catch(err){}
-    STANDING="unknown"; renderGate(); errEl.textContent="";
+    STANDING="unknown"; renderGate(); if(typeof renderUser==="function") renderUser(); errEl.textContent="";
     if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
     try{
       await loadCurrent();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
       if(STANDING==="holder") d.close();
       else if(STANDING==="locked") errEl.textContent=`Key recognised, but wallet holds under ${THRESHOLD}.`;
       else if(STANDING==="invalid") errEl.textContent="ubik.gold does not recognise this key.";
@@ -184,8 +186,19 @@ function openKey(){
       errEl.textContent=String(err&&err.message)==="429"?"Rate limit reached on ubik.gold (60/min). Try again in a moment.":"Could not reach the desk to verify the key. Try again shortly.";
     }finally{
       if(btn){ btn.disabled=false; btn.textContent="Save"; }
+      if(typeof renderUser==="function") renderUser();
     }
   });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
-  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); });
+  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{
+    try{localStorage.removeItem("ubik-key")}catch(e){}
+    STANDING="none"; d.close();
+    if(typeof renderUser==="function") renderUser();
+    loadCurrent().then(()=>{
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+    }).catch(()=>{
+      if(typeof holderGate==="function") holderGate("none"); else renderGate();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+    });
+  });
 })();

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="../assets/forecasts-C03wi9iS.js"></script>
+<script type="module" crossorigin src="../assets/forecasts-D7RM8yeZ.js"></script>
 <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
 <link rel="stylesheet" crossorigin href="../assets/fonts-VPBoBIfD.css">
 
@@ -385,12 +385,7 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
 <dialog id="keydlg" class="account" aria-labelledby="acct-h">
   <div class="acct">
     <div class="ahead"><div class="k">ACCOUNT</div><h2 id="acct-h">Your account.</h2><button type="button" class="kcancel close" aria-label="Close">×</button></div>
-    <section class="asec" id="acct-user">
-      <div class="k">SIGN IN</div>
-      <div class="arow" id="acct-userrow"></div>
-      <p class="small">Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.</p>
-    </section>
-    <section class="asec">
+    <section class="asec" id="acct-holder">
       <div class="k">HOLDER KEY <span class="gstate" id="acct-standing"></span></div>
       <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
       <form class="keyform">
@@ -398,6 +393,11 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
         <p class="kerr" role="alert"></p>
         <div class="row"><button type="submit">Open</button><button type="button" class="kforget">Forget key</button></div>
       </form>
+    </section>
+    <section class="asec" id="acct-user">
+      <div class="k" id="acct-user-k">SIGN IN</div>
+      <div class="arow" id="acct-userrow"></div>
+      <p class="small" id="acct-user-desc">Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.</p>
     </section>
   </div>
 </dialog>

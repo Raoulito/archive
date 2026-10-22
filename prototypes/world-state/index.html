@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="../assets/world-state-CUM83JqS.js"></script>
+<script type="module" crossorigin src="../assets/world-state-CiJRtEJ5.js"></script>
 <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
 <link rel="stylesheet" crossorigin href="../assets/fonts-VPBoBIfD.css">
 
@@ -930,6 +930,7 @@ dialog#signin::backdrop{background:rgba(10,10,12,.45)}
 .feedbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:10px 14px;border:1px solid var(--line);background:var(--surface);margin:0 0 18px;font-family:var(--body);font-size:14px;color:var(--muted)}
 .feedbar b{color:var(--ink);font-weight:500}
 .feedbar button{margin-left:auto;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.feedbar button.secondary{background:none;color:var(--ink);border:1px solid var(--rule)}
 .topicrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .topicrow form{display:flex;border:1px solid var(--rule);margin-right:6px}
 .topicrow input{border:0;background:none;font-family:var(--body);font-size:13px;padding:5px 8px;width:150px;color:var(--ink);outline:none}
@@ -1660,12 +1661,7 @@ a.pw{text-decoration:none}
 <dialog id="keydlg" class="account" aria-labelledby="acct-h">
   <div class="acct">
     <div class="ahead"><div class="k">ACCOUNT</div><h2 id="acct-h">Your account.</h2><button type="button" class="kcancel close" aria-label="Close">×</button></div>
-    <section class="asec" id="acct-user">
-      <div class="k">SIGN IN</div>
-      <div class="arow" id="acct-userrow"></div>
-      <p class="small">Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.</p>
-    </section>
-    <section class="asec">
+    <section class="asec" id="acct-holder">
       <div class="k">HOLDER KEY <span class="gstate" id="acct-standing"></span></div>
       <p>Sign in at <a href="https://ubik.gold" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds 200,000 UBIK and copy the key it gives you. The key stays in this browser; the desk passes it to ubik.gold and keeps nothing.</p>
       <form class="keyform">
@@ -1673,6 +1669,11 @@ a.pw{text-decoration:none}
         <p class="kerr" role="alert"></p>
         <div class="row"><button type="submit">Open</button><button type="button" class="kforget">Forget key</button></div>
       </form>
+    </section>
+    <section class="asec" id="acct-user">
+      <div class="k" id="acct-user-k">SIGN IN</div>
+      <div class="arow" id="acct-userrow"></div>
+      <p class="small" id="acct-user-desc">Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.</p>
     </section>
   </div>
 </dialog>

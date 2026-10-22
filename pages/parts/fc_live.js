@@ -62,7 +62,17 @@ function signinURL(prov){ let n=""; try{ n=sessionStorage.getItem("ubk.nonce")||
 function whoami(){ if(!TOKEN){ USER=null; renderUser(); return; } fetch(DESK+"/me",{headers:{Authorization:"Bearer "+TOKEN}}).then(r=>r.ok?r.json():null).then(u=>{ USER=u?{provider:u.provider,handle:u.handle}:null; if(!u) setToken(null); renderUser(); },()=>{ renderUser(); }); }
 function renderUser(){ const el=document.getElementById("acct-userrow"); if(!el) return;
   const e=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  el.innerHTML=USER?`<span class="me">@${e(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`;
+  const kTitle=document.getElementById("acct-user-k"), kDesc=document.getElementById("acct-user-desc"), hasKey=!!keyOf();
+  if(kTitle){
+    if(USER) kTitle.textContent="SOCIAL ACCOUNT";
+    else if(hasKey) kTitle.textContent="SOCIAL ACCOUNT (OPTIONAL)";
+    else kTitle.textContent="SIGN IN (SOCIAL)";
+  }
+  if(kDesc){
+    if(hasKey && !USER) kDesc.textContent="Signed in with your ubik.gold key (Holder). You can optionally link GitHub or X to attach your handle to remarks.";
+    else kDesc.textContent="Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.";
+  }
+  el.innerHTML=USER?`<span class="me">@${e(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button>`:(hasKey?`<button type="button" data-prov="github">Link GitHub</button><button type="button" data-prov="x">Link X</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`);
   el.querySelectorAll("[data-prov]").forEach(b=>b.addEventListener("click",()=>{ location.href=signinURL(b.dataset.prov); }));
   const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); });
   if(typeof renderGate==="function") renderGate();
@@ -103,12 +113,12 @@ function holderGate(state){
     const v=parseKey(g.querySelector("input").value);
     if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
     try{ localStorage.setItem("ubik-key",v); }catch(err){}
-    STANDING="unknown"; renderGate(); errEl.textContent="";
+    STANDING="unknown"; renderGate(); if(typeof renderUser==="function") renderUser(); errEl.textContent="";
     if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
     try{ await loadCurrent(); }catch(err){ if(String(err.message)==="429") holderGate("limited"); else if(String(err.message)!=="451") holderGate("unknown"); }
-    finally{ if(btn){ btn.disabled=false; btn.textContent="Open"; } }
+    finally{ if(btn){ btn.disabled=false; btn.textContent="Open"; } if(typeof renderUser==="function") renderUser(); }
   });
-  const f=g.querySelector(".forget"); if(f) f.addEventListener("click",()=>{ try{ localStorage.removeItem("ubik-key"); }catch(e){} STANDING="none"; holderGate("none"); });
+  const f=g.querySelector(".forget"); if(f) f.addEventListener("click",()=>{ try{ localStorage.removeItem("ubik-key"); }catch(e){} STANDING="none"; if(typeof renderUser==="function") renderUser(); holderGate("none"); });
 })();
 function renderGate(){
   const el=document.getElementById("gate"); if(!el) return; const k=keyOf(); const st=k?(STANDING==="none"?"unknown":STANDING):"none";
@@ -126,7 +136,7 @@ function renderGate(){
     const v=parseKey(d.querySelector("input").value);
     if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
     try{ localStorage.setItem("ubik-key",v); }catch(err){}
-    STANDING="unknown"; renderGate(); errEl.textContent="";
+    STANDING="unknown"; renderGate(); if(typeof renderUser==="function") renderUser(); errEl.textContent="";
     if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
     try{
       await loadCurrent();
@@ -139,10 +149,11 @@ function renderGate(){
       errEl.textContent=String(err&&err.message)==="429"?"Rate limit reached on ubik.gold (60/min). Try again in a moment.":"Could not reach the desk to verify the key. Try again shortly.";
     }finally{
       if(btn){ btn.disabled=false; btn.textContent="Save"; }
+      if(typeof renderUser==="function") renderUser();
     }
   });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
-  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); }); })();
+  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); if(typeof renderUser==="function") renderUser(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); }); })();
 renderUser(); whoami();
 
 NEXT_RECHECK=()=>{ if(STANDING==="holder") return loadCurrent(); };
