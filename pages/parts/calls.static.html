@@ -635,7 +635,9 @@ function record(){
   const done=F.filter(f=>f.status!=="open"), open=F.length-done.length;
   const right=done.filter(won).length;
   const br=done.length?(done.reduce((a,f)=>a+(f.brier||0),0)/done.length).toFixed(3):"—";
-  document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${ALL.length}</b> have a market or an instrument and are on this page; the other ${open-ALL.length} are reads with no expression. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
+  const withExpr=ALL.filter(o=>(o.market&&o.market.p!=null)||(o.yes&&o.yes.length>0)||(o.no&&o.no.length>0)).length;
+  const noExpr=open-withExpr;
+  document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${withExpr}</b> have a market or an instrument and are on this page${noExpr>0?`; the other ${noExpr} are reads with no expression`:""}. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
 }
 function stamp(){
   const last=Object.values(TS).flat().map(e=>e[0]).sort().pop();
