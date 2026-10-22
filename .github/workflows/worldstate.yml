@@ -1,0 +1,45 @@
+name: World State post
+
+on:
+  schedule:
+    - cron: "20 * * * *"   # every hour: the edition when it lands, the forecasts it issues, what settles
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only print, do not post"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: worldstate-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests-oauthlib
+      - name: Compose (and post, when the keys are set)
+        env:
+          WS_X_API_KEY: ${{ secrets.WS_X_API_KEY }}
+          WS_X_API_SECRET: ${{ secrets.WS_X_API_SECRET }}
+          WS_X_ACCESS_TOKEN: ${{ secrets.WS_X_ACCESS_TOKEN }}
+          WS_X_ACCESS_SECRET: ${{ secrets.WS_X_ACCESS_SECRET }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          if [ -n "$WS_X_API_KEY" ] && [ "$DRY" != "true" ]; then python3 tools/worldstate.py --post; else python3 tools/worldstate.py; echo "(not posted: no keys, or dry run)"; fi
+      - name: Remember what was posted
+        run: |
+          if ! git diff --quiet tools/worldstate.log; then
+            git config user.name Administrator; git config user.email administrator@ubikistan.invalid
+            git add tools/worldstate.log
+            git commit -m "World State post: $(tail -1 tools/worldstate.log | cut -f1,2)"
+            git pull --rebase -q origin main && git push
+          fi

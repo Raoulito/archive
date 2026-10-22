@@ -174,6 +174,7 @@ In `lore.json` this block appears as `origin` (the existing `source` field stays
 - Reviewing a pull request: run `python3 tools/build.py check`, read the record against the rules above, then merge or ask for changes.
 - Promoting: change `status` from `FOLK` to `PROBABLE`, `DISPUTED` or `CANON`. Canon changes also go into the lore pages where they belong (usually `lore/timeline.md`).
 - The State Archive posts one record a day on X (`tools/daily.py`, run by `.github/workflows/daily.yml` at 08:33 Amsterdam time; the week's rhythm is in the script's docstring; `tools/daily.log` remembers what went out). It posts only when the X keys are set as secrets (`X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET`); `python3 tools/daily.py` prints the day's post without sending it.
+- The World State posts on X as @ubikworldstate (`tools/worldstate.py`, hourly from `.github/workflows/worldstate.yml`): the edition when it lands with the forecasts it issued as replies, and every forecast that settles with its score. `tools/worldstate.log` remembers what went out. Keys: `WS_X_API_KEY`, `WS_X_API_SECRET`, `WS_X_ACCESS_TOKEN`, `WS_X_ACCESS_SECRET`; without them it only prints.
 - Building locally: `python3 tools/build.py build` writes the site to `dist/`. Publishing happens automatically when `main` changes: to GitHub Pages, and, when the secret `DEPLOY_SSH_KEY` is set, over ssh to ubikistan.org/archive/ (`.github/workflows/pages.yml`, job `ubikistan-org`; the base address is `ARCHIVE_BASE_URL`).
 
 ## How editing works (the archive is a wiki)
