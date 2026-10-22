@@ -1537,16 +1537,16 @@ a.pw{text-decoration:none}
       </div>
       <div id="chatpage" class="hidden">
         <div class="chatpage">
-          <div class="num">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>
-          <h2 class="t">The world on 20 October 2026, as data.</h2>
+          <div class="num" id="agdate">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>
+          <h2 class="t" id="agtitle">The world on 20 October 2026, as data.</h2>
           <p class="lede">The same edition the humans read, in the shape an agent consumes: one thesis, the mechanisms behind it, the forecasts they rest on with their record IDs, dated things to watch, and what would change the view. Every block is reachable at the endpoints at the foot of this page. Start with <a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a>.</p>
           <div id="agented"></div>
           <div class="num" style="margin-top:34px">ASK UBIK · THE SAME STATE, IN ANSWERS</div>
           <p class="lede" style="font-size:15px">Answers come from UBIK's own state and cite the forecast they rest on, with its record ID. In this prototype the chat searches the snapshot; the real one talks to the holder MCP endpoint.</p>
           <div class="chips" id="chips"></div>
           <div class="chat" id="chatbox">
-            <div class="log" id="chatlog"><div class="a"><img class="av" src="" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
-            <form id="chatform"><input id="chatin" type="text" placeholder="Why 22% on Delhi fuel?" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
+            <div class="log" id="chatlog"><div class="a"><img class="av" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23d9a21b'/%3E%3C/svg%3E" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
+            <form id="chatform"><input id="chatin" type="text" placeholder="Ask UBIK about an open forecast, theme, or place…" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
             <div class="note">PROTOTYPE · will connect to the MCP endpoint. For now it searches the record.</div>
           </div>
           <section class="access">
@@ -2667,6 +2667,12 @@ function agentPayload(){
 }
 let agJson=false, agWatchAll=false;
 function renderAgent(){
+  const agD=AGENT_ED.date||(typeof EDITION_DAY!=="undefined"&&EDITION_DAY?EDITION_DAY:"2026-10-20");
+  const agLong=typeof EDITION_LONG!=="undefined"&&EDITION_LONG?EDITION_LONG:fmt(agD);
+  const agDateEl=document.getElementById("agdate");
+  if(agDateEl) agDateEl.textContent=`AGENT EDITION · ${agD} · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM`;
+  const agTitleEl=document.getElementById("agtitle");
+  if(agTitleEl) agTitleEl.textContent=`The world on ${agLong}, as data.`;
   const el=document.getElementById("agented"); if(!el) return;
   const ed=CURRENTS.flatMap(c=>c.fcs).filter((v,i,a)=>a.indexOf(v)===i).map(id=>byId[id]).filter(Boolean);
   const bar=`<div class="agbar"><span class="lab">Read it</span><a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="https://ubik.gold/synthesis?include=all" target="_blank" rel="noopener">GET /synthesis?include=all</a><a href="https://ubik.gold/forecasts" target="_blank" rel="noopener">GET /forecasts</a><span class="sp"></span><button type="button" id="agview" aria-pressed="${agJson}">${agJson?"Read as page":"View as JSON"}</button><button type="button" id="agcopy">Copy JSON</button></div>`;
@@ -2714,11 +2720,17 @@ function showCover(force){
 }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ const c=document.getElementById("cover"); if(c&&!c.classList.contains("hidden")){ c.classList.add("hidden"); document.body.classList.remove("covered"); if(location.hash==="#cover") history.replaceState(null,"",HASH[view]||"#agent"); } } });
 function renderChips(){
-  const soon=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due))[0];
-  const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?","Why 22% on Delhi fuel?",`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,40)}…?`,"What changed its mind?","What is the Brier score?"];
-  document.getElementById("chips").innerHTML=qs.map(q=>`<button type="button">${esc(q)}</button>`).join("");
+  const openFs=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due));
+  const soon=openFs[0];
+  const moved=[...openFs].filter(f=>f.hist.length>1).sort((a,b)=>Math.abs(now(b)-first(b))-Math.abs(now(a)-first(a)))[0];
+  const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?"];
+  if(soon) qs.push(`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,35)}…?`);
+  if(moved&&(!soon||moved.id!==soon.id)) qs.push(`Why ${pct(now(moved))} on ${shortQ(moved.q).slice(0,35)}…?`);
+  qs.push("What changed its mind?","What is the Brier score?");
+  const chipsEl=document.getElementById("chips");
+  if(chipsEl) chipsEl.innerHTML=qs.map(q=>`<button type="button">${esc(q)}</button>`).join("");
   document.querySelectorAll("#chips button").forEach(b=>b.addEventListener("click",()=>{ const inp=document.getElementById("chatin"); inp.value=b.textContent; document.getElementById("chatform").requestSubmit(); }));
-  const av=document.getElementById("chatav2"); if(av&&!av.src) av.src=FRAMES.portrait;
+  const av=document.getElementById("chatav2"); if(av&&FRAMES&&FRAMES.portrait) av.src=FRAMES.portrait;
 }
 try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
 try{ history.scrollRestoration="manual"; }catch(e){}
