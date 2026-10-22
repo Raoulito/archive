@@ -571,13 +571,14 @@ function card(o){
   </article>`;
 }
 const DONE=F.filter(f=>f.status!=="open").sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||""));
-const won=f=>(f.status==="yes")===(P(f)>=.5);
+const outcomeOf=f=>(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"")).toLowerCase();
+const won=f=>{ const o=outcomeOf(f); return o==="yes"?(P(f)>=.5):o==="no"?(P(f)<=.5):(f.brier!=null&&f.brier<0.25); };
 function historyCard(f){
-  const p=P(f), p0=f.hist[0][1], side=p>=.5?"YES":"NO", w=won(f);
+  const p=P(f), p0=f.hist[0][1], side=p>=.5?"YES":"NO", w=won(f), o=outcomeOf(f)||f.status;
   return `<article class="card hc ${w?"win":"loss"}" id="${f.id}">
     <div class="top"><span class="cats"><span>${IC.rec}Resolved ${d2(f.resolved)}</span></span><span class="sp"></span><span class="hz">${IC.clock}issued ${d2(f.hist[0][0])}</span></div>
     <div class="pos"><span class="tag ${w?"long":"short"}">${w?IC.long:IC.short}${w?"Win":"Loss"}</span><span class="asset">${esc(f.q.replace(/^Will /,"").replace(/\?$/,""))}</span></div>
-    <div class="sub">forecast ${side} · resolved ${f.status.toUpperCase()}</div>
+    <div class="sub">forecast ${side} · resolved ${esc(o).toUpperCase()}</div>
     <div class="stats"><div class="cv">${ring(p>=.5?p:1-p,w?"long":"short")}<div><div class="k">Conviction</div><div class="v ${w?"pos":"neg"}">${pc(p>=.5?p:1-p)}<small>%</small></div></div></div><div><div class="k">${IC.move}At issue</div><div class="v dim">${pc(p0)}<small>%</small></div></div><div><div class="k">${IC.ev}Brier</div><div class="v">${f.brier!=null?f.brier.toFixed(3):"—"}</div></div></div>
     ${f.evidence?`<p class="ev">${esc(f.evidence)}</p>`:""}
     <details class="more"><summary>Rule, history</summary><div class="body"><span class="k">History</span><div class="hist">${spark(f)}<div class="steps">${stepsOf(f)}</div></div>${f.rule?`<span class="k">Resolution rule</span><p class="rule">${esc(f.rule)}</p>`:""}<a class="lnk" href="https://ubik.gold/forecasts/${f.id}" target="_blank" rel="noopener">UBIK record ${f.id} →</a></div></details>
@@ -626,7 +627,7 @@ function calendar(){
 }
 function record(){
   const done=F.filter(f=>f.status!=="open"), open=F.length-done.length;
-  const right=done.filter(f=>(f.status==="yes")===(P(f)>=.5)).length;
+  const right=done.filter(won).length;
   const br=done.length?(done.reduce((a,f)=>a+(f.brier||0),0)/done.length).toFixed(3):"—";
   document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${ALL.length}</b> have a market or an instrument and are on this page; the other ${open-ALL.length} are reads with no expression. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
 }

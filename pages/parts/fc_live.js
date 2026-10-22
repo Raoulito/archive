@@ -20,6 +20,8 @@ function transform(raw){
     TSo[id]=h.map(e=>[e.at,e.probability]);
     const o={id, theme:themeOf(f.claim), q:f.claim, hist:h.map(e=>[e.at.slice(0,10),e.probability]), due:f.deadline, status:f.status||"open", locked:!!f.locked};
     if(f.resolved_at) o.resolved=f.resolved_at.slice(0,10);
+    const outcome=f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":null);
+    if(outcome) o.outcome=outcome;
     if(f.brier!=null) o.brier=f.brier;
     if(f.resolution_rule) o.rule=f.resolution_rule;
     let ev=f.evidence; if(ev&&typeof ev==="object") ev=(ev.quote||"")+(ev.url?` (${ev.url.split("/")[2]})`:""); if(ev) o.evidence=ev;
