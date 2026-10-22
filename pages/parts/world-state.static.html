@@ -114,6 +114,8 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 .tag.r{}
 .tag.i{border-style:dashed}
 .tag.f{background:var(--ring);border-color:var(--ring);color:#fff}
+.tag.correct{color:var(--good);border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.tag.incorrect{color:var(--hot);border-color:var(--hot);background:color-mix(in srgb,var(--hot) 12%,var(--surface))}
 
 /* theme filter */
 .filters{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 6px}
@@ -159,6 +161,9 @@ section>h2 .big{font-family:var(--display);font-size:24px;letter-spacing:0;text-
 .rec .note{font-size:14px;color:var(--muted);margin-top:12px}
 .resolved{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
 .resolved .ev{font-size:14px;margin-top:8px}
+.res-item{padding:16px 0}
+.res-item:first-child{padding-top:0}
+.res-item + .res-item{border-top:1px solid var(--line);margin-top:16px}
 
 /* ledger */
 .ledger{margin-top:16px;overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
@@ -504,6 +509,8 @@ body{padding-inline:clamp(16px,4vw,56px)}
 .tag.v{color:var(--ink);border-color:var(--ink)}
 .tag.i{border-style:dashed}
 .tag.f{background:var(--ring);border-color:var(--ring);color:#fff}
+.tag.correct{color:var(--good);border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.tag.incorrect{color:var(--hot);border-color:var(--hot);background:color-mix(in srgb,var(--hot) 12%,var(--surface))}
 .ed-sec .prose p{font-size:18px;line-height:1.6;margin:0 0 18px}
 .ed-sec .prose p:first-child::first-letter{all:unset}
 .matters{margin:0 0 32px;padding:20px 22px 18px 24px;border-left:3px solid var(--ring);border-top:0;border-bottom:0;background:var(--tw,var(--teal-soft))}
@@ -708,6 +715,8 @@ dialog#sharedlg::backdrop{background:rgba(0,0,0,.6)}
   :root[data-theme="neon"] .score b,:root[data-theme="neon"] .counts b,:root[data-theme="neon"] .rec .row b{text-shadow:0 0 10px rgba(233,237,245,.35)}
   :root[data-theme="neon"] .tag.f{box-shadow:0 0 10px rgba(var(--n),.6)}
   :root[data-theme="neon"] .tag.v{box-shadow:0 0 8px rgba(233,237,245,.25)}
+  :root[data-theme="neon"] .tag.correct{box-shadow:0 0 8px rgba(61,220,151,.35)}
+  :root[data-theme="neon"] .tag.incorrect{box-shadow:0 0 8px rgba(255,77,141,.35)}
   :root[data-theme="neon"] .prop,:root[data-theme="neon"] .vs .adj{box-shadow:0 0 8px rgba(255,200,87,.35)}
   :root[data-theme="neon"] .about .portrait{filter:saturate(1.15)}
   :root[data-theme="neon"] body{background:radial-gradient(1200px 600px at 20% -10%,#1a1040 0%,transparent 60%),radial-gradient(900px 500px at 100% 0%,#2a0f2e 0%,transparent 55%),var(--bg)}
@@ -916,6 +925,7 @@ dialog#signin::backdrop{background:rgba(10,10,12,.45)}
 .feedbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:10px 14px;border:1px solid var(--line);background:var(--surface);margin:0 0 18px;font-family:var(--body);font-size:14px;color:var(--muted)}
 .feedbar b{color:var(--ink);font-weight:500}
 .feedbar button{margin-left:auto;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.feedbar button.secondary{background:none;color:var(--ink);border:1px solid var(--rule)}
 .topicrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
 .topicrow form{display:flex;border:1px solid var(--rule);margin-right:6px}
 .topicrow input{border:0;background:none;font-family:var(--body);font-size:13px;padding:5px 8px;width:150px;color:var(--ink);outline:none}
@@ -1512,10 +1522,10 @@ a.pw{text-decoration:none}
           <section id="record">
         
         <div class="rec">
-          <div class="row">
+          <div class="row" id="rec-stats">
             <span>Resolved<b>1</b></span><span>Open<b>29</b></span><span>Brier, resolved<b>0.058</b></span><span>Calibration<b>n/a</b></span>
           </div>
-          <p class="note">One forecast has resolved. A single score says almost nothing about calibration; the table becomes meaningful at around thirty resolutions. The first batch lands between 28 and 31 October (Fed decision, Brent at $100, Lula).</p>
+          <p class="note" id="rec-note">Scored against the resolution rule and evidence when the outcome arrives. The table becomes meaningful for calibration at around thirty resolutions.</p>
           <div class="resolved" id="resolved"></div>
         </div>
       </section>
@@ -1527,16 +1537,16 @@ a.pw{text-decoration:none}
       </div>
       <div id="chatpage" class="hidden">
         <div class="chatpage">
-          <div class="num">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>
-          <h2 class="t">The world on 20 October 2026, as data.</h2>
+          <div class="num" id="agdate">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>
+          <h2 class="t" id="agtitle">The world on 20 October 2026, as data.</h2>
           <p class="lede">The same edition the humans read, in the shape an agent consumes: one thesis, the mechanisms behind it, the forecasts they rest on with their record IDs, dated things to watch, and what would change the view. Every block is reachable at the endpoints at the foot of this page. Start with <a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a>.</p>
           <div id="agented"></div>
           <div class="num" style="margin-top:34px">ASK UBIK · THE SAME STATE, IN ANSWERS</div>
           <p class="lede" style="font-size:15px">Answers come from UBIK's own state and cite the forecast they rest on, with its record ID. In this prototype the chat searches the snapshot; the real one talks to the holder MCP endpoint.</p>
           <div class="chips" id="chips"></div>
           <div class="chat" id="chatbox">
-            <div class="log" id="chatlog"><div class="a"><img class="av" src="" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
-            <form id="chatform"><input id="chatin" type="text" placeholder="Why 22% on Delhi fuel?" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
+            <div class="log" id="chatlog"><div class="a"><img class="av" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23d9a21b'/%3E%3C/svg%3E" alt="" width="22" height="22" id="chatav2">Ask about any open question, a theme, or a place. Try the suggestions above.</div></div>
+            <form id="chatform"><input id="chatin" type="text" placeholder="Ask UBIK about an open forecast, theme, or place…" aria-label="Ask UBIK" autocomplete="off"><button type="submit">ASK</button></form>
             <div class="note">PROTOTYPE · will connect to the MCP endpoint. For now it searches the record.</div>
           </div>
           <section class="access">
@@ -1716,10 +1726,10 @@ const RESOLVED_AT={"q_20261019_05": "2026-10-20T04:00:00-04:00", "q_20261001_01"
 function changes(){
   const out=[];
   for(const f of F){ const h=TS[f.id]||[]; h.forEach((e,i)=>{ if(i===0) out.push({t:e[0],k:"new",f,p:e[1]}); else if(e[1]!==h[i-1][1]) out.push({t:e[0],k:e[1]>h[i-1][1]?"raised":"lowered",f,from:h[i-1][1],p:e[1]}); });
-    if(RESOLVED_AT[f.id]) out.push({t:RESOLVED_AT[f.id],k:"settled",f,p:f.hist[f.hist.length-1][1],outcome:f.status}); }
+    if(RESOLVED_AT[f.id]) out.push({t:RESOLVED_AT[f.id],k:"settled",f,p:f.hist[f.hist.length-1][1],outcome:(f.outcome||f.status||"")}); }
   return out.sort((a,b)=>b.t.localeCompare(a.t));
 }
-const LAST_CHANGE=changes()[0].t;
+const LAST_CHANGE=changes()[0]?.t||new Date().toISOString();
 function ago(iso){ const ms=Date.now()-new Date(iso).getTime(); const m=Math.round(ms/6e4); if(m<60) return `${m}m ago`; const h=Math.round(m/60); if(h<48) return `${h}h ago`; return `${Math.round(h/24)}d ago`; }
 function clock(iso){ return new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"UTC"}).format(new Date(iso))+" UTC"; }
 
@@ -1734,22 +1744,24 @@ const tagEl = k => `<span class="tag ${k}">${{v:"VERIFIED",r:"REPORTED",i:"INFER
 
 function stepChart(f, w=240, h=96){
   const pad={l:30,r:8,t:8,b:18};
-  const t0=new Date(issued(f)).getTime(), t1=new Date("2026-10-13").getTime();
+  const endDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:(f.hist.length?f.hist[f.hist.length-1][0]:new Date().toISOString().slice(0,10));
+  const t0=new Date(issued(f)).getTime(), t1=new Date(endDay.length===10?endDay+"T12:00:00Z":endDay).getTime();
   const span=Math.max(t1-t0, 3*864e5);
-  const x=d=>pad.l+((new Date(d).getTime()-t0)/span)*(w-pad.l-pad.r);
+  const x=d=>pad.l+((new Date(d.length===10?d+"T12:00:00Z":d).getTime()-t0)/span)*(w-pad.l-pad.r);
   const y=p=>pad.t+(1-p)*(h-pad.t-pad.b);
   let d="", prev=null;
   f.hist.forEach(([dt,p],i)=>{ const X=x(dt),Y=y(p); if(i===0) d+=`M${X},${Y}`; else d+=`H${X}V${Y}`; prev=[X,Y]; });
-  d+=`H${x("2026-10-13")}`;
+  d+=`H${x(endDay)}`;
   const grid=[0,0.25,0.5,0.75,1].map(g=>`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(g)}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l-5}" y="${y(g)+3}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${g===0?"0":g===1?"1":g}</text>`).join("");
   const pts=f.hist.map(([dt,p])=>`<circle cx="${x(dt)}" cy="${y(p)}" r="3" fill="var(--ring)"/>`).join("");
-  const end=`<circle cx="${x("2026-10-13")}" cy="${y(now(f))}" r="4" fill="var(--surface)" stroke="var(--ring)" stroke-width="2"/>`;
-  const xl=`<text x="${pad.l}" y="${h-4}" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(issued(f))}</text><text x="${w-pad.r}" y="${h-4}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">13 Oct</text>`;
+  const end=`<circle cx="${x(endDay)}" cy="${y(now(f))}" r="4" fill="var(--surface)" stroke="var(--ring)" stroke-width="2"/>`;
+  const xl=`<text x="${pad.l}" y="${h-4}" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(issued(f))}</text><text x="${w-pad.r}" y="${h-4}" text-anchor="end" font-size="9" font-family="Geist Mono,monospace" fill="var(--muted)">${fmt(endDay)}</text>`;
   return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Probability history">${grid}<path d="${d}" fill="none" stroke="var(--ring)" stroke-width="2"/>${pts}${end}${xl}</svg>`;
 }
 function spark(f, w=80, h=22){
-  const t0=new Date(issued(f)).getTime(), t1=new Date("2026-10-13").getTime(); const span=Math.max(t1-t0,3*864e5);
-  const x=d=>2+((new Date(d).getTime()-t0)/span)*(w-4); const y=p=>2+(1-p)*(h-4);
+  const endDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:(f.hist.length?f.hist[f.hist.length-1][0]:new Date().toISOString().slice(0,10));
+  const t0=new Date(issued(f)).getTime(), t1=new Date(endDay.length===10?endDay+"T12:00:00Z":endDay).getTime(); const span=Math.max(t1-t0,3*864e5);
+  const x=d=>2+((new Date(d.length===10?d+"T12:00:00Z":d).getTime()-t0)/span)*(w-4); const y=p=>2+(1-p)*(h-4);
   let d=""; f.hist.forEach(([dt,p],i)=>{ d+= i===0?`M${x(dt)},${y(p)}`:`H${x(dt)}V${y(p)}`; }); d+=`H${w-2}`;
   return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><line x1="2" x2="${w-2}" y1="${y(0.5)}" y2="${y(0.5)}" stroke="var(--line)"/><path d="${d}" fill="none" stroke="var(--ring)" stroke-width="1.5"/><circle cx="${w-2}" cy="${y(now(f))}" r="2.2" fill="var(--ring)"/></svg>`;
 }
@@ -1813,8 +1825,12 @@ function renderDev(){
         <button type="button" class="fc" data-id="${esc(f.id)}"><b>${pct(now(f))}</b><span>${esc(shortQ(f.q))}</span><small>${fmt(f.due)}${m?` · mkt ${pct(m.p)}`:""}</small></button>
       </section>`; }).join("");
     const o=F.filter(f=>f.status==="open"), withM=o.filter(f=>MKT[f.id]&&MKT[f.id].venue), big=withM.slice().sort((a,b)=>Math.abs(gapOf(b))-Math.abs(gapOf(a)))[0], nxt=o.slice().sort((a,b)=>a.due.localeCompare(b.due))[0];
+    const res=F.filter(f=>f.resolved||f.status==="yes"||f.status==="no");
+    const meanBrier=res.length?(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3):"—";
+    const bigPart=big&&MKT[big.id]?`Largest disagreement with the market: ${esc(shortQ(big.q))}, UBIK ${pct(now(big))} vs ${pct(MKT[big.id].p)}. `:(withM.length===0?"No listed contracts checked yet. ":"");
+    const nxtPart=nxt?`Next to resolve: ${esc(shortQ(nxt.q))}, ${fmt(nxt.due)}.`: "No further open forecasts scheduled.";
     document.getElementById("dev").innerHTML=`<div class="tldr">${rows}
-      <section class="tl sum" data-t="markets"><span class="num">∑</span><span class="body"><span class="h">The record</span><span class="l">${o.length} open, ${F.filter(f=>f.resolved).length} settled, Brier ${F.filter(f=>f.resolved).map(f=>f.brier)[0]?.toFixed(3)||"—"}. Largest disagreement with the market: ${esc(shortQ(big.q))}, UBIK ${pct(now(big))} vs ${pct(MKT[big.id].p)}. Next to resolve: ${esc(shortQ(nxt.q))}, ${fmt(nxt.due)}.</span></span><button type="button" class="fc" data-goto="ledger"><b>→</b><span>Open the ledger</span></button></section>
+      <section class="tl sum" data-t="markets"><span class="num">∑</span><span class="body"><span class="h">The record</span><span class="l">${o.length} open, ${res.length} settled, Brier ${meanBrier}. ${bigPart}${nxtPart}</span></span><button type="button" class="fc" data-goto="ledger"><b>→</b><span>Open the ledger</span></button></section>
       <p class="tlnote">Five currents, one line each, the forecast each rests on. Switch to Digest for the lead lines and why it matters, or Full for the whole edition.</p></div>`;
     document.querySelectorAll("#dev .tl .h").forEach(b=>b.addEventListener("click",()=>selectSection(b.dataset.t)));
     document.querySelectorAll("#dev .tl .fc[data-id]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.id)));
@@ -1874,7 +1890,7 @@ function selectSection(theme){
 
 function renderSide(){
   const list=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due)||issued(a).localeCompare(issued(b)));
-  const soon=d=>new Date(d)-new Date("2026-10-13")<=18*864e5;
+  const soon=d=>daysTo(d)<=18&&daysTo(d)>=0;
   let n=0;
   document.getElementById("scards").innerHTML=list.map(f=>{
     const hide=!visible(f); if(!hide)n++;
@@ -1971,20 +1987,16 @@ function openShare(f){
   dlg.showModal();
 }
 
-function select(id){
-  selected = selected===id ? null : id;
-  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
-  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
-  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
-  const f=byId[id]; const c=currentOf(id);
+function renderDossierSheet(f){
+  const dos=document.getElementById("dossier");
+  const c=currentOf(f.id);
   const d=now(f)-first(f);
   const hist=f.hist.map(([dt,p],i)=>{
     const prev=i? f.hist[i-1][1] : null;
     const why = i===0 ? (f.why? "Issued. "+f.why : "Issued.") : (i===f.hist.length-1 && f.change ? f.change : (prev!==null? (p>prev?"Raised":"Lowered")+" on the day's edition." : ""));
     return `<li><span class="d">${fmt(dt)} ${dt.slice(0,4)}</span><span class="p">${pct(p)}</span>${i? `<span class="mono" style="font-size:11px;color:var(--muted)">${p>prev?"+":"−"}${Math.round(Math.abs(p-prev)*100)}</span>`:""}<div>${esc(why)}</div></li>`;
-  }).join("") + (f.status==="yes"?`<li class="res"><span class="d">${fmt(f.resolved)} 2026</span><span class="p">RESOLVED YES</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier.toFixed(4)}</span><div>${tagEl("v")}${esc(f.evidence)}</div></li>`:"");
-  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">The ${fmt(issued(f))} edition that issued this question is not in the snapshot. Its forecast record is.</p></div>`;
-  // ---- the sheet: the team's schema for one forecast, with the ledger attached underneath ----
+  }).join("") + ((f.status==="yes"||f.status==="no"||f.resolved)?`<li class="res"><span class="d">${fmt(f.resolved||f.due)} 2026</span><span class="p">RESOLVED ${(f.outcome||f.status||"").toUpperCase()}</span><span class="mono" style="font-size:11px;color:var(--muted)">Brier ${f.brier!=null?f.brier.toFixed(4):"—"}</span><div>${tagEl("v")}${esc(f.evidence||"")}</div></li>`:"");
+  const ctx = c? `<div class="ctx"><h3>From the ${fmt(issued(f))} edition · ${esc(c.h)}</h3>${c.body.slice(0,2).map(p=>`<p>${esc(p)}</p>`).join("")}<button type="button" class="more" data-t="${c.theme}">Read the full section ↓</button></div>` : `<div class="ctx"><h3>Edition text</h3><p style="color:var(--muted)">Issued on ${fmt(issued(f))}. <a href="#" class="goed" data-day="${issued(f)}">Open the ${fmt(issued(f))} edition →</a></p></div>`;
   const inEd=CURRENTS.flatMap(x=>x.fcs).filter((v,k,a)=>a.indexOf(v)===k); const sheetIx=inEd.indexOf(f.id);
   const prevId=sheetIx>0?inEd[sheetIx-1]:null, nextId=sheetIx>=0&&sheetIx<inEd.length-1?inEd[sheetIx+1]:null;
   const pnow=now(f), P=Math.round(pnow*100);
@@ -1992,7 +2004,12 @@ function select(id){
   const dots=`<svg class="dots" viewBox="0 0 100 100" aria-label="${P} of 100">${Array.from({length:100},(_,k)=>`<circle cx="${(k%10)*10+5}" cy="${Math.floor(k/10)*10+5}" r="3.4" class="${k<P?"on":"off"}"/>`).join("")}</svg>`;
   const whyLine=f.change||f.why||(c?c.lines.find(l=>l[0]==="i")?.[1]:"")||"";
   const chainItems=(f.chain&&f.chain.length?f.chain:(c&&c.chain?c.chain.split(/(?<=\.)\s+/).filter(Boolean).slice(0,5):[])).concat([f.q]);
-  const missing=k=>`<p class="miss">Not in this snapshot. The engine returns it as <code>${k}</code> at <code>GET /forecasts/${esc(f.id)}</code>.</p>`;
+  const missing=k=>{
+    if(f.locked){
+      return `<div class="lockednote" style="margin:6px 0">${ICON("holders")} The reasoning and sources of open forecasts outside story 1 are for holders: signing in on <a href="${UBIK_HOME}" target="_blank" rel="noopener">ubik.gold</a> with a wallet that holds ${THRESHOLD} opens them. <button type="button" class="keylink">Enter a key</button></div>`;
+    }
+    return `<p class="miss">No ${esc(k)} provided for this forecast.</p>`;
+  };
   const fold=(icon,title,body,open,cls="")=>`<details class="fold ${cls}" ${open?"open":""}><summary>${ICON(icon,"ico")}<span>${title}</span><i class="chev"></i></summary><div class="fb">${body}</div></details>`;
   const vs=(()=>{ const m=MKT[f.id]; if(m&&m.venue){ const g=Math.round(gapOf(f)*100); return `<div class="vsrow"><span><i>UBIK</i><b>${pct(pnow)}</b></span><span><i>${esc(m.venue)}${m.adj?" · adjacent":""}</i><b>${pct(m.p)}</b></span><span class="gap ${g>0?"up":"dn"}"><i>Gap</i><b>${g>0?"+":"−"}${Math.abs(g)} pts</b></span><span><i>Contract</i><span>${esc(m.c)}</span><small> · read ${fmt(m.t)}</small></span></div>${m.adj?`<p class="adjnote">The market contract asks a neighbouring question, not this one. The gap is indicative, not a score.</p>`:`<p class="adjnote">When this resolves, the market price at issue time becomes the baseline UBIK is scored against.</p>`}`; }
     if(m) return `<p class="adjnote">${esc(m.note)} UBIK holds ${pct(pnow)} with no price to lean on. No listed contract checked.</p>`;
@@ -2001,11 +2018,11 @@ function select(id){
   dos.innerHTML=`<div class="dossier sheet" data-t="${f.theme}">
     <button type="button" class="back" id="back">← BACK TO THE BOARD</button>
     <header class="sh-head">
-      <div class="sh-l"><div class="k">${esc(f.id)} · ${f.status==="yes"?"RESOLVED YES":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${esc(f.q)}</h2></div>
+      <div class="sh-l"><div class="k">${esc(f.id)} · ${f.status==="yes"?"RESOLVED YES":f.status==="no"?"RESOLVED NO":f.resolved?"RESOLVED":"OPEN"} · ${THEMES[f.theme].toUpperCase()}${GEO[f.id]?` · ${esc(GEO[f.id][2]).toUpperCase()}`:""}</div><h2 class="t">${esc(f.q)}</h2></div>
       <div class="sh-r"><div class="pn"><span class="k"><i></i>${sheetIx>=0?`F${sheetIx+1}`:"ARCHIVE"}</span><b>${pct(pnow)}</b></div>${dots}</div>
     </header>
-    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"?` · settled ${fmt(f.resolved).toLowerCase()}`:` · ${daysTo(f.due)} days left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
-    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):"<span class='miss'>No one-line reason in this snapshot.</span>"}</p></div>
+    <div class="sh-meta"><span class="res">resolves by ${fmt(f.due).toLowerCase()}${f.status==="yes"||f.status==="no"||f.resolved?` · settled ${fmt(f.resolved||f.due).toLowerCase()}`:daysTo(f.due)===0?" · resolves today":daysTo(f.due)<0?" · awaiting resolution":` · ${daysTo(f.due)} day${daysTo(f.due)===1?"":"s"} left`}</span><span class="conf"><b>${conf}</b><button type="button" class="foldall" id="foldall" aria-pressed="false">FOLD SHUT ▸</button></span></div>
+    <div class="why"><span class="lab">WHY ${pct(pnow)}</span><p>${whyLine?esc(whyLine):(f.locked?`<span class="miss">${ICON("holders")} Holder forecast · One-line reason is reserved for holders.</span>`:`<span class='miss'>No one-line reason recorded.</span>`)}</p></div>
     <div class="folds">
       ${fold("ring","Thesis", f.thesis?`<p><b>${esc(f.thesis.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.thesis.split(". ").slice(1).join(". "))}</p>`:f.why?`<p><b>${esc(f.why.split(". ")[0]).replace(/\.$/,"")}.</b> ${esc(f.why.split(". ").slice(1).join(". "))}</p>${c?`<p class="src">From the ${THEMES[c.theme]} current of the ${fmt(AGENT_ED.date)} edition; question issued ${fmt(issued(f))}.</p>`:""}`:missing("thesis"), true)}
       ${fold("chain","How the news leads here", `<ol>${chainItems.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>${!(f.chain&&f.chain.length)&&c?`<p class="src">Chain taken from the section's mechanism; the engine's own <code>chain</code> for this question is not in the snapshot.</p>`:""}`, true)}
@@ -2023,13 +2040,44 @@ function select(id){
   </div>`;
   dos.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{ selected=null; select(b.dataset.nav); }));
   const fa=document.getElementById("foldall"); fa.addEventListener("click",()=>{ const all=[...dos.querySelectorAll("details.fold")]; const anyOpen=all.some(d=>d.open); all.forEach(d=>d.open=!anyOpen); fa.textContent=anyOpen?"OPEN ALL ▸":"FOLD SHUT ▸"; });
-  ed.classList.add("hidden"); dos.classList.remove("hidden");
   document.getElementById("back").addEventListener("click",()=>select(selected));
   document.getElementById("share").addEventListener("click",()=>openShare(f));
   wireStars(dos); wireFollows(dos);
   const more=dos.querySelector(".more"); if(more) more.addEventListener("click",()=>{ selectSection(more.dataset.t); });
+  dos.querySelectorAll(".goed").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); selectEdition(a.dataset.day); }));
+  dos.querySelectorAll(".keylink").forEach(b=>b.addEventListener("click",openKey));
+}
+
+function select(id){
+  selected = selected===id ? null : id;
+  const dos=document.getElementById("dossier"), ed=document.getElementById("edition-view");
+  if(!selected){ dos.classList.add("hidden"); document.getElementById(VIEWS[view]).classList.remove("hidden"); focusMode(false); renderSide(); return; }
+  for(const k in VIEWS) document.getElementById(VIEWS[k]).classList.add("hidden"); focusMode(true);
+  const f=byId[id];
+  renderDossierSheet(f);
+  ed.classList.add("hidden"); dos.classList.remove("hidden");
   renderSide();
   window.scrollTo({top:document.querySelector(".shell").offsetTop-16,behavior:"smooth"});
+
+  if((!f.reasoning || f.locked) && typeof deskGet==="function" && !f._fetching){
+    f._fetching=true;
+    deskGet("/forecasts/"+id).then(({body})=>{
+      f._fetching=false;
+      if(!body) return;
+      if(body.reasoning) f.reasoning=body.reasoning;
+      if(body.uncertainty) f.uncertainty=body.uncertainty;
+      if(body.rises_if) f.confirmation=body.rises_if;
+      if(body.falls_if) f.disconfirmation=body.falls_if;
+      if(body.resolution_rule) f.rule=body.resolution_rule;
+      if(body.resolution_source) f.source=body.resolution_source;
+      if(body.evidence) f.evidence=body.evidence;
+      if(Array.isArray(body.chain)&&body.chain.length) f.chain=body.chain.map(c=>typeof c==="string"?c:(c.step||c.text||JSON.stringify(c)));
+      if(Array.isArray(body.theses)&&body.theses.length){ const t=body.theses[0]; f.thesis=typeof t==="string"?t:(t.thesis||t.text||t.claim||""); }
+      if(body.history&&body.history[0]&&body.history[0].why) f.why=body.history[0].why;
+      f.locked=!!body.locked;
+      if(selected===id) renderDossierSheet(f);
+    }).catch(()=>{ f._fetching=false; });
+  }
 }
 function selectEdition(d){
   selected = selected==="ed:"+d ? null : "ed:"+d;
@@ -2059,23 +2107,95 @@ function answer(qtext){
   return `${pct(now(f))} on "${f.q}" (${f.id}), resolves ${fmt(f.due)}. ${f.why? f.why : f.hist.length>1? `Moved from ${pct(first(f))} to ${pct(now(f))} since ${fmt(issued(f))}.` : `Issued ${fmt(issued(f))}, unchanged.`}`;
 }
 function renderResolved(){
-  const f=F.find(x=>x.status==="yes");
-  document.getElementById("resolved").innerHTML=`
-    <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="status yes" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid var(--good);border-radius:2px;color:var(--good)">FORECAST / RESOLVED YES</span><span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span></div>
-    <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
-    <div class="row" style="margin-top:10px"><span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span><span>Resolved ${fmt(f.resolved)}<b>YES</b></span><span>Brier<b>${f.brier.toFixed(4)}</b></span></div>
-    <div class="ev">${tagEl("v")}${esc(f.evidence)}</div>
-    <div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${esc(f.rule)}</div>`;
+  const res=F.filter(f=>f.status==="yes"||f.status==="no"||!!f.resolved);
+  const curDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:((typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10));
+  const open=[...F.filter(f=>f.status==="open")].sort((a,b)=>a.due.localeCompare(b.due));
+  const pastDue=open.filter(f=>f.due<curDay);
+  const upcoming=open.filter(f=>f.due>=curDay);
+  const meanBrier=res.length?(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3):"—";
+  const statsEl=document.getElementById("rec-stats");
+  if(statsEl){
+    statsEl.innerHTML=`<span>Resolved<b>${res.length}</b></span><span>Open<b>${open.length}</b></span><span>Brier, resolved<b>${meanBrier}</b></span><span>Calibration<b>n/a</b></span>`;
+  }
+  const noteEl=document.getElementById("rec-note");
+  if(noteEl){
+    const resNote=res.length===0?"No forecast has resolved yet.":(res.length===1?"One forecast has resolved.":`${res.length} forecasts have resolved (mean Brier ${meanBrier}).`);
+    const calibNote="The table becomes meaningful for calibration at around thirty resolutions.";
+    let pastNote="";
+    if(pastDue.length===1){
+      const s=shortQ(pastDue[0].q).replace(/\.$/,"");
+      pastNote=`One forecast is awaiting resolution since ${fmt(pastDue[0].due)} (${s.length>70?s.slice(0,68).trim()+"…":s}).`;
+    } else if(pastDue.length>1){
+      pastNote=`${pastDue.length} forecasts are awaiting resolution.`;
+    }
+    let nextNote="";
+    if(!upcoming.length){
+      nextNote="No further open forecasts are scheduled.";
+    } else {
+      const nextFs=upcoming.slice(0,3);
+      const d0=fmt(nextFs[0].due), d1=fmt(nextFs[nextFs.length-1].due);
+      const dateStr=nextFs[0].due===nextFs[nextFs.length-1].due?`on ${d0}`:`between ${d0} and ${d1}`;
+      const qList=nextFs.map(f=>{ const s=shortQ(f.q).replace(/\.$/,""); return s.length>70?s.slice(0,68).trim()+"…":s; }).join("; ");
+      nextNote=nextFs.length===1?`The next forecast resolves on ${d0} (${qList}).`:`The next batch lands ${dateStr} (${qList}).`;
+    }
+    noteEl.textContent=[resNote, calibNote, pastNote, nextNote].filter(Boolean).join(" ");
+  }
+  const sorted=[...res].sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||"")||b.id.localeCompare(a.id));
+  const resEl=document.getElementById("resolved");
+  if(!resEl) return;
+  if(!sorted.length){
+    resEl.innerHTML=`<p class="note">No resolved forecasts in the record yet.</p>`;
+    return;
+  }
+  resEl.innerHTML=sorted.map(f=>{
+    const outcome=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"yes")).toLowerCase();
+    const p=now(f);
+    const correct=outcome==="yes"?p>=0.5:outcome==="no"?p<=0.5:(f.brier!=null&&f.brier<0.25);
+    const tagColor=correct?"var(--good)":"var(--hot)";
+    const tagClass=correct?"correct":"incorrect";
+    const label=outcome==="yes"?"RESOLVED YES":(outcome==="no"?"RESOLVED NO":"RESOLVED");
+    const brierStr=f.brier!=null?f.brier.toFixed(4):"—";
+    const resolvedDate=f.resolved?fmt(f.resolved):(f.due?fmt(f.due):"—");
+    return `<article class="res-item" data-id="${esc(f.id)}">
+      <div class="head" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="status tag ${tagClass}" style="font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1px solid ${tagColor};border-radius:2px;color:${tagColor};background:color-mix(in srgb,${tagColor} 12%,var(--surface))">FORECAST / ${label}</span>
+        <span class="id mono" style="font-size:11px;color:var(--muted)">${esc(f.id)}</span>
+      </div>
+      <h3 style="font-size:18px;margin-top:8px">${esc(f.q)}</h3>
+      <div class="row" style="margin-top:10px">
+        <span>Called ${fmt(issued(f))}<b>${pct(first(f))}</b></span>
+        <span>Resolved ${resolvedDate}<b>${outcome.toUpperCase()}</b></span>
+        <span>Brier<b>${brierStr}</b></span>
+      </div>
+      ${f.evidence?`<div class="ev">${tagEl("v")}${esc(f.evidence)}</div>`:""}
+      ${f.rule?`<div class="rule" style="font-size:13px;color:var(--muted);margin-top:8px"><span class="tag v">RULE</span>${esc(f.rule)}</div>`:""}
+    </article>`;
+  }).join("");
+  resEl.querySelectorAll(".res-item").forEach(el=>{
+    el.style.cursor="pointer";
+    el.addEventListener("click",()=>select(el.dataset.id));
+  });
 }
 function renderLedger(){
   const rows=[...F].sort((a,b)=>issued(b).localeCompare(issued(a)));
   let n=0;
   document.getElementById("tbody").innerHTML=rows.map(f=>{
     const hide=!visible(f); if(!hide)n++;
-    const st=f.status==="yes"?`<span class="tag v">YES · ${f.brier.toFixed(3)}</span>`:`<span class="tag">OPEN</span>`;
+    const isSettled=f.status==="yes"||f.status==="no"||!!f.resolved;
+    let st;
+    if(isSettled){
+      const outcome=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"yes")).toLowerCase();
+      const p=now(f);
+      const correct=outcome==="yes"?p>=0.5:outcome==="no"?p<=0.5:(f.brier!=null&&f.brier<0.25);
+      const cls=correct?"tag correct":"tag incorrect";
+      const brierStr=f.brier!=null?` · ${f.brier.toFixed(3)}`:"";
+      st=`<span class="${cls}">${outcome.toUpperCase()}${brierStr}</span>`;
+    } else {
+      st=`<span class="tag">OPEN</span>`;
+    }
     return `<tr class="${hide?"hide":""}" data-id="${esc(f.id)}" style="cursor:pointer"><td class="num">${fmt(issued(f))}</td><td>${esc(f.q)}<span class="id">${esc(f.id)}</span></td><td>${THEMES[f.theme]}</td><td class="num">${pct(first(f))}</td><td class="num"><b>${pct(now(f))}</b></td><td><span class="spark">${spark(f)}</span></td><td class="num">${fmt(f.due)}</td><td>${st}</td></tr>`;
   }).join("");
-  document.getElementById("lgcount").textContent=`${n} of ${F.length} forecasts shown · newest first · history drawn from issue date to 13 Oct, 0 to 1`;
+  document.getElementById("lgcount").textContent=`${n} of ${F.length} forecasts shown · newest first · history drawn from issue date to ${fmt(TODAY)}, 0 to 1`;
 }
 function renderTicker(){
   // Latest signals, derived from the record: settlements, changes of mind, new questions. Newest first.
@@ -2084,7 +2204,7 @@ function renderTicker(){
   const sig=[];
   for(const f of F){
     const h=f.hist, last=h[h.length-1], first=h[0];
-    if(f.resolved){ sig.push({d:f.resolved, k:1, id:f.id, t:"settled "+f.status, p:`${pc(first[1])} · brier ${f.brier.toFixed(3)}`, q:f.q}); continue; }
+    if(f.resolved){ const o=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":f.status)).toLowerCase(); const br=f.brier!=null?` · brier ${f.brier.toFixed(3)}`:""; sig.push({d:f.resolved, k:1, id:f.id, t:"settled "+o, p:`${pc(first[1])}${br}`, q:f.q}); continue; }
     if(h.length>1){
       // compare against the last value from an earlier day, so same-day revisions read as one move
       const prev=[...h].reverse().find(x=>x[0]!==last[0]) || first;
@@ -2109,7 +2229,7 @@ function renderBoard(){
   rows.sort(sorters[boardSort]||sorters.soonest);
   const head=`<div class="bhead"><span class="num"><b>${rows.length}</b> open question${rows.length===1?"":"s"}${active!=="all"?` · ${THEMES[active]}`:""}${query?` · “${esc(query)}”`:""}</span><span class="num">last change ${ago(LAST_CHANGE)}</span><span class="sorts" role="group" aria-label="Sort">${[["soonest","Soonest"],["move","Biggest move"],["gap","Gap to market"],["prob","Most likely"],["newest","Newest"]].map(([k,l])=>`<button type="button" data-sort="${k}" aria-pressed="${boardSort===k}">${l}</button>`).join("")}</span></div>`;
   const tr=(f,i)=>{ const d=now(f)-first(f), m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null, g=gapOf(f), days=daysTo(f.due);
-    return `<tr class="r" data-id="${f.id}" data-t="${f.theme}" tabindex="0"><td class="n">${String(i+1).padStart(2,"0")}</td><td class="q"><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""} <span>${f.id}</span></span>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="sp">${spark(f,88,24)}</td><td class="mk">${m?`<b>${pct(m.p)}</b> ${m.venue}${m.adj?" adj":""}${g!==null?` <i>${g>0?"+":"−"}${Math.round(Math.abs(g)*100)}</i>`:""}`:"<span>no contract</span>"}</td><td class="due${days<=14?" soon":""}">${fmt(f.due)}${days<=14?`<br><small>${days}d</small>`:""}</td><td class="st">${starBtn(f.id)}</td></tr>`; };
+    return `<tr class="r" data-id="${f.id}" data-t="${f.theme}" tabindex="0"><td class="n">${String(i+1).padStart(2,"0")}</td><td class="q"><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""} <span>${f.id}</span></span>${esc(f.q)}</td><td class="p">${pct(now(f))}${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}</td><td class="sp">${spark(f,88,24)}</td><td class="mk">${m?`<b>${pct(m.p)}</b> ${m.venue}${m.adj?" adj":""}${g!==null?` <i>${g>0?"+":"−"}${Math.round(Math.abs(g)*100)}</i>`:""}`:"<span>no contract</span>"}</td><td class="due${days<=14?" soon":""}">${fmt(f.due)}${days<=14?`<br><small>${days<0?"due":days===0?"today":days+"d"}</small>`:""}</td><td class="st">${starBtn(f.id)}</td></tr>`; };
   const LIM=12, shown=boardAll?rows:rows.slice(0,LIM);
   const table=`<table class="board"><thead><tr><th>#</th><th>Question</th><th>UBIK</th><th class="sp">14 days</th><th class="mk">Market · gap</th><th>Resolves</th><th></th></tr></thead><tbody>${shown.map(tr).join("")}</tbody></table>${rows.length>LIM?`<button type="button" class="more" id="boardmore">${boardAll?"Show the first 12":`Show all ${rows.length} →`}</button>`:""}`;
   const ch=changes().filter(c=>active==="all"||c.f.theme===active).slice(0,6);
@@ -2165,10 +2285,20 @@ function setToken(t){ TOKEN=t; try{ if(t) localStorage.setItem("ubk.session",t);
 function signinURL(prov){ let n=""; try{ n=sessionStorage.getItem("ubk.nonce")||""; if(!n){ n=Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem("ubk.nonce",n); } }catch(e){} return DESK+"/auth/"+prov+"?nonce="+encodeURIComponent(n)+"&return="+encodeURIComponent(location.href.split("#")[0]+"#"+(HASH[view]||"#edition").replace("#","")); }
 function whoami(){ if(!TOKEN){ USER=null; renderUser(); return; } fetch(DESK+"/me",{headers:{Authorization:"Bearer "+TOKEN}}).then(r=>r.ok?r.json():null).then(u=>{ USER=u?{provider:u.provider,handle:u.handle}:null; if(!u) setToken(null); renderUser(); },()=>{ renderUser(); }); }
 function renderUser(){ const el=document.getElementById("acct-userrow"); if(!el) return;
-  el.innerHTML=USER?`<span class="me">@${esc(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button><button type="button" class="secondary myfeed">My feed</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`;
+  const kTitle=document.getElementById("acct-user-k"), kDesc=document.getElementById("acct-user-desc"), hasKey=!!keyOf();
+  if(kTitle){
+    if(USER) kTitle.textContent="SOCIAL ACCOUNT";
+    else if(hasKey) kTitle.textContent="SOCIAL ACCOUNT (OPTIONAL)";
+    else kTitle.textContent="SIGN IN (SOCIAL)";
+  }
+  if(kDesc){
+    if(hasKey && !USER) kDesc.textContent="Signed in with your ubik.gold key (Holder). You can optionally link GitHub or X to attach your handle to remarks.";
+    else kDesc.textContent="Through the Archive's desk, the same sign-in as the Archive. The desk keeps your handle and the time you signed in, nothing else.";
+  }
+  el.innerHTML=USER?`<span class="me">@${esc(USER.handle)}<small>${USER.provider==="x"?"X":"GitHub"}</small></span><button type="button" class="secondary signout">Sign out</button><button type="button" class="secondary myfeed">My feed</button>`:(hasKey?`<button type="button" data-prov="github">Link GitHub</button><button type="button" data-prov="x">Link X</button>`:`<button type="button" data-prov="github">Sign in with GitHub</button><button type="button" data-prov="x">Sign in with X</button>`);
   el.querySelectorAll("[data-prov]").forEach(b=>b.addEventListener("click",()=>{ location.href=signinURL(b.dataset.prov); }));
-  const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); if(view==="ledger"&&pane==="mine") renderMine(); });
-  const mf=el.querySelector(".myfeed"); if(mf) mf.addEventListener("click",()=>{ document.getElementById("keydlg").close(); go("ledger",true,"mine"); });
+  const so=el.querySelector(".signout"); if(so) so.addEventListener("click",()=>{ setToken(null); USER=null; renderUser(); if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine(); });
+  const mf=el.querySelector(".myfeed"); if(mf) mf.addEventListener("click",()=>{ document.getElementById("keydlg").close(); if(typeof go==="function") go("ledger",true,"mine"); });
   if(typeof renderGate==="function") renderGate(); }
 function openSignin(){ openKey(); }
 // back from the desk: #/signed-in?t=...&n=...&back=...
@@ -2188,10 +2318,20 @@ function renderMine(){
   const open=mine.filter(f=>f.status==="open"), res=mine.filter(f=>f.resolved);
   const places=[...new Set(Object.values(GEO).map(g=>g[2]))].sort();
   const empty=!MINE.themes.size&&!MINE.stars.size&&!MINE.places.size&&!MINE.topics.size;
-  const feedbar=USER?`<div class="feedbar"><b>@${esc(USER.handle)}</b> · signed in with ${esc(USER.provider)} · your feed follows you across devices <span class="mono" style="font-size:10.5px;opacity:.7">(prototype: this browser)</span></div>`
-    :`<div class="feedbar">Your feed lives in this browser. <b>Sign in</b> to keep it on every device and to sign your remarks. <button type="button" id="feed-signin">Sign in</button></div>`;
+  const k=keyOf();
+  const isHolder=STANDING==="holder";
+  let feedbar;
+  if(USER){
+    const stTag=isHolder?" · Holder":(k?` · ${STANDING==="locked"?"Under 200k UBIK":"Active"}`:"");
+    feedbar=`<div class="feedbar"><b>@${esc(USER.handle)}</b> · signed in with ${esc(USER.provider)}${stTag} · your feed follows you across devices <span class="mono" style="font-size:10.5px;opacity:.7">(prototype: this browser)</span><button type="button" id="feed-acct" class="secondary">Account</button></div>`;
+  }else if(k){
+    const stLabel=isHolder?"Holder":(STANDING==="locked"?"Under 200k UBIK":(STANDING==="invalid"?"Key not recognised":"Key active"));
+    feedbar=`<div class="feedbar"><b>Signed in with ubik.gold key</b> · ${stLabel} · your feed is active in this browser<button type="button" id="feed-acct" class="secondary">Account</button></div>`;
+  }else{
+    feedbar=`<div class="feedbar">Your feed lives in this browser. <b>Sign in</b> with your ubik.gold key to unlock holder forecasts and keep your feed. <button type="button" id="feed-signin">Sign in</button></div>`;
+  }
   const sugg=TOPIC_SUGGEST.filter(k=>![...MINE.topics].some(x=>norm(x)===norm(k))).slice(0,8);
-  const pick=`<section class="mod"><h3><span class="withav">${ICON("head")}Your interests</span><span class="mono">themes, places, topics and questions you keep${USER?"":". Stored in this browser"}.</span></h3>
+  const pick=`<section class="mod"><h3><span class="withav">${ICON("head")}Your interests</span><span class="mono">themes, places, topics and questions you keep${(USER||k)?"":". Stored in this browser"}.</span></h3>
     <div class="topicrow"><span class="lab2">Topics</span><form id="topicform"><input id="topicin" type="text" placeholder="Add a word: Hormuz, BYD, Starlink…" aria-label="Follow a topic" autocomplete="off"><button type="submit">Follow</button></form>${[...MINE.topics].map(k=>`<button type="button" class="pk topic" data-topic="${esc(k)}" aria-pressed="true" title="Stop following">${esc(k)}<span class="x">×</span></button>`).join("")}${sugg.map(k=>`<button type="button" class="pk sug" data-sug="${esc(k)}" title="Follow ${esc(k)}">+ ${esc(k)}</button>`).join("")}</div>
     <div class="pickrow"><span class="lab2">Themes</span>${Object.keys(THEMES).map(k=>`<button type="button" class="pk" data-t="${k}" data-theme="${k}" aria-pressed="${MINE.themes.has(k)}">${THEMES[k]}</button>`).join("")}</div>
     <div class="pickrow"><span class="lab2">Places</span>${places.map(pl=>`<button type="button" class="pk place" data-place="${esc(pl)}" aria-pressed="${MINE.places.has(pl)}">${esc(pl)}</button>`).join("")}</div>
@@ -2201,7 +2341,17 @@ function renderMine(){
   const soon=open.filter(f=>daysTo(f.due)<=30);
   const tiles=`<div class="tiles"><div><i>Kept</i><b>${mine.length}</b></div><div><i>Open</i><b>${open.length}</b></div><div><i>Settled</i><b>${res.length}</b></div><div><i>Changed</i><b>${changed.length}</b></div><div><i>Resolve in 30 days</i><b>${soon.length}</b></div><div><i>Brier, yours</i><b>${res.length?(res.reduce((a,f)=>a+f.brier,0)/res.length).toFixed(3):"—"}</b></div></div>`;
   const list=(fs,emptyText)=>fs.length?fs.map(f=>{ const m=MKT[f.id]&&MKT[f.id].venue?MKT[f.id]:null; const d=now(f)-first(f);
-    return `<button type="button" class="mq" data-id="${f.id}" data-t="${f.theme}"><span class="sp">${spark(f,72,22)}</span><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""}</span><span class="q">${esc(shortQ(f.q))}</span><span class="n"><b>${pct(now(f))}</b>${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}${m?`<small>mkt ${pct(m.p)}</small>`:""}</span><span class="due">${f.resolved?`settled ${f.status}`:fmt(f.due)}</span>${starBtn(f.id)}</button>`; }).join("") : `<p class="note">${emptyText}</p>`;
+    const isSettled=!!f.resolved||f.status==="yes"||f.status==="no";
+    let dueHtml;
+    if(isSettled){
+      const outcome=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"yes")).toLowerCase();
+      const p=now(f);
+      const correct=outcome==="yes"?p>=0.5:outcome==="no"?p<=0.5:(f.brier!=null&&f.brier<0.25);
+      dueHtml=`<span class="tag ${correct?"correct":"incorrect"}">${outcome.toUpperCase()}${f.brier!=null?` · ${f.brier.toFixed(3)}`:""}</span>`;
+    } else {
+      dueHtml=fmt(f.due);
+    }
+    return `<button type="button" class="mq" data-id="${f.id}" data-t="${f.theme}"><span class="sp">${spark(f,72,22)}</span><span class="k">${THEMES[f.theme]}${GEO[f.id]?` · ${esc(GEO[f.id][2])}`:""}</span><span class="q">${esc(shortQ(f.q))}</span><span class="n"><b>${pct(now(f))}</b>${d?`<em class="${d>0?"up":"dn"}">${d>0?"+":"−"}${Math.round(Math.abs(d)*100)}</em>`:""}${m?`<small>mkt ${pct(m.p)}</small>`:""}</span><span class="due">${dueHtml}</span>${starBtn(f.id)}</button>`; }).join("") : `<p class="note">${emptyText}</p>`;
   const secs=CURRENTS.filter(c=>MINE.themes.has(c.theme)||c.fcs.some(id=>MINE.stars.has(id))||c.fcs.some(id=>GEO[id]&&MINE.places.has(GEO[id][2]))||secTopics(c).length);
   const sections=`<section class="mod"><h3><span class="withav">${ICON("edition")}In this edition, for you</span><span class="mono">${secs.length} of ${CURRENTS.length} sections</span></h3>${secs.length?secs.map(c=>`<button type="button" class="msec" data-t="${c.theme}" data-theme="${c.theme}"><span class="num">${c.n} · ${THEMES[c.theme].toUpperCase()}${byOf(c)?` · ${byOf(c)}`:""}${secTopics(c).length?` · <span class="by">${esc(secTopics(c).join(", "))}</span>`:""}</span><span class="h">${esc(c.h)}</span><span class="l">${esc(c.lines[0][1])}</span><span class="w">${c.watch?esc(c.watch):""}</span></button>`).join(""):`<p class="note">No section in today's edition touches your interests yet.</p>`}</section>`;
   document.getElementById("minepage").innerHTML=`<div class="mine"><div class="num">MINE · YOUR FEED</div><h2 class="t">${mine.length} question${mine.length===1?"":"s"} you keep${secs.length?`, ${secs.length} section${secs.length===1?"":"s"} for you today`:""}.</h2>${feedbar}${tiles}
@@ -2222,6 +2372,7 @@ function wirePicks(){
   document.querySelectorAll("#minepage .pk.sug").forEach(b=>b.addEventListener("click",()=>addTopic(b.dataset.sug)));
   const tf=document.getElementById("topicform"); if(tf) tf.addEventListener("submit",e=>{ e.preventDefault(); addTopic(document.getElementById("topicin").value); });
   const fs=document.getElementById("feed-signin"); if(fs) fs.addEventListener("click",openSignin);
+  const fa=document.getElementById("feed-acct"); if(fa) fa.addEventListener("click",openKey);
 }
 renderUser(); whoami();
 updateMineCount();
@@ -2257,8 +2408,14 @@ document.querySelectorAll(".side h2.fold").forEach(h=>{
 });
 
 // ---------------- Dashboard: numbers, a map, and the question titles. No prose. ----------------
-var TODAY="2026-10-14";
-function daysTo(d){ return Math.round((new Date(d)-new Date(TODAY))/864e5); }
+var TODAY=(typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10);
+function daysTo(d){
+  if(!d) return 0;
+  const cur=(typeof TODAY!=="undefined"&&TODAY)?TODAY:((typeof EDITION_DAY!=="undefined"&&EDITION_DAY)?EDITION_DAY:new Date().toISOString().slice(0,10));
+  const t0=new Date(cur.length===10?cur+"T12:00:00Z":cur).getTime();
+  const t1=new Date(d.length===10?d+"T12:00:00Z":d).getTime();
+  return Math.round((t1-t0)/864e5);
+}
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function shortQ(q){ return q.replace(/^Will /,"").replace(/\?$/,""); }
 
@@ -2271,7 +2428,7 @@ function renderDash(){
   const next=open.map(f=>daysTo(f.due)).sort((a,b)=>a-b)[0];
   const tiles=`<div class="tiles">
     <div><i>Open</i><b>${open.length}</b></div><div><i>Settled</i><b>${res.length}</b></div><div><i>Brier</i><b>${brier!==null?brier.toFixed(3):"—"}</b></div>
-    <div><i>Priced vs market</i><b>${withM.length}</b></div><div><i>Mean gap</i><b>${mean}<small>pts</small></b></div><div><i>Changed, 7 days</i><b>${changed}</b></div><div><i>Next resolves</i><b>${next}<small>days</small></b></div>
+    <div><i>Priced vs market</i><b>${withM.length}</b></div><div><i>Mean gap</i><b>${mean}<small>pts</small></b></div><div><i>Changed, 7 days</i><b>${changed}</b></div><div><i>Next resolves</i><b>${next<=0?"today":next}</b><small>${next<=0?"":next===1?"day":"days"}</small></div>
   </div>`;
 
   // Map: pins aggregated by place
@@ -2308,7 +2465,7 @@ function renderDash(){
     <p class="note">${open.length-withM.length} open questions have no listed contract.</p></div></section>`;
 
   // Calibration
-  const bins=[0,0.2,0.4,0.6,0.8,1]; const pts=res.map(f=>({p:first(f),o:f.status==="yes"?1:0}));
+  const bins=[0,0.2,0.4,0.6,0.8,1]; const pts=res.map(f=>{ const o=(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"")).toLowerCase(); return {p:first(f),o:o==="yes"?1:0}; });
   const cal=`<section class="mod half"><h3><span class="withav">${ICON("record")}Calibration</span><span class="mono">n = ${res.length} · meaningful from ~30</span></h3>
     <svg class="calib" viewBox="0 0 240 240" aria-label="Calibration plot"><g class="grid">${[0,1,2,3,4].map(i=>`<line x1="40" y1="${20+i*45}" x2="220" y2="${20+i*45}"/><line x1="${40+i*45}" y1="20" x2="${40+i*45}" y2="200"/>`).join("")}</g>
       <line class="diag" x1="40" y1="200" x2="220" y2="20"/>
@@ -2377,6 +2534,7 @@ function showPane(pn){
   document.querySelectorAll(".tabs a[data-view=\"ledger\"]").forEach(a=>{ const on=(a.dataset.sub==="mine")===(pn==="mine"); if(on) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   document.querySelector(".qnav").classList.toggle("hidden", pn!=="forecasts");
   const q=document.querySelector(".qnav"), host=document.getElementById("pane-forecasts"); if(pn==="forecasts" && q.parentElement!==host) host.prepend(q);
+  if(pn==="record") renderResolved();
   if(pn==="history") renderHistory();
   if(pn==="mine") renderMine();
   const hash="#ledger/"+pn; if(location.hash!==hash) history.replaceState(null,"",hash);
@@ -2509,6 +2667,12 @@ function agentPayload(){
 }
 let agJson=false, agWatchAll=false;
 function renderAgent(){
+  const agD=AGENT_ED.date||(typeof EDITION_DAY!=="undefined"&&EDITION_DAY?EDITION_DAY:"2026-10-20");
+  const agLong=typeof EDITION_LONG!=="undefined"&&EDITION_LONG?EDITION_LONG:fmt(agD);
+  const agDateEl=document.getElementById("agdate");
+  if(agDateEl) agDateEl.textContent=`AGENT EDITION · ${agD} · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM`;
+  const agTitleEl=document.getElementById("agtitle");
+  if(agTitleEl) agTitleEl.textContent=`The world on ${agLong}, as data.`;
   const el=document.getElementById("agented"); if(!el) return;
   const ed=CURRENTS.flatMap(c=>c.fcs).filter((v,i,a)=>a.indexOf(v)===i).map(id=>byId[id]).filter(Boolean);
   const bar=`<div class="agbar"><span class="lab">Read it</span><a href="https://ubik.gold/llms.txt" target="_blank" rel="noopener">llms.txt</a><a href="https://ubik.gold/synthesis?include=all" target="_blank" rel="noopener">GET /synthesis?include=all</a><a href="https://ubik.gold/forecasts" target="_blank" rel="noopener">GET /forecasts</a><span class="sp"></span><button type="button" id="agview" aria-pressed="${agJson}">${agJson?"Read as page":"View as JSON"}</button><button type="button" id="agcopy">Copy JSON</button></div>`;
@@ -2556,11 +2720,17 @@ function showCover(force){
 }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ const c=document.getElementById("cover"); if(c&&!c.classList.contains("hidden")){ c.classList.add("hidden"); document.body.classList.remove("covered"); if(location.hash==="#cover") history.replaceState(null,"",HASH[view]||"#agent"); } } });
 function renderChips(){
-  const soon=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due))[0];
-  const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?","Why 22% on Delhi fuel?",`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,40)}…?`,"What changed its mind?","What is the Brier score?"];
-  document.getElementById("chips").innerHTML=qs.map(q=>`<button type="button">${esc(q)}</button>`).join("");
+  const openFs=[...F].filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due));
+  const soon=openFs[0];
+  const moved=[...openFs].filter(f=>f.hist.length>1).sort((a,b)=>Math.abs(now(b)-first(b))-Math.abs(now(a)-first(a)))[0];
+  const qs=["What resolves this week?","Where does UBIK disagree with Polymarket?"];
+  if(soon) qs.push(`Why ${pct(now(soon))} on ${shortQ(soon.q).slice(0,35)}…?`);
+  if(moved&&(!soon||moved.id!==soon.id)) qs.push(`Why ${pct(now(moved))} on ${shortQ(moved.q).slice(0,35)}…?`);
+  qs.push("What changed its mind?","What is the Brier score?");
+  const chipsEl=document.getElementById("chips");
+  if(chipsEl) chipsEl.innerHTML=qs.map(q=>`<button type="button">${esc(q)}</button>`).join("");
   document.querySelectorAll("#chips button").forEach(b=>b.addEventListener("click",()=>{ const inp=document.getElementById("chatin"); inp.value=b.textContent; document.getElementById("chatform").requestSubmit(); }));
-  const av=document.getElementById("chatav2"); if(av&&!av.src) av.src=FRAMES.portrait;
+  const av=document.getElementById("chatav2"); if(av&&FRAMES&&FRAMES.portrait) av.src=FRAMES.portrait;
 }
 try{ pane=localStorage.getItem("ubik-pane")||"forecasts"; }catch(e){}
 try{ history.scrollRestoration="manual"; }catch(e){}

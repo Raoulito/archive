@@ -453,14 +453,14 @@ const VENUES={
  "MOL":[["Budapest MOL","https://www.google.com/finance/quote/MOL:BUD"]],
 };
 
-const TODAY=new Date().toISOString().slice(0,10);
+let TODAY=new Date().toISOString().slice(0,10);
 const F_BY=Object.fromEntries(F.map(f=>[f.id,f]));
 const P=f=>f.hist[f.hist.length-1][1];
 const pc=p=>Math.round(p*100);
 const d2=iso=>{const d=new Date(iso+"T12:00:00Z");return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})};
 const days=iso=>Math.round((new Date(iso+"T12:00:00Z")-new Date(TODAY+"T12:00:00Z"))/864e5);
-const hzs=d=>d<=0?"now":d<=45?`${d}d`:d<=120?`${Math.round(d/7)}w`:`${Math.round(d/30)}mo`;
-const hz=d=>d<=0?"today":d===1?"1 day":d<=45?`${d} days`:d<=120?`${Math.round(d/7)} wks`:`${Math.round(d/30)} mo`;
+const hzs=d=>d<0?"due":d<=0?"now":d<=45?`${d}d`:d<=120?`${Math.round(d/7)}w`:`${Math.round(d/30)}mo`;
+const hz=d=>d<0?"overdue":d<=0?"today":d===1?"1 day":d<=45?`${d} days`:d<=120?`${Math.round(d/7)} wks`:`${Math.round(d/30)} mo`;
 const bucket=d=>d<=7?"week":d<=31?"month":d<=days("2026-12-31")?"year":"next";
 const BUCKETS=[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next","2027"]];
 const conf=p=>{const a=Math.abs(p-.5);return a>=.3?"high":a>=.15?"medium":"low"};
@@ -571,13 +571,14 @@ function card(o){
   </article>`;
 }
 const DONE=F.filter(f=>f.status!=="open").sort((a,b)=>(b.resolved||"").localeCompare(a.resolved||""));
-const won=f=>(f.status==="yes")===(P(f)>=.5);
+const outcomeOf=f=>(f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":"")).toLowerCase();
+const won=f=>{ const o=outcomeOf(f); return o==="yes"?(P(f)>=.5):o==="no"?(P(f)<=.5):(f.brier!=null&&f.brier<0.25); };
 function historyCard(f){
-  const p=P(f), p0=f.hist[0][1], side=p>=.5?"YES":"NO", w=won(f);
+  const p=P(f), p0=f.hist[0][1], side=p>=.5?"YES":"NO", w=won(f), o=outcomeOf(f)||f.status;
   return `<article class="card hc ${w?"win":"loss"}" id="${f.id}">
     <div class="top"><span class="cats"><span>${IC.rec}Resolved ${d2(f.resolved)}</span></span><span class="sp"></span><span class="hz">${IC.clock}issued ${d2(f.hist[0][0])}</span></div>
     <div class="pos"><span class="tag ${w?"long":"short"}">${w?IC.long:IC.short}${w?"Win":"Loss"}</span><span class="asset">${esc(f.q.replace(/^Will /,"").replace(/\?$/,""))}</span></div>
-    <div class="sub">forecast ${side} · resolved ${f.status.toUpperCase()}</div>
+    <div class="sub">forecast ${side} · resolved ${esc(o).toUpperCase()}</div>
     <div class="stats"><div class="cv">${ring(p>=.5?p:1-p,w?"long":"short")}<div><div class="k">Conviction</div><div class="v ${w?"pos":"neg"}">${pc(p>=.5?p:1-p)}<small>%</small></div></div></div><div><div class="k">${IC.move}At issue</div><div class="v dim">${pc(p0)}<small>%</small></div></div><div><div class="k">${IC.ev}Brier</div><div class="v">${f.brier!=null?f.brier.toFixed(3):"—"}</div></div></div>
     ${f.evidence?`<p class="ev">${esc(f.evidence)}</p>`:""}
     <details class="more"><summary>Rule, history</summary><div class="body"><span class="k">History</span><div class="hist">${spark(f)}<div class="steps">${stepsOf(f)}</div></div>${f.rule?`<span class="k">Resolution rule</span><p class="rule">${esc(f.rule)}</p>`:""}<a class="lnk" href="https://ubik.gold/forecasts/${f.id}" target="_blank" rel="noopener">UBIK record ${f.id} →</a></div></details>
@@ -589,7 +590,12 @@ function renderHistory(){
   document.getElementById("sum").innerHTML=`<div class="long"><div class="k">Won</div><div class="v">${W}</div></div><div class="short"><div class="k">Lost</div><div class="v">${L}</div></div><div><div class="k">Brier</div><div class="v">${br}</div></div><div><div class="k">Open</div><div class="v">${F.length-DONE.length}</div></div>`;
   document.getElementById("chips").innerHTML="";
   document.getElementById("h1").innerHTML=`<em>History.</em> Every forecast the engine has settled.`;
-  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${F.length-DONE.length} forecasts are still open and the next settles ${d2(F.filter(f=>f.status==="open").map(f=>f.due).sort()[0])}.</p>`;
+  const curDay=(typeof TODAY!=="undefined"&&TODAY)?TODAY:new Date().toISOString().slice(0,10);
+  const openFs=F.filter(f=>f.status==="open").sort((a,b)=>a.due.localeCompare(b.due));
+  const upcoming=openFs.filter(f=>f.due>=curDay);
+  const pastDue=openFs.filter(f=>f.due<curDay);
+  const nextPhrase=upcoming.length?` and the next settles ${d2(upcoming[0].due)}`:(pastDue.length?` (${pastDue.length} awaiting resolution)`:"");
+  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
   location.hash=`cat=h`;
 }
 function render(){
@@ -626,7 +632,7 @@ function calendar(){
 }
 function record(){
   const done=F.filter(f=>f.status!=="open"), open=F.length-done.length;
-  const right=done.filter(f=>(f.status==="yes")===(P(f)>=.5)).length;
+  const right=done.filter(won).length;
   const br=done.length?(done.reduce((a,f)=>a+(f.brier||0),0)/done.length).toFixed(3):"—";
   document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${ALL.length}</b> have a market or an instrument and are on this page; the other ${open-ALL.length} are reads with no expression. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
 }

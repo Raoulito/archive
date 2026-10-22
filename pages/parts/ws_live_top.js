@@ -45,11 +45,12 @@ function transform(raw){
   const hist=f=>{ const h=(f.history||[]).map(e=>Array.isArray(e)?{at:e[0],probability:e[1],why:e[2]}:e); return h.length?h:[{at:f.updated_at||meta.revised_at||date,probability:f.probability,why:null}]; };
   const out={F:[],TS:{},RESOLVED_AT:{},GEO:{},CURRENTS:[],DATE:date,LONG:longDate(date),UPDATED:meta.revised_at||meta.updated_at||"",FIRST:meta.updated_at||meta.revised_at||"",LOCKED:meta.locked||""};
   for(const f of Object.values(all).sort((a,b)=>hist(b)[0].at.localeCompare(hist(a)[0].at))){
-    const h=hist(f), id=f.question_id, status=["open","yes","no"].includes(f.status)?f.status:"open";
+    const h=hist(f), id=f.question_id, status=["open","yes","no"].includes(f.status)?f.status:(["yes","no"].includes(f.outcome)?f.outcome:"open");
     out.TS[id]=h.map(e=>[e.at,e.probability]);
     const o={id, theme:themeOf(f.claim,null)||themeOf((f.reasoning||"").slice(0,300)), q:f.claim, hist:h.map(e=>[e.at.slice(0,10),e.probability]), due:f.deadline, status, locked:!!f.locked};
     const g=geoOf(f.claim); if(g) out.GEO[id]=g;
     if(f.resolved_at){ o.resolved=f.resolved_at.slice(0,10); out.RESOLVED_AT[id]=f.resolved_at; }
+    if(f.outcome) o.outcome=f.outcome;
     if(f.brier!=null) o.brier=f.brier;
     if(inEd.has(id)) o.edition=true;
     const why=h[0].why||(f.reasoning||"").split(". ")[0]; if(why) o.why=why;
@@ -106,8 +107,28 @@ async function deskGet(path, withKey=true, retry=1){
   if(!r.ok){ if(retry>0&&r.status>=500){ await new Promise(res=>setTimeout(res,2500)); return deskGet(path,withKey,retry-1); } throw new Error(`desk ${path}: ${r.status}`); }
   return {body:await r.json(), standing};
 }
+async function deskGetForecasts(path, withKey=true, retry=1){
+  const first=await deskGet(path,withKey,retry);
+  let all=Array.isArray(first.body)?first.body:(Array.isArray(first.body&&first.body.data)?first.body.data:[]);
+  if(Array.isArray(first.body)) return first;
+  let next=first.body&&first.body.meta&&first.body.meta.links&&first.body.meta.links.next;
+  const seen=new Set([path]);
+  while(next&&!seen.has(next)&&seen.size<50){
+    seen.add(next);
+    let p=next;
+    if(p.startsWith("http://")||p.startsWith("https://")){ try{ const u=new URL(p); p=u.pathname+u.search; }catch(e){} }
+    if(!p.startsWith("/")) p="/"+p;
+    try{
+      const res=await deskGet(p,withKey,retry);
+      const data=Array.isArray(res.body)?res.body:(Array.isArray(res.body&&res.body.data)?res.body.data:[]);
+      all=all.concat(data);
+      next=res.body&&res.body.meta&&res.body.meta.links&&res.body.meta.links.next;
+    }catch(e){ break; }
+  }
+  return {body:{...(first.body||{}),data:all},standing:first.standing};
+}
 async function loadCurrent(){
-  const [syn,open,settled]=await Promise.all([deskGet("/synthesis?include=all"),deskGet("/forecasts?status=open&include=history,details"),deskGet("/forecasts?status=settled&include=history,details")]);
+  const [syn,open,settled]=await Promise.all([deskGet("/synthesis?include=all"),deskGetForecasts("/forecasts?status=open&include=history,details"),deskGetForecasts("/forecasts?status=settled&include=history,details")]);
   STANDING=keyOf()?syn.standing:"none"; LIVE=true;
   applyEdition({synthesis:syn.body,open:open.body,settled:settled.body},"current");
   try{ await loadMarkets(); renderAll(); }catch(e){}
@@ -125,6 +146,7 @@ async function openEdition(day){
 function applyEdition(raw, showing){
   RAW=raw; SHOWING=showing; const t=transform(raw);
   F=t.F; CURRENTS=t.CURRENTS; TS=t.TS; RESOLVED_AT=t.RESOLVED_AT; GEO=t.GEO; AGENT_ED=t.AGENT_ED; EDITION_DAY=t.DATE; EDITION_LONG=t.LONG; EDITION_TITLE=t.TITLE; EDITION_UPDATED=t.UPDATED; LEDE=t.LEDE; LOCKED=t.LOCKED;
+  TODAY=(showing==="current"&&new Date().toISOString().slice(0,10)>=EDITION_DAY)?new Date().toISOString().slice(0,10):(EDITION_DAY||new Date().toISOString().slice(0,10));
   byId=Object.fromEntries(F.map(f=>[f.id,f])); const ch=changes(); LAST_CHANGE=ch.length?ch[0].t:(t.UPDATED||new Date().toISOString());
   if(!EDITIONS.length||showing==="current") EDITIONS=[{d:EDITION_DAY,title:EDITION_TITLE,sum:LEDE,current:true,live:true},...EDITIONS.filter(e=>!e.live&&e.d!==EDITION_DAY)];
   const open=F.filter(f=>f.status==="open"), res=F.filter(f=>f.resolved), moved=F.filter(f=>TS[f.id].slice(1).some(e=>e[0].slice(0,10)===EDITION_DAY)).length;
@@ -139,6 +161,8 @@ function applyEdition(raw, showing){
     else if(byId[selected]){ const cur=selected; selected=null; select(cur); }
   }
   renderGate(); if(typeof renderAgent==="function") renderAgent(); if(typeof renderFilms==="function"&&view==="films") renderFilms();
+  if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+  if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
   const cs=document.getElementById("cover-score"); if(cs) cs.innerHTML=`<span><b>${CURRENTS.length}</b> currents</span><span><b>${open.length}</b> open forecasts</span><span><b>${res.length}</b> settled</span>${res.length?`<span>Brier <b>${(res.reduce((a,f)=>a+(f.brier||0),0)/res.length).toFixed(3)}</b></span>`:""}<span><b>${AGENT_ED.sources}</b> sources</span>`;
   const back=document.getElementById("archivebar"); if(back){ back.classList.toggle("hidden",showing==="current"); back.querySelector("b").textContent=`Edition of ${EDITION_LONG}, from the archive`; }
 }
@@ -169,10 +193,12 @@ function openKey(){
     const v=parseKey(d.querySelector("input").value);
     if(!v){ errEl.textContent="That does not look like a ubik.gold key."; return; }
     try{ localStorage.setItem("ubik-key",v); }catch(err){}
-    STANDING="unknown"; renderGate(); errEl.textContent="";
+    STANDING="unknown"; renderGate(); if(typeof renderUser==="function") renderUser(); errEl.textContent="";
     if(btn){ btn.disabled=true; btn.textContent="Checking…"; }
     try{
       await loadCurrent();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
       if(STANDING==="holder") d.close();
       else if(STANDING==="locked") errEl.textContent=`Key recognised, but wallet holds under ${THRESHOLD}.`;
       else if(STANDING==="invalid") errEl.textContent="ubik.gold does not recognise this key.";
@@ -182,8 +208,21 @@ function openKey(){
       errEl.textContent=String(err&&err.message)==="429"?"Rate limit reached on ubik.gold (60/min). Try again in a moment.":"Could not reach the desk to verify the key. Try again shortly.";
     }finally{
       if(btn){ btn.disabled=false; btn.textContent="Save"; }
+      if(typeof renderUser==="function") renderUser();
     }
   });
   d.querySelector(".kcancel").addEventListener("click",()=>d.close());
-  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{ try{localStorage.removeItem("ubik-key")}catch(e){} STANDING="none"; d.close(); loadCurrent().catch(()=>{ if(typeof holderGate==="function") holderGate("none"); else renderGate(); }); });
+  const kf=d.querySelector(".kforget"); if(kf) kf.addEventListener("click",()=>{
+    try{localStorage.removeItem("ubik-key")}catch(e){}
+    STANDING="none"; d.close();
+    if(typeof renderUser==="function") renderUser();
+    loadCurrent().then(()=>{
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
+    }).catch(()=>{
+      if(typeof holderGate==="function") holderGate("none"); else renderGate();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="mine"&&typeof renderMine==="function") renderMine();
+      if(typeof view!=="undefined"&&view==="ledger"&&typeof pane!=="undefined"&&pane==="record"&&typeof renderResolved==="function") renderResolved();
+    });
+  });
 })();

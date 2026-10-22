@@ -32,7 +32,7 @@ cut(r"const TS=\{.*?\};\n")
 cut(r"const RESOLVED_AT=\{.*?\};\n")
 cut(r"const GEO = \{\n.*?\n\};\n")
 cut(r"const AGENT_ED=\{.*?\n\};\n")
-cut(r"const LAST_CHANGE=changes\(\)\[0\]\.t;\n")
+cut(r"const LAST_CHANGE=.*?\n")
 cut(r"const byId = Object\.fromEntries\(F\.map\(f=>\[f\.id,f\]\)\);\n")
 # the first render at the foot of the script and the dated labels in templates
 cut(r"renderResolved\(\); renderAll\(\);\n", "")
@@ -48,8 +48,10 @@ page = page.replace('<span class="s">${esc(e.sum)}</span></span><span class="n">
 page = re.sub(r'document\.getElementById\("cover-h"\)\.textContent=`The world on \$\{new Date\(AGENT_ED\.date\+"T12:00:00Z"\)[^;]*;', 'document.getElementById("cover-h").textContent=EDITION_TITLE||`The world on ${EDITION_LONG}`;', page, count=1)
 page = page.replace('<h1 id="cover-h"></h1>', '<div class="ekick" id="cover-k"></div><h1 id="cover-h"></h1>', 1)
 page = re.sub(r'(<div class="date" id="edate">[^<]*</div>\n\s*)<p>[^<]*</p>', r'\1<p id="elede"></p>', page, count=1)
-page = page.replace('<div class="num">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', '<div class="num" id="agdate">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', 1)
-page = page.replace('<h2 class="t">The world on 20 October 2026, as data.</h2>', '<h2 class="t" id="agtitle">The world on 20 October 2026, as data.</h2>', 1)
+if 'id="agdate"' not in page:
+    page = page.replace('<div class="num">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', '<div class="num" id="agdate">AGENT EDITION · 2026-10-20 · FOR MODELS, AGENTS AND THE PEOPLE WHO RUN THEM</div>', 1)
+if 'id="agtitle"' not in page:
+    page = page.replace('<h2 class="t">The world on 20 October 2026, as data.</h2>', '<h2 class="t" id="agtitle">The world on 20 October 2026, as data.</h2>', 1)
 page = page.replace('<span class="who" id="who"></span>', '<span class="gate" id="gate"></span><span class="who" id="who"></span>', 1)
 page = re.sub(r'<span class="stamp" id="stamp">[^<]*</span>', '<span class="stamp" id="stamp"></span><span class="stamp next" id="nextclock"></span>', page, count=1)
 page = page.replace('<div class="counts" id="counts">', '<div class="archivebar hidden" id="archivebar"><b></b><button type="button" id="tocurrent">Back to the current edition →</button></div>\n    <div class="counts" id="counts">', 1)
