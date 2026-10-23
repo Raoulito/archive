@@ -155,6 +155,8 @@ if __name__ == "__main__":
     d = lore(); done = posted(); p = compose(d, day, done)
     print(p["text"]); print("\n[image]", p["image"] or "none", "|", p["alt"][:80])
     if a.post:
+        days = [l.split("\t")[1].strip() for l in open(LOG, encoding="utf-8") if l.strip() and not l.startswith("#") and l.count("\t") >= 2]
+        if day.isoformat() in days: print(f"already posted on {day.isoformat()}; one a day"); sys.exit(0)
         pid = post_to_x(p["text"], p["image"], p["alt"])
         with open(LOG, "a", encoding="utf-8") as f: f.write(f"{p['key']}\t{day.isoformat()}\t{pid}\n")
         print("posted", pid)
