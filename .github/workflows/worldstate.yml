@@ -11,7 +11,7 @@ on:
       say:
         description: "Post a written thread instead (a file under tools/posts/, e.g. tools/posts/pinned.txt)"
         type: string
-        default: false
+        default: ""
 
 permissions:
   contents: write
@@ -39,7 +39,7 @@ jobs:
           DRY: ${{ inputs.dry_run }}
           SAY: ${{ inputs.say }}
         run: |
-          SAYARG=""; if [ -n "$SAY" ]; then SAYARG="--say $SAY"; fi
+          SAYARG=""; if [ -n "$SAY" ] && [ "$SAY" != "false" ]; then SAYARG="--say $SAY"; fi
           if [ -n "$WS_X_API_KEY" ] && [ "$DRY" != "true" ]; then python3 tools/worldstate.py --post $SAYARG; else python3 tools/worldstate.py $SAYARG; echo "(not posted: no keys, or dry run)"; fi
       - name: Remember what was posted
         run: |
