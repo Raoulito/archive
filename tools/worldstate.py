@@ -7,6 +7,8 @@ the headline on the edition, one post and card per question issued, and the sett
 
   python3 tools/worldstate.py           print what would be posted now (no posting); --cards DIR also writes the header images
   python3 tools/worldstate.py --post    post it (needs WS_X_API_KEY, WS_X_API_SECRET, WS_X_ACCESS_TOKEN, WS_X_ACCESS_SECRET)
+  UBIK_KEY=...                          a holder's key from app.ubik.gold; without it the engine keeps an open forecast's figure
+                                        to itself, and the post says so instead of a number
   python3 tools/worldstate.py --say tools/posts/pinned.txt [--post]
                                         post a written thread instead: posts separated by a line "---"; an optional first
                                         line "card: headline | kicker" gives the first post a headline card. Logged as "say".
@@ -22,6 +24,7 @@ LOG = os.path.join(ROOT, "tools", "worldstate.log")
 SITE = "https://ubikistan.org/world-state/"
 NOTICE = "Forecasts are probabilities, not financial advice."
 UA = {"User-Agent": "ubikistan-world-state-poster", "Accept": "application/json"}
+if os.environ.get("UBIK_KEY"): UA["Authorization"] = "Bearer " + os.environ["UBIK_KEY"]   # a holder's key: the engine then shows open figures
 
 def get(path):
     with urllib.request.urlopen(urllib.request.Request("https://ubik.gold" + path, headers=UA), timeout=30) as r: return json.load(r)

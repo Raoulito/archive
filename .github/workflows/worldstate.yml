@@ -35,6 +35,7 @@ jobs:
           WS_X_API_SECRET: ${{ secrets.WS_X_API_SECRET }}
           WS_X_ACCESS_TOKEN: ${{ secrets.WS_X_ACCESS_TOKEN }}
           WS_X_ACCESS_SECRET: ${{ secrets.WS_X_ACCESS_SECRET }}
+          UBIK_KEY: ${{ secrets.UBIK_KEY }}
           DRY: ${{ inputs.dry_run }}
           SAY: ${{ inputs.say }}
         run: |
