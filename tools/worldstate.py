@@ -62,8 +62,10 @@ def hook(thesis, lead, budget):
     return ""
 
 def kicker(f): return f"{f['question_id']} · open · resolves by {long_day(f['deadline'])}"
-def issued_text(f, head="Issued today"): return f"{head}: {short_claim(f['claim'])}\n\nUBIK: {pct(f.get('probability'))}. Resolves by {long_day(f['deadline'])}."
-def issued_card(f): return (card.forecast_card(f["claim"], f.get("probability") or 0, kicker(f), "ISSUED"), f["claim"])
+def figure(f):   # since 24 October the engine shows an open forecast's figure to key holders only (probability null)
+    p = f.get("probability"); return f"UBIK: {pct(p)}." if p is not None else "UBIK's figure is for key holders, at https://app.ubik.gold/."
+def issued_text(f, head="Issued today"): return f"{head}: {short_claim(f['claim'])}\n\n{figure(f)} Resolves by {long_day(f['deadline'])}."
+def issued_card(f): return (card.forecast_card(f["claim"], f.get("probability"), kicker(f), "ISSUED"), f["claim"])
 
 def chunks(lines, head, limit=270):
     """Group lines into posts under the limit, the first carrying the head."""
@@ -83,7 +85,7 @@ def plan():
     head = next((p[2:].strip() for p in paras if p.startswith("# ")), "")
     lead = next((p for p in paras if not p.startswith("#")), "")
     thesis = (syn.get("methodology") or {}).get("thesis", "")
-    open_ = get("/forecasts?status=open&include=history").get("data", [])
+    opens = get("/forecasts?status=open&include=history"); open_ = opens.get("data", []); n_open = opens.get("meta", {}).get("count") or len(open_)
     settled = get("/forecasts?status=settled").get("data", [])
     new_qs = [f for f in open_ if f.get("question_id", "").startswith("q_" + day.replace("-", "")) and ("issued", f["question_id"]) not in done]
     # 1. the edition, once a day: the headline and the argument, the questions it issued, and a word to the reader
@@ -91,10 +93,10 @@ def plan():
         top = f"Edition of {long_day(day)}\n{head}\n\n"
         first = top + hook(thesis, lead, 276 - tlen(top) - tlen("\n\n" + SITE)) + "\n\n" + SITE
         qs = sorted(new_qs, key=lambda f: f["question_id"]); n = len(qs)
-        last = (f"{n} forecast{'s' if n != 1 else ''} issued today, {len(open_)} open. Each one is dated, and each one is scored in public when it settles.\n\n"
+        last = (f"{n} forecast{'s' if n != 1 else ''} issued today, {n_open} open. Each one is dated, and each one is scored in public when it settles.\n\n"
                 f"Think the engine is wrong? Reply with your own number.\n\n{SITE}")
         thread = [first] + [issued_text(f) for f in qs] + [last]
-        media = [[(card.edition_card(head, f"Edition of {long_day(day)} · {n} issued · {len(open_)} open"), head)]] + [[issued_card(f)] for f in qs]
+        media = [[(card.edition_card(head, f"Edition of {long_day(day)} · {n} issued · {n_open} open"), head)]] + [[issued_card(f)] for f in qs]
         items.append({"thread": thread, "media": media, "log": [("edition", day, day)] + [("issued", f["question_id"], day) for f in new_qs]})
     elif new_qs:
         # questions issued later in the day, after the edition was announced

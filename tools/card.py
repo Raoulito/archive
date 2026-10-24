@@ -77,9 +77,10 @@ def dots(d, x, y, size, pct):
 
 def forecast_card(claim, pct, kicker, label="ARCHIVE"):
     grid = 280; gx = W - PAD - grid
-    big = font("archivo", 180, 800); ptxt = f"{round(pct * 100)}%"
+    big = font("archivo", 180, 800); ptxt = f"{round(pct * 100)}%" if pct is not None else "?"   # None: the figure is for key holders
     scratch = ImageDraw.Draw(Image.new("RGB", (1, 1)))
     pw = scratch.textlength(ptxt, font=big) - 180 * 0.03 * (len(ptxt) - 1)
+    if pct is None: pw = max(pw, scratch.textlength("50%", font=big) - 180 * 0.06)   # keep the label clear of the grid
     px = gx - 44 - pw
     f, lines, lh = fit(scratch, claim, px - 60 - PAD, max_lines=4)
     im, d, y = base(kicker, max(len(lines) * lh, grid))
@@ -88,7 +89,7 @@ def forecast_card(claim, pct, kicker, label="ARCHIVE"):
     tracked(d, (px + 38, gy), label.upper(), font("archivo", 28, 700), INK, 0.1)
     x = px
     for ch in ptxt: d.text((x, gy + 44), ch, font=big, fill=INK); x += d.textlength(ch, font=big) - 180 * 0.03
-    dots(d, gx, gy, grid, pct)
+    dots(d, gx, gy, grid, pct or 0)
     title_block(d, PAD, y, f, lines, lh)
     return im
 
