@@ -463,8 +463,10 @@ const d2=iso=>{const d=new Date(iso+"T12:00:00Z");return d.toLocaleDateString("e
 const days=iso=>Math.round((new Date(iso+"T12:00:00Z")-new Date(TODAY+"T12:00:00Z"))/864e5);
 const hzs=d=>d<0?"due":d<=0?"now":d<=45?`${d}d`:d<=120?`${Math.round(d/7)}w`:`${Math.round(d/30)}mo`;
 const hz=d=>d<0?"overdue":d<=0?"today":d===1?"1 day":d<=45?`${d} days`:d<=120?`${Math.round(d/7)} wks`:`${Math.round(d/30)} mo`;
-const bucket=d=>d<=7?"week":d<=31?"month":d<=days("2026-12-31")?"year":"next";
-const BUCKETS=[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next","2027"]];
+const curYear=()=>new Date((TODAY||new Date().toISOString().slice(0,10))+"T12:00:00Z").getUTCFullYear();
+const bucket=d=>d<=7?"week":d<=31?"month":d<=days(`${curYear()}-12-31`)?"year":"next";
+const buckets=()=>[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next",`${curYear()+1}`]];
+const BUCKETS=buckets();
 const conf=p=>{const a=Math.abs(p-.5);return a>=.3?"high":a>=.15?"medium":"low"};
 const EDGE=0.05;
 
@@ -605,7 +607,7 @@ function render(){
   if(cat==="h"){ tabsHTML(); renderHistory(); return; }
   const rows=shown();
   tabsHTML();
-  document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+BUCKETS.map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
+  document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+buckets().map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
   const L=DEGEN?rows.filter(o=>o.m.s==="long").length:rows.filter(o=>o.p>=.6).length,S=DEGEN?rows.filter(o=>o.m.s==="short").length:rows.filter(o=>o.p<=.4).length,C=DEGEN?rows.filter(o=>o.m.s==="cash").length:rows.filter(o=>o.p>.4&&o.p<.6).length;
   const upcoming=rows.filter(o=>o.d>=0).sort((a,b)=>a.d-b.d);
   const next=upcoming[0]||rows.slice().sort((a,b)=>a.d-b.d)[0];
