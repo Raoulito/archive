@@ -4,6 +4,9 @@
 The edition is a thread: the headline with the first sentences of the day's argument (the thesis, or the lead when
 there is none), the questions issued that day, then the counts and an invitation to reply with one's own number. Each post carries a header card (tools/card.py):
 the headline on the edition, one post and card per question issued, and the settled question with its score.
+On Sunday evening (17:00 UTC or later) the week's scorecard: settled so far, how many leaned the right way, the Brier
+score, and the week's settlements, misses included. Settlements logged with post id "-" (from before the account
+posted) go out once as a "From the ledger" thread.
 
   python3 tools/worldstate.py           print what would be posted now (no posting); --cards DIR also writes the header images
   python3 tools/worldstate.py --post    post it (needs WS_X_API_KEY, WS_X_API_SECRET, WS_X_ACCESS_TOKEN, WS_X_ACCESS_SECRET)
@@ -110,12 +113,61 @@ def plan():
     for f in sorted(settled, key=lambda f: f.get("resolved_at") or ""):
         qid = f.get("question_id");
         if not qid or ("settled", qid) in done or not f.get("resolved_at"): continue
-        verdict = "YES" if f.get("status") == "yes" else "NO"
-        stood = pct(f.get("probability"))
-        text = f"Settled {verdict}: {f['claim']}\n\nThe engine had it at {stood}. Brier {f.get('brier', 0):.3f}.\n\n{SITE}#ledger\n\n{NOTICE}"
-        im = card.forecast_card(f["claim"], f.get("probability") or 0, f"{qid} · settled {verdict} · {long_day(f['resolved_at'])} · Brier {f.get('brier', 0):.3f}", "SETTLED")
+        text, im = settled_post(f)
         items.append({"thread": [text], "media": [[(im, f["claim"])]], "log": [("settled", qid, (f.get("resolved_at") or "")[:10])]})
+    # 3. settlements from before the account posted (logged with no post id), once, as one thread
+    early = [f for f in sorted(settled, key=lambda f: f.get("resolved_at") or "") if f.get("question_id") in unposted() and ("backfill", f["question_id"]) not in done]
+    if early:
+        n = len(early); m = sum(not leaned_right(f) for f in early)
+        tail = "" if not m else (" The miss is included." if m == 1 else " The misses are included.")
+        head = (f"From the ledger: {n} forecast{'s' if n != 1 else ''} that settled before this account began posting.{tail}\n\n{SITE}#ledger")
+        posts = [settled_post(f) for f in early]
+        items.append({"thread": [head] + [t for t, _ in posts], "media": [[]] + [[(im, f["claim"])] for (_, im), f in zip(posts, early)],
+                      "log": [("backfill", f["question_id"], today()) for f in early]})
+    # 4. the week's scorecard, Sunday evening
+    now = dt.datetime.now(dt.timezone.utc); week = now.strftime("%G-W%V")
+    if now.weekday() == 6 and now.hour >= 17 and ("scorecard", week) not in done and settled:
+        items.append(scorecard(settled, now, week))
     return items
+
+def today(): return dt.datetime.now(dt.timezone.utc).date().isoformat()
+def leaned_right(f): return ((f.get("probability") or 0) > 0.5) == (f.get("status") == "yes") and (f.get("probability") or 0) != 0.5
+def brier(f): return f["brier"] if f.get("brier") is not None else ((f.get("probability") or 0) - (1 if f.get("status") == "yes" else 0)) ** 2
+
+def unposted():
+    """Settlements logged with no post id: settled before the account posted."""
+    out = set()
+    try:
+        for l in open(LOG, encoding="utf-8"):
+            k = l.rstrip("\n").split("\t")
+            if len(k) >= 4 and k[0] == "settled" and k[3] == "-": out.add(k[1])
+    except FileNotFoundError: pass
+    return out
+
+def settled_post(f):
+    qid = f["question_id"]; verdict = "YES" if f.get("status") == "yes" else "NO"; when = long_day(f["resolved_at"])
+    text = (f"Settled {verdict} on {when}: {f['claim']}\n\nThe engine had it at {pct(f.get('probability'))}. Brier {brier(f):.3f}."
+            f"\n\n{SITE}#ledger\n\n{NOTICE}")
+    if tlen(text) > 280: text = text.replace(f"\n\n{NOTICE}", "")
+    im = card.forecast_card(f["claim"], f.get("probability") or 0, f"{qid} · settled {verdict} · {when} · Brier {brier(f):.3f}", "SETTLED")
+    return text, im
+
+def scorecard(settled, now, week):
+    """The ledger so far, and this week's settlements, misses included."""
+    n = len(settled); right = sum(leaned_right(f) for f in settled); b = sum(brier(f) for f in settled) / n
+    since = (now - dt.timedelta(days=7)).isoformat()
+    wk = [f for f in sorted(settled, key=lambda f: f.get("resolved_at") or "") if (f.get("resolved_at") or "") >= since[:19]]
+    day = long_day(now.date().isoformat())
+    first = (f"The ledger, week to {day}\n\n{n} forecast{'s' if n != 1 else ''} settled so far. {right} leaned the right way. "
+             f"Brier score {b:.3f}: 0 is perfect, and saying 50% to everything scores 0.250.\n\n{SITE}#ledger")
+    lines = [f"• {f['claim']} {'YES' if f.get('status') == 'yes' else 'NO'}. UBIK {pct(f.get('probability'))} {'✓' if leaned_right(f) else '✗'}" for f in wk]
+    body = chunks(lines, "Settled this week:") if lines else ["Nothing settled this week."]
+    if tlen(body[-1] + "\n\n" + NOTICE) <= 280: body[-1] += "\n\n" + NOTICE
+    else: body.append(NOTICE)
+    thread = [first] + body
+    title = f"{right} of {n} settled forecasts went the way UBIK leaned"
+    im = card.score_card(title, b, [leaned_right(f) for f in sorted(settled, key=lambda f: f.get("resolved_at") or "")], f"The ledger · week to {day} · {n} settled")
+    return {"thread": thread, "media": [[(im, title)]], "log": [("scorecard", week, now.date().isoformat())]}
 
 def said(path):
     """A written thread from a file, as a plan item."""

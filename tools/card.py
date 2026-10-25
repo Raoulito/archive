@@ -103,6 +103,28 @@ def edition_card(headline, kicker):
     title_block(d, PAD, y, f, lines, lh)
     return im
 
+def score_card(title, brier, marks, kicker):
+    """The ledger: a sentence on the left; on the right the Brier score, and one dot per settled forecast (lit = leaned right)."""
+    scratch = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    big = font("archivo", 180, 800); btxt = f"{brier:.3f}".lstrip("0") if brier < 1 else f"{brier:.2f}"
+    bw = scratch.textlength(btxt, font=big) - 180 * 0.03 * (len(btxt) - 1)
+    px = W - PAD - max(bw, 300)
+    f, lines, lh = fit(scratch, title, px - 70 - PAD, max_lines=4)
+    per = 10; cell = 32; rows = (len(marks) + per - 1) // per
+    body = max(len(lines) * lh, 44 + 190 + 24 + rows * cell)
+    im, d, y = base(kicker, body, FOOT_ED)
+    gy = y - 10
+    d.ellipse((px, gy + 14, px + 26, gy + 40), fill=INK)
+    tracked(d, (px + 38, gy), "BRIER", font("archivo", 28, 700), INK, 0.1)
+    x = px
+    for ch in btxt: d.text((x, gy + 44), ch, font=big, fill=INK); x += d.textlength(ch, font=big) - 180 * 0.03
+    r = cell * 0.34; my = gy + 44 + 190 + 24
+    for k, ok in enumerate(marks):
+        cx, cy = px + (k % per) * cell + cell / 2, my + (k // per) * cell + cell / 2
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=INK if ok else OFF)
+    title_block(d, PAD, y, f, lines, lh)
+    return im
+
 def png(im):
     b = io.BytesIO(); im.save(b, "PNG", optimize=True); return b.getvalue()
 
