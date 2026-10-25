@@ -5,9 +5,9 @@
   python3 tools/daily.py --post          post it to X (needs X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET)
   python3 tools/daily.py --date 2026-10-25   the post for another day
 
-The week: Monday to Thursday a record from the Archive, rotating through the eras so the timeline shows over a
-month; Friday a citizen's work from Culture, credited; Saturday a person on file; Sunday a settled forecast from the
-World State, the one day the engine appears. What has been posted is kept in tools/daily.log, one code per line, so
+The week: Monday to Thursday and Sunday a record from the Archive, rotating through the eras so the timeline shows
+over a month; Friday a citizen's work from Culture, credited; Saturday a person on file. Forecasts are not posted here:
+@ubikworldstate posts the editions and every settlement (tools/worldstate.py). What has been posted is kept in tools/daily.log, one code per line, so
 nothing repeats until everything has had its turn. Records under review are skipped. No prices, no token, no hashtags.
 """
 import argparse, datetime as dt, io, json, os, re, sys, urllib.request
@@ -87,12 +87,6 @@ def compose(d, day, done):
             line = first_line(c.get("text") or c.get("role") or "")
             text = f"Persons on file · {c.get('name','')}\n\n{line}\n\n{SITE}#/characters/{c.get('id','')}"
             return {"key": "person:" + c.get("id", ""), "text": text, "image": c.get("portrait") or c.get("image"), "alt": c.get("name", "")}
-    if wd == 6:
-        f = settled_forecast()
-        if f:
-            verdict = "Settled YES" if f.get("status") == "yes" else "Settled NO"
-            text = f"The world, as the engine saw it.\n\n{f['claim']}\n\n{verdict}. It had stood at {round((f.get('probability') or 0)*100)}%. Brier {f.get('brier', 0):.3f}.\n\nThe ledger keeps every forecast and its score. {SITE.replace('/archive/','/')}world-state/#ledger\n\nForecasts are probabilities, not financial advice."
-            return {"key": "forecast:" + f["question_id"], "text": text, "image": None, "alt": ""}
     r = pick_record(d, day, done)
     text = f"{r['code']} · {r.get('date','')} · {r.get('format','')}\n\n{caption(r)}\n\nState Archive → {SITE}#/r/{slug(r['code'])}"
     return {"key": r["code"], "text": text, "image": media_file(r), "alt": media_alt(r)}
