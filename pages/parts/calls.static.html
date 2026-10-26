@@ -50,12 +50,22 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px so
 .sum .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1;margin-top:4px}
 .sum .v small{font-size:11px;color:var(--muted)}
 .sum .long .v{color:var(--cyan)}.sum .short .v{color:var(--hot)}
-/* chips */
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 0 10px}
+/* chips & search */
+.filterrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0 8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;flex:1;min-width:0}
 .chips::-webkit-scrollbar{display:none}
 .chips button{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .chips button[aria-pressed="true"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .chips .lab{align-self:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.searchbox{position:relative;display:flex;align-items:center;flex:none}
+.searchbox input{font-family:var(--mono);font-size:11.5px;padding:5px 22px 5px 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);width:170px;transition:width .2s,border-color .2s;outline:none}
+.searchbox input:focus{width:220px;border-color:var(--rule)}
+.searchbox .sicon{position:absolute;left:8px;color:var(--muted);pointer-events:none;display:flex;align-items:center}
+.searchbox .sclear{position:absolute;right:6px;width:16px;height:16px;border-radius:50%;background:none;color:var(--muted);font-size:13px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;border:0}
+.searchbox .sclear:hover{color:var(--ink)}
+.searchbox .sclear.hidden{display:none}
+.empty .btn-clear{font-family:var(--mono);font-size:11px;text-decoration:underline;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;margin-left:4px}
+@media (max-width:640px){.searchbox{width:100%}.searchbox input{width:100%}.searchbox input:focus{width:100%}}
 /* moves strip */
 .moves{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:6px;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .moves::-webkit-scrollbar{display:none}
@@ -298,7 +308,14 @@ body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px r
     <p><b>Each open question</b> with the engine's probability, the market where a contract exists, what settles it and when, and the names it touches. A reading of the forecasts, not advice. Forecasts are probabilities, not financial advice.</p>
   </div>
   <div class="sum" id="sum"></div>
-  <div class="chips" id="chips"></div>
+  <div class="filterrow">
+    <div class="chips" id="chips"></div>
+    <div class="searchbox">
+      <span class="sicon" aria-hidden="true"><svg class="ic" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></span>
+      <input type="search" id="fcsearch" placeholder="Search forecasts or tickers…" aria-label="Search forecasts">
+      <button type="button" id="fcsearch-clear" class="sclear hidden" aria-label="Clear search">×</button>
+    </div>
+  </div>
   <div class="moves" id="moves"></div>
   <div class="list" id="list"></div>
   <section class="cal" id="cal"></section>
@@ -499,8 +516,21 @@ const rank=o=>o.m.s==="cash"?1:0;
 const ALL=CALLS.map(build).sort((a,b)=>rank(a)-rank(b)||(rank(a)===0?Math.abs(b.p-.5)-Math.abs(a.p-.5)||a.d-b.d:a.d-b.d));
 
 // ---- state ----
-let cat=(location.hash.match(/cat=(\w+)/)||[])[1]||"all", hzn=(location.hash.match(/hz=(\w+)/)||[])[1]||"all";
-const shown=()=>ALL.filter(o=>(cat==="all"||o.cats.includes(cat))&&(hzn==="all"||o.b===hzn));
+let cat=(location.hash.match(/cat=(\w+)/)||[])[1]||"all", hzn=(location.hash.match(/hz=(\w+)/)||[])[1]||"all", query="";
+function matchCard(o, q){
+  if(!q) return true;
+  const f=o.f||{};
+  const hay=[
+    o.short, o.asset, f.q, f.theme, f.why, o.note,
+    o.market&&o.market.c, o.market&&o.market.venue,
+    ...(o.yes||[]).map(x=>x[0]), ...(o.no||[]).map(x=>x[0])
+  ].filter(Boolean).join(" ").toLowerCase();
+  return hay.includes(q);
+}
+const shown=()=>{
+  const q=query.trim().toLowerCase();
+  return ALL.filter(o=>(cat==="all"||o.cats.includes(cat))&&(hzn==="all"||o.b===hzn)&&matchCard(o, q));
+};
 
 // ---- identity: icons and the ring ----
 const SVG=(b,vb="0 0 16 16")=>`<svg class="ic" viewBox="${vb}" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${b}</svg>`;
@@ -599,7 +629,10 @@ function renderHistory(){
   const upcoming=openFs.filter(f=>f.due>=curDay);
   const pastDue=openFs.filter(f=>f.due<curDay);
   const nextPhrase=upcoming.length?` and the next settles ${d2(upcoming[0].due)}`:(pastDue.length?` (${pastDue.length} awaiting resolution)`:"");
-  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
+  const q=query.trim().toLowerCase();
+  const histRows=q?DONE.filter(f=>[f.q,f.theme,f.why,f.rule,f.evidence,f.outcome,f.id].filter(Boolean).join(" ").toLowerCase().includes(q)):DONE;
+  const emptyMsg=q?`<div class="empty">No settled forecasts match “${esc(query.trim())}”. <button type="button" class="btn-clear">Clear search</button></div>`:`<div class="empty">Nothing settled yet.</div>`;
+  document.getElementById("list").innerHTML=(histRows.length?histRows.map(historyCard).join(""):emptyMsg)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
   location.hash=`cat=h`;
 }
 function render(){
@@ -613,11 +646,16 @@ function render(){
   const next=upcoming[0]||rows.slice().sort((a,b)=>a.d-b.d)[0];
   document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div class="cash"><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
   document.getElementById("h1").innerHTML=`${cat==="all"?"The forecasts":CAT[cat]} for <em>${new Date(TODAY+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long"})}</em>.`;
-  document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
+  const q=query.trim();
+  const emptyMsg=q?`<div class="empty">No open forecasts match “${esc(q)}”. <button type="button" class="btn-clear">Clear search</button></div>`:`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
+  document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):emptyMsg;
   location.hash=`cat=${cat}&hz=${hzn}`;
 }
 function tabsHTML(){
-  document.getElementById("tabs").innerHTML=[["all","All"],["m","Markets"],["s","Stocks"],["c","Crypto"],["h","History"]].map(([k,n])=>`<button role="tab" aria-selected="${cat===k}" data-cat="${k}">${k==="all"?IC.eye:k==="h"?IC.rec:IC[k]}${n}<span class="n">${k==="all"?ALL.length:k==="h"?DONE.length:ALL.filter(o=>o.cats.includes(k)).length}</span></button>`).join("");
+  const q=query.trim().toLowerCase();
+  const list=q?ALL.filter(o=>matchCard(o,q)):ALL;
+  const dList=q?DONE.filter(f=>[f.q,f.theme,f.why,f.rule,f.evidence,f.outcome,f.id].filter(Boolean).join(" ").toLowerCase().includes(q)):DONE;
+  document.getElementById("tabs").innerHTML=[["all","All"],["m","Markets"],["s","Stocks"],["c","Crypto"],["h","History"]].map(([k,n])=>`<button role="tab" aria-selected="${cat===k}" data-cat="${k}">${k==="all"?IC.eye:k==="h"?IC.rec:IC[k]}${n}<span class="n">${k==="all"?list.length:k==="h"?dList.length:list.filter(o=>o.cats.includes(k)).length}</span></button>`).join("");
 }
 function moves(){
   const out=[];
@@ -650,6 +688,28 @@ function stamp(){
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(b){e.preventDefault();cat=b.dataset.cat;render();window.scrollTo({top:0,behavior:"smooth"});}});
 document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest("[data-hz]");if(b){hzn=b.dataset.hz;render();}});
+const searchEl=document.getElementById("fcsearch");
+const clearEl=document.getElementById("fcsearch-clear");
+function clearSearch(){
+  query="";
+  if(searchEl) searchEl.value="";
+  if(clearEl) clearEl.classList.add("hidden");
+  render();
+}
+if(searchEl){
+  searchEl.addEventListener("input",e=>{
+    query=e.target.value;
+    if(clearEl) clearEl.classList.toggle("hidden",!query);
+    render();
+  });
+  searchEl.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){ clearSearch(); searchEl.blur(); }
+  });
+}
+if(clearEl) clearEl.addEventListener("click",clearSearch);
+document.getElementById("list").addEventListener("click",e=>{
+  if(e.target.closest(".btn-clear")) clearSearch();
+});
 document.getElementById("tog").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("ubik-calls-theme",r.dataset.theme)}catch(_){}});
 try{const t=localStorage.getItem("ubik-calls-theme");if(t)document.documentElement.dataset.theme=t;}catch(_){}
 document.getElementById("wmmark").innerHTML=MARK;document.getElementById("fmark").innerHTML=MARK;

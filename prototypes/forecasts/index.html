@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="../assets/forecasts-CUEKxqUj.js"></script>
+<script type="module" crossorigin src="../assets/forecasts-B-gRo1c6.js"></script>
 <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
 <link rel="stylesheet" crossorigin href="../assets/fonts-VPBoBIfD.css">
 
@@ -58,12 +58,22 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px so
 .sum .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1;margin-top:4px}
 .sum .v small{font-size:11px;color:var(--muted)}
 .sum .long .v{color:var(--cyan)}.sum .short .v{color:var(--hot)}
-/* chips */
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 0 10px}
+/* chips & search */
+.filterrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0 8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;flex:1;min-width:0}
 .chips::-webkit-scrollbar{display:none}
 .chips button{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .chips button[aria-pressed="true"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .chips .lab{align-self:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.searchbox{position:relative;display:flex;align-items:center;flex:none}
+.searchbox input{font-family:var(--mono);font-size:11.5px;padding:5px 22px 5px 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);width:170px;transition:width .2s,border-color .2s;outline:none}
+.searchbox input:focus{width:220px;border-color:var(--rule)}
+.searchbox .sicon{position:absolute;left:8px;color:var(--muted);pointer-events:none;display:flex;align-items:center}
+.searchbox .sclear{position:absolute;right:6px;width:16px;height:16px;border-radius:50%;background:none;color:var(--muted);font-size:13px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;border:0}
+.searchbox .sclear:hover{color:var(--ink)}
+.searchbox .sclear.hidden{display:none}
+.empty .btn-clear{font-family:var(--mono);font-size:11px;text-decoration:underline;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;margin-left:4px}
+@media (max-width:640px){.searchbox{width:100%}.searchbox input{width:100%}.searchbox input:focus{width:100%}}
 /* moves strip */
 .moves{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:6px;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .moves::-webkit-scrollbar{display:none}
@@ -376,7 +386,14 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
     <p><b>Each open question</b> with the engine's probability, the market where a contract exists, what settles it and when, and the names it touches. A reading of the forecasts, not advice. Forecasts are probabilities, not financial advice.</p>
   </div>
   <div class="sum" id="sum"></div>
-  <div class="chips" id="chips"></div>
+  <div class="filterrow">
+    <div class="chips" id="chips"></div>
+    <div class="searchbox">
+      <span class="sicon" aria-hidden="true"><svg class="ic" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></span>
+      <input type="search" id="fcsearch" placeholder="Search forecasts or tickers…" aria-label="Search forecasts">
+      <button type="button" id="fcsearch-clear" class="sclear hidden" aria-label="Clear search">×</button>
+    </div>
+  </div>
   <div class="moves" id="moves"></div>
   <div class="list" id="list"></div>
   <section class="cal" id="cal"></section>
