@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="../assets/forecasts-DJP6IQ-X.js"></script>
+<script type="module" crossorigin src="../assets/forecasts-Dql4IrL8.js"></script>
 <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
 <link rel="stylesheet" crossorigin href="../assets/fonts-VPBoBIfD.css">
 
@@ -58,12 +58,22 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px so
 .sum .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1;margin-top:4px}
 .sum .v small{font-size:11px;color:var(--muted)}
 .sum .long .v{color:var(--cyan)}.sum .short .v{color:var(--hot)}
-/* chips */
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 0 10px}
+/* chips & search */
+.filterrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0 8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;flex:1;min-width:0}
 .chips::-webkit-scrollbar{display:none}
 .chips button{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .chips button[aria-pressed="true"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .chips .lab{align-self:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.searchbox{position:relative;display:flex;align-items:center;flex:none}
+.searchbox input{font-family:var(--mono);font-size:11.5px;padding:5px 22px 5px 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);width:170px;transition:width .2s,border-color .2s;outline:none}
+.searchbox input:focus{width:220px;border-color:var(--rule)}
+.searchbox .sicon{position:absolute;left:8px;color:var(--muted);pointer-events:none;display:flex;align-items:center}
+.searchbox .sclear{position:absolute;right:6px;width:16px;height:16px;border-radius:50%;background:none;color:var(--muted);font-size:13px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;border:0}
+.searchbox .sclear:hover{color:var(--ink)}
+.searchbox .sclear.hidden{display:none}
+.empty .btn-clear{font-family:var(--mono);font-size:11px;text-decoration:underline;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;margin-left:4px}
+@media (max-width:640px){.searchbox{width:100%}.searchbox input{width:100%}.searchbox input:focus{width:100%}}
 /* moves strip */
 .moves{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:6px;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .moves::-webkit-scrollbar{display:none}
@@ -127,9 +137,25 @@ details.more[open] summary::after{content:"−"}
 .more .k{font-family:var(--ui);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin:8px 0 2px}
 .more .rule{font-size:13.5px;color:var(--muted)}
 .hist{display:flex;align-items:center;gap:10px;margin-top:4px}
-.hist svg{width:120px;height:28px;flex:none}
+.hist svg{width:120px;height:28px;flex:none;overflow:visible}
+.hist polyline{stroke:var(--gold)}
 .hist .steps{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
 .hist .steps b{color:var(--ink);font-weight:500}
+.spk-pt{cursor:pointer;outline:none}
+.spk-pt .spk-hit{fill:transparent}
+.spk-pt .spk-dot{fill:var(--gold);transition:r .12s ease,fill .12s ease,stroke .12s ease}
+.spk-pt:hover .spk-dot,.spk-pt:focus .spk-dot,.spk-pt.active .spk-dot{r:3.8px;fill:var(--ink);stroke:var(--gold);stroke-width:2px}
+#spk-tip{position:absolute;display:none;background:var(--surface);border:1px solid var(--gold);border-radius:var(--r);padding:6px 9px 7px;font-family:var(--ui);font-size:11px;line-height:1.35;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,.22);pointer-events:none;z-index:999;max-width:280px;min-width:140px;white-space:normal;opacity:0;transition:opacity .12s ease}
+#spk-tip.visible{opacity:1}
+#spk-tip .tip-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--gold-ink);margin-bottom:3px;line-height:1.2}
+#spk-tip .tip-h b{color:var(--ink);font-weight:600}
+#spk-tip .tip-m{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:1px 4px;border-radius:2px;background:var(--line);color:var(--muted)}
+#spk-tip .tip-m.up{background:rgba(42,143,152,.12);color:var(--cyan)}
+#spk-tip .tip-m.dn{background:rgba(217,58,95,.12);color:var(--hot)}
+#spk-tip .tip-m.iss{background:rgba(217,162,27,.15);color:var(--gold-ink)}
+#spk-tip .tip-b{font-family:var(--display);font-size:12px;line-height:1.35;color:var(--ink);margin-top:2px}
+#spk-tip .tip-arr{position:absolute;top:100%;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold)}
+#spk-tip.below .tip-arr{top:auto;bottom:100%;border-top:none;border-bottom:5px solid var(--gold)}
 .more .lnk{font-family:var(--mono);font-size:11px;margin-top:6px;display:block}
 .legend{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .legend b{color:var(--ink);font-weight:600}.legend .u b{color:var(--gold-ink)}
@@ -284,6 +310,15 @@ body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04
 body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407;border-color:var(--neon);box-shadow:0 0 16px -2px var(--neon-soft)}
 body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.9)) drop-shadow(0 0 14px rgba(var(--n),.6));animation:degenpulse 3s ease-in-out infinite}
 @keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
+body.degen .hist polyline{stroke:var(--purple)}
+body.degen .spk-pt .spk-dot{fill:var(--purple)}
+body.degen .spk-pt:hover .spk-dot,body.degen .spk-pt:focus .spk-dot,body.degen .spk-pt.active .spk-dot{fill:#fff;stroke:var(--purple);stroke-width:2px}
+body.degen #spk-tip{background:#120726;border-color:var(--purple);box-shadow:0 0 18px -2px rgba(var(--n),.75)}
+body.degen #spk-tip .tip-h{color:var(--purple-ink)}
+body.degen #spk-tip .tip-arr{border-top-color:var(--purple)}
+body.degen #spk-tip.below .tip-arr{border-bottom-color:var(--purple)}
+body.degen #spk-tip .tip-m.up{background:rgba(0,255,163,.15);color:var(--green)}
+body.degen #spk-tip .tip-m.dn{background:rgba(255,42,109,.15);color:var(--neon)}
 /* the account panel: sign-in and the holder key, one place on every page */
 .gate{display:inline-flex;align-items:center}
 .gate .acctbtn{font:inherit;font-family:var(--ui);font-size:11.5px;letter-spacing:.02em;line-height:1.2;color:var(--ink);background:none;border:1px solid var(--rule);padding:5px 10px;border-radius:2px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
@@ -376,7 +411,14 @@ body.gated main.wrap,body.gated nav.tabs,body.gated #moves{display:none}
     <p><b>Each open question</b> with the engine's probability, the market where a contract exists, what settles it and when, and the names it touches. A reading of the forecasts, not advice. Forecasts are probabilities, not financial advice.</p>
   </div>
   <div class="sum" id="sum"></div>
-  <div class="chips" id="chips"></div>
+  <div class="filterrow">
+    <div class="chips" id="chips"></div>
+    <div class="searchbox">
+      <span class="sicon" aria-hidden="true"><svg class="ic" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></span>
+      <input type="search" id="fcsearch" placeholder="Search forecasts or tickers…" aria-label="Search forecasts">
+      <button type="button" id="fcsearch-clear" class="sclear hidden" aria-label="Clear search">×</button>
+    </div>
+  </div>
   <div class="moves" id="moves"></div>
   <div class="list" id="list"></div>
   <section class="cal" id="cal"></section>

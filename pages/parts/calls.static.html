@@ -50,12 +50,22 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px so
 .sum .v{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1;margin-top:4px}
 .sum .v small{font-size:11px;color:var(--muted)}
 .sum .long .v{color:var(--cyan)}.sum .short .v{color:var(--hot)}
-/* chips */
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 0 10px}
+/* chips & search */
+.filterrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0 8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;flex:1;min-width:0}
 .chips::-webkit-scrollbar{display:none}
 .chips button{flex:none;font-size:11.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .chips button[aria-pressed="true"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .chips .lab{align-self:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.searchbox{position:relative;display:flex;align-items:center;flex:none}
+.searchbox input{font-family:var(--mono);font-size:11.5px;padding:5px 22px 5px 24px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);width:170px;transition:width .2s,border-color .2s;outline:none}
+.searchbox input:focus{width:220px;border-color:var(--rule)}
+.searchbox .sicon{position:absolute;left:8px;color:var(--muted);pointer-events:none;display:flex;align-items:center}
+.searchbox .sclear{position:absolute;right:6px;width:16px;height:16px;border-radius:50%;background:none;color:var(--muted);font-size:13px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0;border:0}
+.searchbox .sclear:hover{color:var(--ink)}
+.searchbox .sclear.hidden{display:none}
+.empty .btn-clear{font-family:var(--mono);font-size:11px;text-decoration:underline;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;margin-left:4px}
+@media (max-width:640px){.searchbox{width:100%}.searchbox input{width:100%}.searchbox input:focus{width:100%}}
 /* moves strip */
 .moves{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:6px;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .moves::-webkit-scrollbar{display:none}
@@ -119,9 +129,25 @@ details.more[open] summary::after{content:"−"}
 .more .k{font-family:var(--ui);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin:8px 0 2px}
 .more .rule{font-size:13.5px;color:var(--muted)}
 .hist{display:flex;align-items:center;gap:10px;margin-top:4px}
-.hist svg{width:120px;height:28px;flex:none}
+.hist svg{width:120px;height:28px;flex:none;overflow:visible}
+.hist polyline{stroke:var(--gold)}
 .hist .steps{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
 .hist .steps b{color:var(--ink);font-weight:500}
+.spk-pt{cursor:pointer;outline:none}
+.spk-pt .spk-hit{fill:transparent}
+.spk-pt .spk-dot{fill:var(--gold);transition:r .12s ease,fill .12s ease,stroke .12s ease}
+.spk-pt:hover .spk-dot,.spk-pt:focus .spk-dot,.spk-pt.active .spk-dot{r:3.8px;fill:var(--ink);stroke:var(--gold);stroke-width:2px}
+#spk-tip{position:absolute;display:none;background:var(--surface);border:1px solid var(--gold);border-radius:var(--r);padding:6px 9px 7px;font-family:var(--ui);font-size:11px;line-height:1.35;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,.22);pointer-events:none;z-index:999;max-width:280px;min-width:140px;white-space:normal;opacity:0;transition:opacity .12s ease}
+#spk-tip.visible{opacity:1}
+#spk-tip .tip-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--gold-ink);margin-bottom:3px;line-height:1.2}
+#spk-tip .tip-h b{color:var(--ink);font-weight:600}
+#spk-tip .tip-m{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:1px 4px;border-radius:2px;background:var(--line);color:var(--muted)}
+#spk-tip .tip-m.up{background:rgba(42,143,152,.12);color:var(--cyan)}
+#spk-tip .tip-m.dn{background:rgba(217,58,95,.12);color:var(--hot)}
+#spk-tip .tip-m.iss{background:rgba(217,162,27,.15);color:var(--gold-ink)}
+#spk-tip .tip-b{font-family:var(--display);font-size:12px;line-height:1.35;color:var(--ink);margin-top:2px}
+#spk-tip .tip-arr{position:absolute;top:100%;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold)}
+#spk-tip.below .tip-arr{top:auto;bottom:100%;border-top:none;border-bottom:5px solid var(--gold)}
 .more .lnk{font-family:var(--mono);font-size:11px;margin-top:6px;display:block}
 .legend{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .legend b{color:var(--ink);font-weight:600}.legend .u b{color:var(--gold-ink)}
@@ -276,6 +302,15 @@ body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04
 body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407;border-color:var(--neon);box-shadow:0 0 16px -2px var(--neon-soft)}
 body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.9)) drop-shadow(0 0 14px rgba(var(--n),.6));animation:degenpulse 3s ease-in-out infinite}
 @keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
+body.degen .hist polyline{stroke:var(--purple)}
+body.degen .spk-pt .spk-dot{fill:var(--purple)}
+body.degen .spk-pt:hover .spk-dot,body.degen .spk-pt:focus .spk-dot,body.degen .spk-pt.active .spk-dot{fill:#fff;stroke:var(--purple);stroke-width:2px}
+body.degen #spk-tip{background:#120726;border-color:var(--purple);box-shadow:0 0 18px -2px rgba(var(--n),.75)}
+body.degen #spk-tip .tip-h{color:var(--purple-ink)}
+body.degen #spk-tip .tip-arr{border-top-color:var(--purple)}
+body.degen #spk-tip.below .tip-arr{border-bottom-color:var(--purple)}
+body.degen #spk-tip .tip-m.up{background:rgba(0,255,163,.15);color:var(--green)}
+body.degen #spk-tip .tip-m.dn{background:rgba(255,42,109,.15);color:var(--neon)}
 </style>
 
 <header>
@@ -298,7 +333,14 @@ body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px r
     <p><b>Each open question</b> with the engine's probability, the market where a contract exists, what settles it and when, and the names it touches. A reading of the forecasts, not advice. Forecasts are probabilities, not financial advice.</p>
   </div>
   <div class="sum" id="sum"></div>
-  <div class="chips" id="chips"></div>
+  <div class="filterrow">
+    <div class="chips" id="chips"></div>
+    <div class="searchbox">
+      <span class="sicon" aria-hidden="true"><svg class="ic" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></span>
+      <input type="search" id="fcsearch" placeholder="Search forecasts or tickers…" aria-label="Search forecasts">
+      <button type="button" id="fcsearch-clear" class="sclear hidden" aria-label="Clear search">×</button>
+    </div>
+  </div>
   <div class="moves" id="moves"></div>
   <div class="list" id="list"></div>
   <section class="cal" id="cal"></section>
@@ -316,6 +358,7 @@ body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px r
 </footer>
 
 <script>
+var DEGEN=false; try{ DEGEN=localStorage.getItem('ubik-degen')==='1'; }catch(e){}
 const F = [
  {"id": "q_20261020_04", "theme": "europe", "q": "Will Saturday's protests in France draw less than half last week's crowd?", "hist": [["2026-10-20", 0.8]], "due": "2026-10-31", "status": "open", "rule": "Yes if the Interior Ministry's nationwide count of protesters in France for Saturday, Oct. 24, 2026, is below 275,000, which is half its count of 550,000 for Oct. 17. No if it is 275,000 or more. Use the latest full-day national figure the ministry publishes by 23:59 Paris time on Oct. 31, 2026; if it publishes only an intraday figure, use the latest one published by then. Ignore later revisions and any count by unions, organizers or independent counters. If the ministry publishes a national figure for Oct. 24, that figure settles the question whatever else happens. If it publishes none by the deadline: void if the national protest day was moved from Oct. 24 to a later date; otherwise Yes, including when the calls are withdrawn or banned or the protests are too scattered for a national count.", "why": "Unions stay out, curfews deter marchers, and second days usually shrink."},
  {"id": "q_20261020_01", "theme": "gulf", "q": "Will Saudi Arabia's private businesses shrink this month?", "hist": [["2026-10-20", 0.15]], "due": "2026-11-05", "status": "open", "rule": "Yes if the headline seasonally adjusted Riyad Bank Saudi Arabia PMI for October 2026, as first published by S&P Global, is below 50.0. No if it is 50.0 or higher. Later revisions are ignored. If S&P Global has not published the October 2026 reading by the end of Nov. 5, 2026, the question is void.", "why": "The survey must fall over five points from 55.3; only broad shocks did that."},
@@ -448,6 +491,7 @@ const TOPICS={
 const RH=t=>["Robinhood",`https://robinhood.com/us/en/stocks/${t}/`];
 const VENUES={
  "EWQ":[RH("EWQ")],"KSA":[RH("KSA")],"XLE":[RH("XLE")],"EWZ":[RH("EWZ")],"Nvidia":[RH("NVDA")],"CoreWeave":[RH("CRWV")],"Petrobras":[RH("PBR")],
+ "TLT":[RH("TLT")],"EWY":[RH("EWY")],"Tesla":[RH("TSLA")],
  "Brent":[["ICE Brent","https://www.ice.com/products/219/Brent-Crude-Futures"],["BNO ETF",RH("BNO")[1]]],
  "Diesel crack":[["CME heating oil","https://www.cmegroup.com/markets/energy/refined-products/heating-oil.html"],["ICE gasoil","https://www.ice.com/products/34361119/Low-Sulphur-Gasoil-Futures"]],
  "MOL":[["Budapest MOL","https://www.google.com/finance/quote/MOL:BUD"]],
@@ -461,8 +505,10 @@ const d2=iso=>{const d=new Date(iso+"T12:00:00Z");return d.toLocaleDateString("e
 const days=iso=>Math.round((new Date(iso+"T12:00:00Z")-new Date(TODAY+"T12:00:00Z"))/864e5);
 const hzs=d=>d<0?"due":d<=0?"now":d<=45?`${d}d`:d<=120?`${Math.round(d/7)}w`:`${Math.round(d/30)}mo`;
 const hz=d=>d<0?"overdue":d<=0?"today":d===1?"1 day":d<=45?`${d} days`:d<=120?`${Math.round(d/7)} wks`:`${Math.round(d/30)} mo`;
-const bucket=d=>d<=7?"week":d<=31?"month":d<=days("2026-12-31")?"year":"next";
-const BUCKETS=[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next","2027"]];
+const curYear=()=>new Date((TODAY||new Date().toISOString().slice(0,10))+"T12:00:00Z").getUTCFullYear();
+const bucket=d=>d<=7?"week":d<=31?"month":d<=days(`${curYear()}-12-31`)?"year":"next";
+const buckets=()=>[["all","All horizons"],["week","≤ 7 days"],["month","≤ 1 month"],["year","Year end"],["next",`${curYear()+1}`]];
+const BUCKETS=buckets();
 const conf=p=>{const a=Math.abs(p-.5);return a>=.3?"high":a>=.15?"medium":"low"};
 const EDGE=0.05;
 
@@ -495,8 +541,21 @@ const rank=o=>o.m.s==="cash"?1:0;
 const ALL=CALLS.map(build).sort((a,b)=>rank(a)-rank(b)||(rank(a)===0?Math.abs(b.p-.5)-Math.abs(a.p-.5)||a.d-b.d:a.d-b.d));
 
 // ---- state ----
-let cat=(location.hash.match(/cat=(\w+)/)||[])[1]||"all", hzn=(location.hash.match(/hz=(\w+)/)||[])[1]||"all";
-const shown=()=>ALL.filter(o=>(cat==="all"||o.cats.includes(cat))&&(hzn==="all"||o.b===hzn));
+let cat=(location.hash.match(/cat=(\w+)/)||[])[1]||"all", hzn=(location.hash.match(/hz=(\w+)/)||[])[1]||"all", query="";
+function matchCard(o, q){
+  if(!q) return true;
+  const f=o.f||{};
+  const hay=[
+    o.short, o.asset, f.q, f.theme, f.why, o.note,
+    o.market&&o.market.c, o.market&&o.market.venue,
+    ...(o.yes||[]).map(x=>x[0]), ...(o.no||[]).map(x=>x[0])
+  ].filter(Boolean).join(" ").toLowerCase();
+  return hay.includes(q);
+}
+const shown=()=>{
+  const q=query.trim().toLowerCase();
+  return ALL.filter(o=>(cat==="all"||o.cats.includes(cat))&&(hzn==="all"||o.b===hzn)&&matchCard(o, q));
+};
 
 // ---- identity: icons and the ring ----
 const SVG=(b,vb="0 0 16 16")=>`<svg class="ic" viewBox="${vb}" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${b}</svg>`;
@@ -522,9 +581,27 @@ function ring(v,cls){ const r=15, C=2*Math.PI*r, f=Math.max(0,Math.min(1,v)); re
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function spark(f){
   const h=f.hist, w=120, hh=28, n=h.length;
-  if(n<2) return `<svg viewBox="0 0 ${w} ${hh}"><circle cx="${w-4}" cy="${hh-4-h[0][1]*(hh-8)}" r="2.2" fill="var(--gold)"/></svg>`;
+  const line=`<line x1="4" y1="${hh/2}" x2="${w-4}" y2="${hh/2}" stroke="var(--line)" stroke-dasharray="2 3"/>`;
+  const renderPt=(e,i,cx,cy)=>{
+    const prev=i>0?h[i-1][1]:null;
+    const diff=prev!==null?pc(e[1])-pc(prev):0;
+    const moveStr=i===0?"issued":(diff>0?`+${diff} pts`:diff<0?`${diff} pts`:"flat");
+    const moveWord=i===0?"issued":(diff>0?"raised":diff<0?"lowered":"unchanged");
+    const why=e[2]||(i===0?f.why:(i===n-1&&f.change?f.change:null))||"";
+    const tipText=`${d2(e[0])}: ${pc(e[1])}% (${moveWord}${diff!==0&&i>0?` ${diff>0?'+':''}${diff} pts`:''})${why?` · ${why}`:''}`;
+    const ariaLabel=`${d2(e[0])}, ${pc(e[1])}%, ${moveWord}`;
+    return `<g class="spk-pt" tabindex="0" role="button" aria-label="${esc(ariaLabel)}" data-date="${esc(d2(e[0]))}" data-p="${pc(e[1])}%" data-move="${esc(moveStr)}" data-why="${esc(why)}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="7" class="spk-hit"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${i===n-1?2.5:2}" class="spk-dot"/><title>${esc(tipText)}</title></g>`;
+  };
+  if(n<2){
+    const cx=w-4, cy=hh-4-h[0][1]*(hh-8);
+    return `<svg viewBox="0 0 ${w} ${hh}" class="spk">${line}${renderPt(h[0],0,cx,cy)}</svg>`;
+  }
   const pts=h.map((e,i)=>`${4+i*(w-8)/(n-1)},${hh-4-e[1]*(hh-8)}`).join(" ");
-  return `<svg viewBox="0 0 ${w} ${hh}"><line x1="4" y1="${hh/2}" x2="${w-4}" y2="${hh/2}" stroke="var(--line)" stroke-dasharray="2 3"/><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${w-4}" cy="${hh-4-h[n-1][1]*(hh-8)}" r="2.4" fill="var(--gold)"/></svg>`;
+  const ptEls=h.map((e,i)=>{
+    const cx=4+i*(w-8)/(n-1), cy=hh-4-e[1]*(hh-8);
+    return renderPt(e,i,cx,cy);
+  }).join("");
+  return `<svg viewBox="0 0 ${w} ${hh}" class="spk">${line}<polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/>${ptEls}</svg>`;
 }
 function stepsOf(f){
   const h=f.hist; const out=[]; h.forEach((e,i)=>{ if(i===0) out.push(`${d2(e[0])} issued at <b>${pc(e[1])}%</b>`); else if(e[1]!==h[i-1][1]) out.push(`${d2(e[0])} ${e[1]>h[i-1][1]?"raised":"lowered"} to <b>${pc(e[1])}%</b>`); });
@@ -595,7 +672,10 @@ function renderHistory(){
   const upcoming=openFs.filter(f=>f.due>=curDay);
   const pastDue=openFs.filter(f=>f.due<curDay);
   const nextPhrase=upcoming.length?` and the next settles ${d2(upcoming[0].due)}`:(pastDue.length?` (${pastDue.length} awaiting resolution)`:"");
-  document.getElementById("list").innerHTML=(DONE.length?DONE.map(historyCard).join(""):`<div class="empty">Nothing settled yet.</div>`)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
+  const q=query.trim().toLowerCase();
+  const histRows=q?DONE.filter(f=>[f.q,f.theme,f.why,f.rule,f.evidence,f.outcome,f.id].filter(Boolean).join(" ").toLowerCase().includes(q)):DONE;
+  const emptyMsg=q?`<div class="empty">No settled forecasts match “${esc(query.trim())}”. <button type="button" class="btn-clear">Clear search</button></div>`:`<div class="empty">Nothing settled yet.</div>`;
+  document.getElementById("list").innerHTML=(histRows.length?histRows.map(historyCard).join(""):emptyMsg)+`<p class="hnote">A win is the engine on the right side of 50% when the question settled; Brier is the squared error, 0 is perfect, 0.25 is a coin flip. The engine went live on 28 September 2026; ${openFs.length} forecasts are still open${nextPhrase}.</p>`;
   location.hash=`cat=h`;
 }
 function render(){
@@ -603,16 +683,22 @@ function render(){
   if(cat==="h"){ tabsHTML(); renderHistory(); return; }
   const rows=shown();
   tabsHTML();
-  document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+BUCKETS.map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
+  document.getElementById("chips").innerHTML=`<span class="lab">Horizon</span>`+buckets().map(([k,n])=>`<button aria-pressed="${hzn===k}" data-hz="${k}">${n}</button>`).join("");
   const L=DEGEN?rows.filter(o=>o.m.s==="long").length:rows.filter(o=>o.p>=.6).length,S=DEGEN?rows.filter(o=>o.m.s==="short").length:rows.filter(o=>o.p<=.4).length,C=DEGEN?rows.filter(o=>o.m.s==="cash").length:rows.filter(o=>o.p>.4&&o.p<.6).length;
-  const next=rows.slice().sort((a,b)=>a.d-b.d)[0];
+  const upcoming=rows.filter(o=>o.d>=0).sort((a,b)=>a.d-b.d);
+  const next=upcoming[0]||rows.slice().sort((a,b)=>a.d-b.d)[0];
   document.getElementById("sum").innerHTML=`<div class="long"><div class="k">${DEGEN?"Long":"Leaning yes"}</div><div class="v">${L}</div></div><div class="short"><div class="k">${DEGEN?"Short":"Leaning no"}</div><div class="v">${S}</div></div><div class="cash"><div class="k">${DEGEN?"Cash":"Open"}</div><div class="v">${C}</div></div><div><div class="k">Next</div><div class="v">${next?`${hzs(next.d)}<small> ${d2(next.catalyst[0])}</small>`:"—"}</div></div>`;
   document.getElementById("h1").innerHTML=`${cat==="all"?"The forecasts":CAT[cat]} for <em>${new Date(TODAY+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long"})}</em>.`;
-  document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
+  const q=query.trim();
+  const emptyMsg=q?`<div class="empty">No open forecasts match “${esc(q)}”. <button type="button" class="btn-clear">Clear search</button></div>`:`<div class="empty">Nothing on this horizon. The engine has no forecast here.</div>`;
+  document.getElementById("list").innerHTML=rows.length?rows.map(card).join(""):emptyMsg;
   location.hash=`cat=${cat}&hz=${hzn}`;
 }
 function tabsHTML(){
-  document.getElementById("tabs").innerHTML=[["all","All"],["m","Markets"],["s","Stocks"],["c","Crypto"],["h","History"]].map(([k,n])=>`<button role="tab" aria-selected="${cat===k}" data-cat="${k}">${k==="all"?IC.eye:k==="h"?IC.rec:IC[k]}${n}<span class="n">${k==="all"?ALL.length:k==="h"?DONE.length:ALL.filter(o=>o.cats.includes(k)).length}</span></button>`).join("");
+  const q=query.trim().toLowerCase();
+  const list=q?ALL.filter(o=>matchCard(o,q)):ALL;
+  const dList=q?DONE.filter(f=>[f.q,f.theme,f.why,f.rule,f.evidence,f.outcome,f.id].filter(Boolean).join(" ").toLowerCase().includes(q)):DONE;
+  document.getElementById("tabs").innerHTML=[["all","All"],["m","Markets"],["s","Stocks"],["c","Crypto"],["h","History"]].map(([k,n])=>`<button role="tab" aria-selected="${cat===k}" data-cat="${k}">${k==="all"?IC.eye:k==="h"?IC.rec:IC[k]}${n}<span class="n">${k==="all"?list.length:k==="h"?dList.length:list.filter(o=>o.cats.includes(k)).length}</span></button>`).join("");
 }
 function moves(){
   const out=[];
@@ -634,15 +720,128 @@ function record(){
   const done=F.filter(f=>f.status!=="open"), open=F.length-done.length;
   const right=done.filter(won).length;
   const br=done.length?(done.reduce((a,f)=>a+(f.brier||0),0)/done.length).toFixed(3):"—";
-  document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${ALL.length}</b> have a market or an instrument and are on this page; the other ${open-ALL.length} are reads with no expression. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
+  const withExpr=ALL.filter(o=>(o.market&&o.market.p!=null)||(o.yes&&o.yes.length>0)||(o.no&&o.no.length>0)).length;
+  const noExpr=open-withExpr;
+  document.getElementById("rec").innerHTML=`<h3>${IC.rec}Record</h3><b>${done.length}</b> settled, <b>${right}</b> on the right side, Brier <b>${br}</b>. <b>${open}</b> open, of which <b>${withExpr}</b> have a market or an instrument and are on this page${noExpr>0?`; the other ${noExpr} are reads with no expression`:""}. <a href="#cat=h" data-cat="h" class="hlink">Every settled forecast, win or loss →</a> Positions are first-pass, from a fixed rule on the engine's number: the engine has been live since 28 September 2026 and the sample is small.`;
 }
 function stamp(){
   const last=Object.values(TS).flat().map(e=>e[0]).sort().pop();
   document.getElementById("stamp").textContent=`EDITION ${READ.forecasts}`; document.getElementById("stamp").title=`Read ${d2(TODAY)}`;
-  document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last.slice(0,16).replace("T"," ")} ET · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
+  document.getElementById("foot").textContent=`Forecasts: UBIK preview API, read ${READ.forecasts}, last revision ${last?last.slice(0,16).replace("T"," ")+" ET":READ.forecasts} · Polymarket read ${READ.poly} · Kalshi via AIXBT report ${READ.kalshi} · AIXBT topics ${READ.aixbt.replace("T"," ").replace("Z"," UTC")} · threshold ${pc(EDGE)} pts`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(b){e.preventDefault();cat=b.dataset.cat;render();window.scrollTo({top:0,behavior:"smooth"});}});
 document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest("[data-hz]");if(b){hzn=b.dataset.hz;render();}});
+const searchEl=document.getElementById("fcsearch");
+const clearEl=document.getElementById("fcsearch-clear");
+function clearSearch(){
+  query="";
+  if(searchEl) searchEl.value="";
+  if(clearEl) clearEl.classList.add("hidden");
+  render();
+}
+if(searchEl){
+  searchEl.addEventListener("input",e=>{
+    query=e.target.value;
+    if(clearEl) clearEl.classList.toggle("hidden",!query);
+    render();
+  });
+  searchEl.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){ clearSearch(); searchEl.blur(); }
+  });
+}
+if(clearEl) clearEl.addEventListener("click",clearSearch);
+document.getElementById("list").addEventListener("click",e=>{
+  if(e.target.closest(".btn-clear")) clearSearch();
+});
+let spkTip=null, activePt=null;
+function getSpkTip(){
+  if(!spkTip){
+    spkTip=document.createElement("div");
+    spkTip.id="spk-tip";
+    spkTip.setAttribute("role","tooltip");
+    spkTip.setAttribute("aria-hidden","true");
+    document.body.appendChild(spkTip);
+  }
+  return spkTip;
+}
+function hideSpkTip(){
+  if(spkTip){
+    spkTip.classList.remove("visible");
+    spkTip.setAttribute("aria-hidden","true");
+  }
+  if(activePt){
+    activePt.classList.remove("active");
+    activePt=null;
+  }
+}
+function showSpkTip(pt){
+  if(!pt) return;
+  const date=pt.dataset.date, p=pt.dataset.p, move=pt.dataset.move, why=pt.dataset.why;
+  const tip=getSpkTip();
+  if(activePt&&activePt!==pt) activePt.classList.remove("active");
+  activePt=pt;
+  pt.classList.add("active");
+  const moveCls=move.startsWith("+")?"up":move.startsWith("-")?"dn":move==="issued"?"iss":"";
+  tip.innerHTML=`<div class="tip-h"><span>${date} · <b>${p}</b></span><span class="tip-m ${moveCls}">${esc(move)}</span></div>${why?`<div class="tip-b">${esc(why)}</div>`:""}<div class="tip-arr"></div>`;
+  tip.style.display="block";
+  tip.classList.remove("visible","below");
+  const rect=pt.getBoundingClientRect();
+  const tipRect=tip.getBoundingClientRect();
+  let top=rect.top-tipRect.height-7;
+  let isBelow=false;
+  if(top<8){
+    top=rect.bottom+7;
+    isBelow=true;
+  }
+  let left=rect.left+rect.width/2-tipRect.width/2;
+  const pad=8;
+  const maxLeft=window.innerWidth-tipRect.width-pad;
+  const clampLeft=Math.max(pad,Math.min(maxLeft,left));
+  tip.style.top=`${Math.round(top+window.scrollY)}px`;
+  tip.style.left=`${Math.round(clampLeft+window.scrollX)}px`;
+  if(isBelow) tip.classList.add("below");
+  const arr=tip.querySelector(".tip-arr");
+  if(arr){
+    const arrowX=rect.left+rect.width/2-clampLeft;
+    arr.style.left=`${Math.max(6,Math.min(tipRect.width-6,arrowX))}px`;
+  }
+  tip.classList.add("visible");
+  tip.setAttribute("aria-hidden","false");
+}
+document.addEventListener("mouseover",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) showSpkTip(pt);
+});
+document.addEventListener("mouseout",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt){
+    const nextPt=e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(".spk-pt");
+    if(!nextPt) hideSpkTip();
+  }
+});
+document.addEventListener("focusin",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) showSpkTip(pt);
+});
+document.addEventListener("focusout",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) hideSpkTip();
+});
+document.addEventListener("click",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt){
+    e.stopPropagation();
+    if(activePt===pt) hideSpkTip();
+    else showSpkTip(pt);
+  } else if(!e.target.closest("#spk-tip")){
+    hideSpkTip();
+  }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&activePt) hideSpkTip();
+});
+window.addEventListener("scroll",()=>{ if(activePt) hideSpkTip(); },{passive:true});
+window.addEventListener("resize",()=>{ if(activePt) hideSpkTip(); },{passive:true});
 document.getElementById("tog").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("ubik-calls-theme",r.dataset.theme)}catch(_){}});
 try{const t=localStorage.getItem("ubik-calls-theme");if(t)document.documentElement.dataset.theme=t;}catch(_){}
 document.getElementById("wmmark").innerHTML=MARK;document.getElementById("fmark").innerHTML=MARK;

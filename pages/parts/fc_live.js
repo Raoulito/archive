@@ -18,14 +18,17 @@ function transform(raw){
   for(const f of Object.values(all).sort((a,b)=>hist(b)[0].at.localeCompare(hist(a)[0].at))){
     const h=hist(f), id=f.question_id;
     TSo[id]=h.map(e=>[e.at,e.probability]);
-    const o={id, theme:themeOf(f.claim), q:f.claim, hist:h.map(e=>[e.at.slice(0,10),e.probability]), due:f.deadline, status:f.status||"open", locked:!!f.locked};
+    const curWhy=(h.length&&h[h.length-1].why)||h[0].why;
+    const initialWhy=h[0].why||(f.reasoning?f.reasoning.split(". ")[0]:null);
+    const whyAt=(e,i)=>e.why||(i===0?initialWhy:(i===h.length-1&&curWhy?curWhy:null));
+    const o={id, theme:themeOf(f.claim), q:f.claim, hist:h.map((e,i)=>[e.at.slice(0,10),e.probability,whyAt(e,i)]), due:f.deadline, status:f.status||"open", locked:!!f.locked};
     if(f.resolved_at) o.resolved=f.resolved_at.slice(0,10);
     const outcome=f.outcome||(f.status==="yes"?"yes":f.status==="no"?"no":null);
     if(outcome) o.outcome=outcome;
     if(f.brier!=null) o.brier=f.brier;
     if(f.resolution_rule) o.rule=f.resolution_rule;
     let ev=f.evidence; if(ev&&typeof ev==="object") ev=(ev.quote||"")+(ev.url?` (${ev.url.split("/")[2]})`:""); if(ev) o.evidence=ev;
-    if(h[0].why) o.why=h[0].why; else if(f.reasoning) o.why=f.reasoning.split(". ")[0];
+    if(curWhy) o.why=curWhy; else if(f.reasoning) o.why=f.reasoning.split(". ")[0];
     if(h.length>1&&h[h.length-1].why) o.change=h[h.length-1].why;
     Fo.push(o);
   }
@@ -37,7 +40,8 @@ function buildCalls(){
   CALLS=[]; NON_MARKET=[];
   for(const f of F){ if(f.status!=="open") continue; let i=INSTR[f.id];
     if(!i||!(i.yes.length||i.no.length)) NON_MARKET.push(f.id);
-    if(!i) i={asset:f.q.slice(0,40), cats:["m"], short:f.q, yes:[], no:[], catalyst:[f.due,"Resolution date"], note:""};
+    const cleanQ=f.q.replace(/^Will\s+/i,"").replace(/\?$/,"");
+    if(!i) i={asset:cleanQ.slice(0,32), cats:[themeOf(f.q)==="crypto"?"c":themeOf(f.q)==="markets"||themeOf(f.q)==="ai"?"m":"s"], short:cleanQ, yes:[], no:[], catalyst:[f.due,"Resolution date"], note:""};
     const mk=MKT[f.id]; CALLS.push({id:f.id, asset:i.asset, cats:i.cats, short:i.short, yes:i.yes, no:i.no, catalyst:i.catalyst, chatter:[], note:i.note, market:mk?{venue:mk.venue,p:mk.p,read:mk.read,c:mk.c,adj:mk.adj,url:mk.url}:undefined}); }
 }
 function applyEdition(raw){
