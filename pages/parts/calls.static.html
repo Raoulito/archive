@@ -129,9 +129,25 @@ details.more[open] summary::after{content:"−"}
 .more .k{font-family:var(--ui);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin:8px 0 2px}
 .more .rule{font-size:13.5px;color:var(--muted)}
 .hist{display:flex;align-items:center;gap:10px;margin-top:4px}
-.hist svg{width:120px;height:28px;flex:none}
+.hist svg{width:120px;height:28px;flex:none;overflow:visible}
+.hist polyline{stroke:var(--gold)}
 .hist .steps{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
 .hist .steps b{color:var(--ink);font-weight:500}
+.spk-pt{cursor:pointer;outline:none}
+.spk-pt .spk-hit{fill:transparent}
+.spk-pt .spk-dot{fill:var(--gold);transition:r .12s ease,fill .12s ease,stroke .12s ease}
+.spk-pt:hover .spk-dot,.spk-pt:focus .spk-dot,.spk-pt.active .spk-dot{r:3.8px;fill:var(--ink);stroke:var(--gold);stroke-width:2px}
+#spk-tip{position:absolute;display:none;background:var(--surface);border:1px solid var(--gold);border-radius:var(--r);padding:6px 9px 7px;font-family:var(--ui);font-size:11px;line-height:1.35;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,.22);pointer-events:none;z-index:999;max-width:280px;min-width:140px;white-space:normal;opacity:0;transition:opacity .12s ease}
+#spk-tip.visible{opacity:1}
+#spk-tip .tip-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--gold-ink);margin-bottom:3px;line-height:1.2}
+#spk-tip .tip-h b{color:var(--ink);font-weight:600}
+#spk-tip .tip-m{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:1px 4px;border-radius:2px;background:var(--line);color:var(--muted)}
+#spk-tip .tip-m.up{background:rgba(42,143,152,.12);color:var(--cyan)}
+#spk-tip .tip-m.dn{background:rgba(217,58,95,.12);color:var(--hot)}
+#spk-tip .tip-m.iss{background:rgba(217,162,27,.15);color:var(--gold-ink)}
+#spk-tip .tip-b{font-family:var(--display);font-size:12px;line-height:1.35;color:var(--ink);margin-top:2px}
+#spk-tip .tip-arr{position:absolute;top:100%;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--gold)}
+#spk-tip.below .tip-arr{top:auto;bottom:100%;border-top:none;border-bottom:5px solid var(--gold)}
 .more .lnk{font-family:var(--mono);font-size:11px;margin-top:6px;display:block}
 .legend{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .legend b{color:var(--ink);font-weight:600}.legend .u b{color:var(--gold-ink)}
@@ -286,6 +302,15 @@ body.degen .card.long .instr .ir a.ch.vn:hover{background:var(--green);color:#04
 body.degen .card.short .instr .ir a.ch.vn:hover{background:var(--neon);color:#120407;border-color:var(--neon);box-shadow:0 0 16px -2px var(--neon-soft)}
 body.degen .degenfab #degenbtn[aria-pressed="true"]{filter:drop-shadow(0 0 6px rgba(255,59,92,.9)) drop-shadow(0 0 14px rgba(var(--n),.6));animation:degenpulse 3s ease-in-out infinite}
 @keyframes degenpulse{0%,100%{opacity:1}50%{opacity:.6}}
+body.degen .hist polyline{stroke:var(--purple)}
+body.degen .spk-pt .spk-dot{fill:var(--purple)}
+body.degen .spk-pt:hover .spk-dot,body.degen .spk-pt:focus .spk-dot,body.degen .spk-pt.active .spk-dot{fill:#fff;stroke:var(--purple);stroke-width:2px}
+body.degen #spk-tip{background:#120726;border-color:var(--purple);box-shadow:0 0 18px -2px rgba(var(--n),.75)}
+body.degen #spk-tip .tip-h{color:var(--purple-ink)}
+body.degen #spk-tip .tip-arr{border-top-color:var(--purple)}
+body.degen #spk-tip.below .tip-arr{border-bottom-color:var(--purple)}
+body.degen #spk-tip .tip-m.up{background:rgba(0,255,163,.15);color:var(--green)}
+body.degen #spk-tip .tip-m.dn{background:rgba(255,42,109,.15);color:var(--neon)}
 </style>
 
 <header>
@@ -556,9 +581,27 @@ function ring(v,cls){ const r=15, C=2*Math.PI*r, f=Math.max(0,Math.min(1,v)); re
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function spark(f){
   const h=f.hist, w=120, hh=28, n=h.length;
-  if(n<2) return `<svg viewBox="0 0 ${w} ${hh}"><circle cx="${w-4}" cy="${hh-4-h[0][1]*(hh-8)}" r="2.2" fill="var(--gold)"/></svg>`;
+  const line=`<line x1="4" y1="${hh/2}" x2="${w-4}" y2="${hh/2}" stroke="var(--line)" stroke-dasharray="2 3"/>`;
+  const renderPt=(e,i,cx,cy)=>{
+    const prev=i>0?h[i-1][1]:null;
+    const diff=prev!==null?pc(e[1])-pc(prev):0;
+    const moveStr=i===0?"issued":(diff>0?`+${diff} pts`:diff<0?`${diff} pts`:"flat");
+    const moveWord=i===0?"issued":(diff>0?"raised":diff<0?"lowered":"unchanged");
+    const why=e[2]||(i===0?f.why:(i===n-1&&f.change?f.change:null))||"";
+    const tipText=`${d2(e[0])}: ${pc(e[1])}% (${moveWord}${diff!==0&&i>0?` ${diff>0?'+':''}${diff} pts`:''})${why?` · ${why}`:''}`;
+    const ariaLabel=`${d2(e[0])}, ${pc(e[1])}%, ${moveWord}`;
+    return `<g class="spk-pt" tabindex="0" role="button" aria-label="${esc(ariaLabel)}" data-date="${esc(d2(e[0]))}" data-p="${pc(e[1])}%" data-move="${esc(moveStr)}" data-why="${esc(why)}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="7" class="spk-hit"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${i===n-1?2.5:2}" class="spk-dot"/><title>${esc(tipText)}</title></g>`;
+  };
+  if(n<2){
+    const cx=w-4, cy=hh-4-h[0][1]*(hh-8);
+    return `<svg viewBox="0 0 ${w} ${hh}" class="spk">${line}${renderPt(h[0],0,cx,cy)}</svg>`;
+  }
   const pts=h.map((e,i)=>`${4+i*(w-8)/(n-1)},${hh-4-e[1]*(hh-8)}`).join(" ");
-  return `<svg viewBox="0 0 ${w} ${hh}"><line x1="4" y1="${hh/2}" x2="${w-4}" y2="${hh/2}" stroke="var(--line)" stroke-dasharray="2 3"/><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${w-4}" cy="${hh-4-h[n-1][1]*(hh-8)}" r="2.4" fill="var(--gold)"/></svg>`;
+  const ptEls=h.map((e,i)=>{
+    const cx=4+i*(w-8)/(n-1), cy=hh-4-e[1]*(hh-8);
+    return renderPt(e,i,cx,cy);
+  }).join("");
+  return `<svg viewBox="0 0 ${w} ${hh}" class="spk">${line}<polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/>${ptEls}</svg>`;
 }
 function stepsOf(f){
   const h=f.hist; const out=[]; h.forEach((e,i)=>{ if(i===0) out.push(`${d2(e[0])} issued at <b>${pc(e[1])}%</b>`); else if(e[1]!==h[i-1][1]) out.push(`${d2(e[0])} ${e[1]>h[i-1][1]?"raised":"lowered"} to <b>${pc(e[1])}%</b>`); });
@@ -710,6 +753,95 @@ if(clearEl) clearEl.addEventListener("click",clearSearch);
 document.getElementById("list").addEventListener("click",e=>{
   if(e.target.closest(".btn-clear")) clearSearch();
 });
+let spkTip=null, activePt=null;
+function getSpkTip(){
+  if(!spkTip){
+    spkTip=document.createElement("div");
+    spkTip.id="spk-tip";
+    spkTip.setAttribute("role","tooltip");
+    spkTip.setAttribute("aria-hidden","true");
+    document.body.appendChild(spkTip);
+  }
+  return spkTip;
+}
+function hideSpkTip(){
+  if(spkTip){
+    spkTip.classList.remove("visible");
+    spkTip.setAttribute("aria-hidden","true");
+  }
+  if(activePt){
+    activePt.classList.remove("active");
+    activePt=null;
+  }
+}
+function showSpkTip(pt){
+  if(!pt) return;
+  const date=pt.dataset.date, p=pt.dataset.p, move=pt.dataset.move, why=pt.dataset.why;
+  const tip=getSpkTip();
+  if(activePt&&activePt!==pt) activePt.classList.remove("active");
+  activePt=pt;
+  pt.classList.add("active");
+  const moveCls=move.startsWith("+")?"up":move.startsWith("-")?"dn":move==="issued"?"iss":"";
+  tip.innerHTML=`<div class="tip-h"><span>${date} · <b>${p}</b></span><span class="tip-m ${moveCls}">${esc(move)}</span></div>${why?`<div class="tip-b">${esc(why)}</div>`:""}<div class="tip-arr"></div>`;
+  tip.style.display="block";
+  tip.classList.remove("visible","below");
+  const rect=pt.getBoundingClientRect();
+  const tipRect=tip.getBoundingClientRect();
+  let top=rect.top-tipRect.height-7;
+  let isBelow=false;
+  if(top<8){
+    top=rect.bottom+7;
+    isBelow=true;
+  }
+  let left=rect.left+rect.width/2-tipRect.width/2;
+  const pad=8;
+  const maxLeft=window.innerWidth-tipRect.width-pad;
+  const clampLeft=Math.max(pad,Math.min(maxLeft,left));
+  tip.style.top=`${Math.round(top+window.scrollY)}px`;
+  tip.style.left=`${Math.round(clampLeft+window.scrollX)}px`;
+  if(isBelow) tip.classList.add("below");
+  const arr=tip.querySelector(".tip-arr");
+  if(arr){
+    const arrowX=rect.left+rect.width/2-clampLeft;
+    arr.style.left=`${Math.max(6,Math.min(tipRect.width-6,arrowX))}px`;
+  }
+  tip.classList.add("visible");
+  tip.setAttribute("aria-hidden","false");
+}
+document.addEventListener("mouseover",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) showSpkTip(pt);
+});
+document.addEventListener("mouseout",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt){
+    const nextPt=e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(".spk-pt");
+    if(!nextPt) hideSpkTip();
+  }
+});
+document.addEventListener("focusin",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) showSpkTip(pt);
+});
+document.addEventListener("focusout",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt) hideSpkTip();
+});
+document.addEventListener("click",e=>{
+  const pt=e.target.closest(".spk-pt");
+  if(pt){
+    e.stopPropagation();
+    if(activePt===pt) hideSpkTip();
+    else showSpkTip(pt);
+  } else if(!e.target.closest("#spk-tip")){
+    hideSpkTip();
+  }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&activePt) hideSpkTip();
+});
+window.addEventListener("scroll",()=>{ if(activePt) hideSpkTip(); },{passive:true});
+window.addEventListener("resize",()=>{ if(activePt) hideSpkTip(); },{passive:true});
 document.getElementById("tog").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("ubik-calls-theme",r.dataset.theme)}catch(_){}});
 try{const t=localStorage.getItem("ubik-calls-theme");if(t)document.documentElement.dataset.theme=t;}catch(_){}
 document.getElementById("wmmark").innerHTML=MARK;document.getElementById("fmark").innerHTML=MARK;
