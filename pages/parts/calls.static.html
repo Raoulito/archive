@@ -630,7 +630,7 @@ function card(o){
   const where=DEGEN?(legs?`<div class="where"><span class="k">The leg this reading takes</span>${legs}<small>degen mode · a mechanical reading of the forecast, not advice</small></div>`:""):names.length?`<div class="where"><span class="k">Where this question shows up</span><span class="names">${names.map(n=>`<span>${esc(n)}</span>`).join("")}</span><small>named for reference, not as a position</small></div>`:"";
   return `<article class="card ${lean==="open"?"cash":lean==="yes"?"long":"short"}" id="${o.id}">
     <div class="top"><span class="cats">${o.cats.map(c=>`<span>${IC[c]}${CAT[c]}</span>`).join("")}</span><span class="sp"></span><span class="hz">${IC.clock}${hz(o.d)} · ${d2(o.catalyst[0])}</span></div>
-    ${DEGEN?`<div class="pos ${st.s}"><span class="tag ${st.s}">${IC[st.s]}${esc(st.label||(st.s==="cash"?"Cash":st.s))}</span><span class="asset">${esc(o.short)}</span></div>`:`<div class="pos ${lean==="open"?"cash":lean==="yes"?"long":"short"}"><span class="tag ${lean==="open"?"cash":lean==="yes"?"long":"short"}">${IC[lean==="open"?"cash":lean==="yes"?"long":"short"]}${leanWord}</span><span class="asset">${esc(o.short)}</span></div>`}
+    ${DEGEN?`<div class="pos ${st.s}"><span class="tag ${st.s}">${IC[st.s]}${esc(st.label||(st.s==="cash"?"Cash":st.s))}</span><span class="asset">${esc(lean==="no"&&o.shortNo?o.shortNo:o.short)}</span></div>`:`<div class="pos ${lean==="open"?"cash":lean==="yes"?"long":"short"}"><span class="tag ${lean==="open"?"cash":lean==="yes"?"long":"short"}">${IC[lean==="open"?"cash":lean==="yes"?"long":"short"]}${leanWord}</span><span class="asset">${esc(o.short)}</span></div>`}
     <div class="sub">${sub}</div>
     ${stats}
     ${odds}
